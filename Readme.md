@@ -1,6 +1,6 @@
 # Personal Portfolio 
 
-Was designed by rajaprerak, edited by me to fit my theme :).
+Was designed by rajaprerak, edited by me (obviously) :).
 
-> https://rajaprerak.github.io/
+> https://rajaprerak.github.io/x
 
