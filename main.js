@@ -26,6 +26,54 @@
     }
   }
 
+  !(function($) {
+  "use strict";
+
+  $(document).ready(function() {
+    // A. Handle dynamic machine loading (for writeups.html)
+    const params = new URLSearchParams(window.location.search);
+    const machine = params.get('machine');
+    
+    if (machine) {
+      $('.machine-profile-node').hide();
+      const target = $('#target-' + machine);
+      if (target.length) {
+        target.show();
+      } else {
+        $('#fallback-deck').show();
+      }
+    }
+
+    // B. Handle Homepage section switching
+    $('.nav-menu a').on('click', function(e) {
+      const hash = this.hash;
+      if (hash && $(hash).length) {
+        e.preventDefault();
+        $('section').removeClass('section-show');
+        $(hash).addClass('section-show');
+        $('#header').addClass('header-top');
+      }
+    });
+  });
+
+  // C. Interactive UI Helpers
+  window.toggleTaskAnswer = function(btn, answer) {
+    btn.innerText = answer;
+    btn.style.background = "var(--neon-green)";
+    btn.style.color = "#000";
+  };
+
+  window.revealTargetFlag = function(btn, flag) {
+    const mask = btn.previousElementSibling.querySelector('.flag-blurred-mask');
+    if (mask) {
+      mask.innerText = flag;
+      mask.style.filter = "none";
+      mask.style.opacity = "1";
+      btn.style.display = "none";
+    }
+  };
+})(jQuery);
+
   // --- 2. Navigation & UI Pipeline (Handles index.html) ---
   $(document).on('click', '.nav-menu a, .mobile-nav a', function(e) {
     // Only intercept if we are on the same page
