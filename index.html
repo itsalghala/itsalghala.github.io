@@ -3,123 +3,70 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>0xRoot | Offensive Security & CTF Writeups</title>
-  <meta name="description" content="Deep dives into HTB machines, custom exploit development, red teaming tactics, and CTF walkthroughs.">
+  <title>0xRoot // Cyber Future Ops Node</title>
+  <meta name="description" content="Framer-grade structural engineering UI for tracking high-tier cyber intelligence, custom threat emulation sandboxes, and live machine walkthrough nodes.">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
   <style>
-    /* --- CSS Variables & Design Tokens --- */
+    /* --- Cyberpunk Design Token System --- */
     :root {
-      --bg-main: #05020c;
-      --bg-surface: #0e091b;
-      --bg-terminal: #090514;
-      --accent-purple: #a855f7;
-      --accent-purple-glow: rgba(168, 85, 247, 0.6);
-      --accent-purple-dim: rgba(168, 85, 247, 0.15);
-      --text-primary: #f3f1f6;
-      --text-secondary: #9a8fbc;
-      --text-muted: #625784;
-      --terminal-green: #22c55e;
-      --terminal-red: #ef4444;
-      --border-color: #24193d;
-      --font-sans: 'Plus Jakarta Sans', sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
+      --bg-void: #020105;
+      --bg-terminal: #07040e;
+      --bg-surface: #0e0a1a;
+      --bg-elevated: #161129;
+      
+      --neon-violet: #8b5cf6;
+      --neon-violet-glow: rgba(139, 92, 246, 0.4);
+      --neon-cyan: #06b6d4;
+      --neon-cyan-glow: rgba(6, 182, 212, 0.5);
+      --neon-emerald: #10b981;
+      --neon-emerald-glow: rgba(16, 185, 129, 0.4);
+      
+      --text-clean: #f3f1f6;
+      --text-dim: #9991a6;
+      --text-dark: #4d4559;
+      
+      --border-cyber: 1px solid rgba(139, 92, 246, 0.15);
+      --border-cyan-glow: 1px solid rgba(6, 182, 212, 0.4);
+      
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-mono: 'Share Tech Mono', monospace;
     }
 
-    /* --- Global Resets & Basics --- */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
-    html, body {
-      background-color: var(--bg-main);
-      color: var(--text-primary);
-      font-family: var(--font-sans);
-      overflow-x: hidden;
+    html {
       scroll-behavior: smooth;
+      background-color: var(--bg-void);
+      color: var(--text-clean);
+      font-family: var(--font-display);
     }
 
-    a {
-      color: inherit;
-      text-decoration: none;
+    /* Cyber Matrix Canvas Layout Base */
+    body {
+      overflow-x: hidden;
+      position: relative;
     }
 
-    /* --- Decorative Elements: The Neon Beam --- */
-    .hero-glow-container {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100vw;
-      height: 650px;
-      overflow: hidden;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* Horizontal Horizon Beam */
-    .neon-horizon-beam {
-      position: absolute;
-      top: 380px;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: linear-gradient(90deg, transparent 10%, var(--accent-purple) 50%, transparent 90%);
-      box-shadow: 
-        0 0 15px var(--accent-purple),
-        0 0 35px var(--accent-purple),
-        0 0 70px var(--accent-purple);
-      opacity: 0.8;
-    }
-
-    /* Central Singularity Arc (The Aura Dome) */
-    .neon-singularity-arc {
-      position: absolute;
-      top: 240px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 450px;
-      height: 280px;
-      border-radius: 50% 50% 0 0;
-      background: transparent;
-      border: 4px solid var(--accent-purple);
-      border-bottom: none;
-      box-shadow: 
-        0 -10px 30px var(--accent-purple-glow),
-        inset 0 10px 40px var(--accent-purple-dim);
-      filter: blur(1px);
-    }
-
-    /* Massive ambient back-glow */
-    .ambient-purple-wash {
-      position: absolute;
-      top: 150px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 700px;
-      height: 350px;
-      background: radial-gradient(circle, rgba(168, 85, 247, 0.25) 0%, transparent 70%);
-      filter: blur(50px);
-    }
-
-    /* Scanline Overlay for Terminal Feel */
     body::before {
-      content: " ";
-      display: block;
-      position: fixed;
-      top: 0; left: 0; bottom: 0; right: 0;
-      background: linear-gradient(rgba(18, 10, 36, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-      z-index: 99999;
-      background-size: 100% 4px, 6px 100%;
+      content: "";
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: 
+        linear-gradient(rgba(139, 92, 246, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139, 92, 246, 0.02) 1px, transparent 1px);
+      background-size: 50px 50px;
       pointer-events: none;
+      z-index: 1;
     }
 
-    /* --- Typography & Components --- */
     .container {
       max-width: 1200px;
       margin: 0 auto;
@@ -128,485 +75,839 @@
       z-index: 10;
     }
 
-    header {
-      padding: 32px 0;
-      border-bottom: 1px solid var(--border-color);
-      background: rgba(5, 2, 12, 0.6);
-      backdrop-filter: blur(12px);
+    /* --- Framer-Style Layout Badges & Headings --- */
+    .cyber-badge {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--neon-cyan);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      background: rgba(6, 182, 212, 0.06);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      padding: 6px 16px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .cyber-badge::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: var(--neon-cyan);
+      box-shadow: 0 0 8px var(--neon-cyan-glow);
+      border-radius: 50%;
+    }
+
+    .section-title {
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .section-title span {
+      background: linear-gradient(135deg, var(--text-clean) 40%, var(--neon-violet));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .section-desc {
+      font-size: 1.15rem;
+      color: var(--text-dim);
+      max-width: 600px;
+      margin-bottom: 48px;
+      line-height: 1.6;
+    }
+
+    /* --- Premium Interaction Controls --- */
+    .btn-cyber {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 14px 28px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-cyan {
+      background: var(--neon-cyan);
+      color: var(--bg-void);
+      border: none;
+      font-weight: 700;
+      box-shadow: 0 4px 20px var(--neon-cyan-glow);
+    }
+
+    .btn-cyan:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(6, 182, 212, 0.8);
+    }
+
+    .btn-dark {
+      background: var(--bg-surface);
+      color: var(--text-clean);
+      border: var(--border-cyber);
+    }
+
+    .btn-dark:hover {
+      border-color: var(--neon-cyan);
+      background: var(--bg-elevated);
+      color: #fff;
+    }
+
+    /* --- Navigation Grid Control Panel --- */
+    nav {
+      border-bottom: var(--border-cyber);
+      background: rgba(2, 1, 5, 0.85);
+      backdrop-filter: blur(20px);
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 1000;
     }
 
     .nav-wrapper {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      height: 84px;
     }
 
-    .logo {
+    .nav-logo {
       font-family: var(--font-mono);
       font-weight: 700;
-      font-size: 1.25rem;
-      letter-spacing: -0.5px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      font-size: 1.4rem;
+      letter-spacing: 1px;
+      color: #fff;
     }
 
-    .logo span {
-      color: var(--accent-purple);
-      text-shadow: 0 0 10px var(--accent-purple-glow);
+    .nav-logo span {
+      color: var(--neon-cyan);
     }
 
-    .nav-links {
+    .nav-items {
       display: flex;
-      gap: 32px;
+      gap: 36px;
       list-style: none;
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--text-secondary);
     }
 
-    .nav-links a:hover, .nav-links a.active {
-      color: var(--text-primary);
-      text-shadow: 0 0 8px var(--accent-purple-glow);
+    .nav-anchor {
+      font-size: 0.95rem;
+      font-weight: 400;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.2s;
     }
 
-    /* --- Hero Section --- */
-    .hero {
+    .nav-anchor:hover {
+      color: var(--neon-cyan);
+    }
+
+    /* --- Hero Arena Layout --- */
+    .hero-field {
+      padding: 120px 0 80px 0;
       text-align: center;
-      padding: 90px 0 40px 0;
+      position: relative;
     }
 
-    .hero-tagline {
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--accent-purple);
-      border: 1px solid var(--border-color);
-      padding: 6px 16px;
-      border-radius: 20px;
-      display: inline-block;
-      margin-bottom: 24px;
-      background: rgba(14, 9, 27, 0.5);
-      backdrop-filter: blur(4px);
+    .hero-field h1 {
+      font-size: 4.5rem;
+      font-weight: 700;
+      letter-spacing: -2.5px;
+      line-height: 1.05;
+      max-width: 950px;
+      margin: 0 auto 24px auto;
     }
 
-    .hero h1 {
-      font-size: 3.5rem;
-      font-weight: 800;
-      letter-spacing: -1px;
-      margin-bottom: 16px;
-      line-height: 1.1;
-    }
-
-    .hero h1 em {
-      font-style: normal;
-      color: var(--text-secondary);
+    .hero-field h1 span {
+      background: linear-gradient(180deg, #fff 30%, var(--neon-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .hero-subtext {
-      font-size: 1.15rem;
-      color: var(--text-secondary);
-      max-width: 600px;
-      margin: 0 auto 48px auto;
-    }
-
-    /* --- Terminal UI Component --- */
-    .terminal-window {
-      background-color: var(--bg-terminal);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 40px var(--accent-purple-dim);
-      max-width: 800px;
-      margin: 0 auto;
-      text-align: left;
-      font-family: var(--font-mono);
-      overflow: hidden;
-    }
-
-    .terminal-header {
-      background: #120b24;
-      padding: 12px 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .terminal-buttons {
-      display: flex;
-      gap: 8px;
-    }
-
-    .terminal-btn {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-    }
-    .terminal-btn.close { background: var(--terminal-red); }
-    .terminal-btn.minimize { background: #eab308; }
-    .terminal-btn.maximize { background: var(--terminal-green); }
-
-    .terminal-title {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    .terminal-body {
-      padding: 24px;
-      font-size: 0.95rem;
+      font-size: 1.3rem;
+      color: var(--text-dim);
+      max-width: 700px;
+      margin: 0 auto 44px auto;
       line-height: 1.6;
-      min-height: 280px;
     }
 
-    .terminal-row {
-      margin-bottom: 12px;
-    }
-
-    .prompt-symbol {
-      color: var(--accent-purple);
-      font-weight: bold;
-    }
-
-    .command-text {
-      color: var(--text-primary);
-    }
-
-    .output-text {
-      color: var(--text-secondary);
-      margin-left: 16px;
-    }
-
-    .output-success {
-      color: var(--terminal-green);
-    }
-
-    /* --- Filter Tabs --- */
-    .content-section {
-      padding: 100px 0;
-    }
-
-    .section-header {
+    .hero-buttons {
       display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 40px;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 16px;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 80px;
     }
 
-    .section-title h2 {
-      font-size: 2rem;
-      font-weight: 800;
+    /* --- Framer Glow Interactivity Interface --- */
+    .framer-viewport-frame {
+      background: linear-gradient(135deg, rgba(139,92,246,0.3), rgba(6,182,212,0.3));
+      padding: 1px;
+      border-radius: 16px;
+      max-width: 1060px;
+      margin: 0 auto;
+      box-shadow: 0 50px 100px rgba(0,0,0,0.9), 0 0 60px rgba(139,92,246,0.05);
     }
 
-    .section-title p {
-      color: var(--text-secondary);
-      margin-top: 4px;
+    .framer-viewport-content {
+      background: var(--bg-terminal);
+      border-radius: 15px;
+      overflow: hidden;
+      aspect-ratio: 16 / 10;
+      display: grid;
+      grid-template-columns: 240px 1fr;
     }
 
-    .tab-filters {
-      display: flex;
-      gap: 12px;
-      list-style: none;
+    .panel-sidebar {
+      background: var(--bg-surface);
+      border-right: var(--border-cyber);
+      padding: 30px;
+      text-align: left;
     }
 
-    .filter-btn {
-      background: transparent;
-      border: 1px solid var(--border-color);
-      color: var(--text-secondary);
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
+    .panel-brand-node {
       font-family: var(--font-mono);
       font-size: 0.85rem;
-      transition: all 0.2s ease;
+      color: var(--text-dark);
+      margin-bottom: 32px;
+      display: block;
     }
 
-    .filter-btn:hover, .filter-btn.active {
-      border-color: var(--accent-purple);
-      color: var(--text-primary);
-      box-shadow: 0 0 10px var(--accent-purple-dim);
+    .panel-nav-mock {
+      width: 100%;
+      height: 36px;
+      background: var(--bg-elevated);
+      margin-bottom: 12px;
+      border-radius: 6px;
+      border-left: 3px solid var(--neon-cyan);
     }
 
-    /* --- Grid & Blog Cards --- */
-    .blog-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 24px;
-    }
-
-    .blog-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 24px;
+    .panel-view-matrix {
+      padding: 40px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      transition: transform 0.2s ease, border-color 0.2s ease;
+      position: relative;
     }
 
-    .blog-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(168, 85, 247, 0.4);
+    /* Future Neon Live Tracker Line */
+    .cyber-pulse-grid {
+      flex-grow: 1;
+      border-left: 1px dashed rgba(139, 92, 246, 0.15);
+      border-bottom: 1px dashed rgba(139, 92, 246, 0.15);
+      margin-bottom: 30px;
+      position: relative;
+      overflow: hidden;
     }
 
-    .card-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .cyber-pulse-grid::after {
+      content: "";
+      position: absolute;
+      bottom: 30px; left: -10%; width: 120%; height: 50%;
+      border-top: 2px solid var(--neon-cyan);
+      box-shadow: 0 0 15px var(--neon-cyan-glow);
+      transform: skewY(-4deg);
+    }
+
+    /* --- Bento Matrix Features Grid Layout --- */
+    .bento-section {
+      padding: 120px 0;
+      background: var(--bg-terminal);
+    }
+
+    .bento-network {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    /* Bento Module Sizing Formulas */
+    .bento-block {
+      background: var(--bg-surface);
+      border: var(--border-cyber);
+      border-radius: 14px;
+      padding: 40px;
+      transition: border-color 0.3s, transform 0.3s;
+      position: relative;
+    }
+
+    .bento-block:hover {
+      border-color: var(--neon-cyan);
+      transform: translateY(-2px);
+    }
+
+    .bento-block.wide {
+      grid-column: span 2;
+    }
+
+    .bento-block.tall {
+      grid-row: span 2;
+    }
+
+    .bento-tag {
       font-family: var(--font-mono);
-      font-size: 0.8rem;
+      font-size: 0.75rem;
+      color: var(--neon-violet);
+      text-transform: uppercase;
+      display: block;
       margin-bottom: 16px;
     }
 
-    .tag {
-      padding: 4px 10px;
-      border-radius: 4px;
-      font-weight: 500;
-    }
-
-    .tag.htb { background: rgba(34, 197, 94, 0.1); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.2); }
-    .tag.redteam { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
-    .tag.ctf { background: rgba(168, 85, 247, 0.1); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.2); }
-
-    .card-date {
-      color: var(--text-muted);
-    }
-
-    .blog-card h3 {
-      font-size: 1.3rem;
-      font-weight: 700;
+    .bento-block h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
       margin-bottom: 12px;
-      line-height: 1.3;
+      letter-spacing: -0.5px;
     }
 
-    .blog-card p {
-      color: var(--text-secondary);
-      font-size: 0.95rem;
-      line-height: 1.5;
+    .bento-block p {
+      color: var(--text-dim);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    /* --- Cyber Future Live HTB Walkthrough Grid Ledger --- */
+    .htb-ledger-section {
+      padding: 120px 0;
+    }
+
+    .ledger-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 60px;
+    }
+
+    .ledger-matrix {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .ledger-row {
+      background: var(--bg-surface);
+      border: var(--border-cyber);
+      border-radius: 8px;
+      padding: 24px 32px;
+      display: grid;
+      grid-template-columns: 180px 1fr 140px 120px;
+      align-items: center;
+      transition: all 0.2s;
+    }
+
+    .ledger-row:hover {
+      background: var(--bg-elevated);
+      border-color: var(--neon-cyan);
+    }
+
+    .htb-tag {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 4px;
+      width: fit-content;
+    }
+
+    .htb-tag.insane {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .htb-tag.hard {
+      background: rgba(245, 158, 11, 0.1);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .htb-tag.medium {
+      background: rgba(139, 92, 246, 0.1);
+      color: var(--neon-violet);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    .row-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-clean);
+    }
+
+    .row-metric {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: var(--text-dim);
+    }
+
+    .row-status {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    .status-dot.green { background: var(--neon-emerald); box-shadow: 0 0 8px var(--neon-emerald-glow); }
+
+    /* --- Scaled Pricing Blocks --- */
+    .pricing-field {
+      padding: 120px 0;
+      background: var(--bg-terminal);
+    }
+
+    .pricing-mesh {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+
+    .pricing-node {
+      background: var(--bg-surface);
+      border: var(--border-cyber);
+      border-radius: 16px;
+      padding: 48px 40px;
+      position: relative;
+    }
+
+    .pricing-node.active-focus {
+      border: 1px solid var(--neon-cyan);
+      box-shadow: 0 20px 50px rgba(6, 182, 212, 0.15);
+    }
+
+    .price-header h3 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .price-value {
+      font-size: 3.5rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      margin: 32px 0;
+      color: #fff;
+    }
+
+    .price-value span {
+      font-size: 1.1rem;
+      color: var(--text-dim);
+    }
+
+    .feature-check-list {
+      list-style: none;
+      margin-bottom: 40px;
+    }
+
+    .feature-check-list li {
+      margin-bottom: 16px;
+      font-size: 1rem;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .feature-check-list li::before {
+      content: "→";
+      color: var(--neon-cyan);
+      font-family: var(--font-mono);
+    }
+
+    /* --- Tactical Input Terminal (Contact Form) --- */
+    .uplink-field {
+      padding: 120px 0;
+    }
+
+    .uplink-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .terminal-form {
+      background: var(--bg-surface);
+      border: var(--border-cyber);
+      padding: 48px;
+      border-radius: 12px;
+      position: relative;
+    }
+
+    .terminal-form::before {
+      content: "SYS_INPUT_NODE";
+      position: absolute;
+      top: -12px; left: 24px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      background: var(--bg-void);
+      padding: 2px 10px;
+      color: var(--text-dark);
+      border: var(--border-cyber);
+    }
+
+    .input-row {
       margin-bottom: 24px;
-      flex-grow: 1;
     }
 
-    .card-footer {
+    .input-row label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+
+    .input-row input, .input-row textarea {
+      width: 100%;
+      background: var(--bg-void);
+      border: var(--border-cyber);
+      padding: 16px;
+      border-radius: 6px;
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 1rem;
+    }
+
+    .input-row input:focus, .input-row textarea:focus {
+      outline: none;
+      border-color: var(--neon-cyan);
+    }
+
+    /* --- Footer Ground Systems --- */
+    footer {
+      border-top: var(--border-cyber);
+      background: var(--bg-void);
+      padding: 80px 0 40px 0;
+    }
+
+    .footer-columns {
+      display: grid;
+      grid-template-columns: 2fr repeat(3, 1fr);
+      gap: 40px;
+      margin-bottom: 60px;
+    }
+
+    .footer-brand-desc p {
+      color: var(--text-dim);
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 320px;
+      margin-top: 16px;
+    }
+
+    .footer-column h4 {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #fff;
+      margin-bottom: 24px;
+    }
+
+    .footer-column ul {
+      list-style: none;
+    }
+
+    .footer-column ul li {
+      margin-bottom: 14px;
+    }
+
+    .footer-column ul li a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+    }
+
+    .footer-column ul li a:hover {
+      color: var(--neon-cyan);
+    }
+
+    .footer-meta-ground {
+      border-top: var(--border-cyber);
+      padding-top: 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-family: var(--font-mono);
       font-size: 0.85rem;
+      color: var(--text-dark);
     }
 
-    .read-more {
-      color: var(--accent-purple);
-      font-weight: 500;
+    /* --- Adaptive Media Formula Queries --- */
+    @media (max-width: 1024px) {
+      .bento-network { grid-template-columns: repeat(2, 1fr); }
+      .bento-block.wide { grid-column: span 1; }
+      .pricing-mesh, .uplink-grid { grid-template-columns: 1fr; }
     }
-
-    .difficulty {
-      font-size: 0.8rem;
-    }
-    .difficulty.hard { color: var(--terminal-red); }
-    .difficulty.medium { color: #f97316; }
-    .difficulty.easy { color: var(--terminal-green); }
-
-    footer {
-      border-top: 1px solid var(--border-color);
-      padding: 40px 0;
-      text-align: center;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    /* --- Responsive Adjustments --- */
     @media (max-width: 768px) {
-      .hero h1 { font-size: 2.5rem; }
-      .section-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 20px;
-      }
-      .tab-filters {
-        width: 100%;
-        overflow-x: auto;
-        padding-bottom: 8px;
-      }
+      .bento-network, .footer-columns { grid-template-columns: 1fr; }
+      .hero-field h1 { font-size: 3rem; }
+      .nav-items { display: none; }
+      .ledger-row { grid-template-columns: 1fr; gap: 12px; padding: 24px; }
     }
   </style>
 </head>
 <body>
 
-  <div class="hero-glow-container">
-    <div class="ambient-purple-wash"></div>
-    <div class="neon-singularity-arc"></div>
-    <div class="neon-horizon-beam"></div>
-  </div>
-
-  <header>
+  <nav>
     <div class="container nav-wrapper">
-      <div class="logo">
-        <span>#</span> 0xRoot_
+      <div class="nav-logo">0xROOT<span>//</span></div>
+      <ul class="nav-items">
+        <li><a href="#bento" class="nav-anchor">Core Modules</a></li>
+        <li><a href="#ledger" class="nav-anchor">HTB Walkthroughs</a></li>
+        <li><a href="#pricing" class="nav-anchor">Ops Licensing</a></li>
+      </ul>
+      <a href="#uplink" class="btn-cyber btn-dark" style="padding: 10px 20px;">Initialize Link</a>
+    </div>
+  </nav>
+
+  <header class="hero-field">
+    <div class="container">
+      <div class="cyber-badge">SYSTEM INTEGRITY SECURE</div>
+      <h1>Next-Gen Threat Space <span>For Advanced Operators</span></h1>
+      <p class="hero-subtext">A structural, Framer-grade technical engine built to document infrastructure exploitation paths, track automated sandboxes, and map cloud trust boundaries.</p>
+      
+      <div class="hero-buttons">
+        <a href="#uplink" class="btn-cyber btn-cyan">Deploy Active Terminal</a>
+        <a href="#bento" class="btn-cyber btn-dark">View Tech Specs</a>
       </div>
-      <nav>
-        <ul class="nav-links">
-          <li><a href="#" class="active">Home</a></li>
-          <li><a href="#library">Writeups</a></li>
-          <li><a href="#about">About</a></li>
-        </ul>
-      </nav>
+
+      <div class="framer-viewport-frame">
+        <div class="framer-viewport-content">
+          <div class="panel-sidebar">
+            <span class="panel-brand-node">CORE_ARRAY_v4.2</span>
+            <div class="panel-nav-mock"></div>
+            <div class="panel-nav-mock" style="border-color: transparent; opacity: 0.4;"></div>
+            <div class="panel-nav-mock" style="border-color: transparent; opacity: 0.4;"></div>
+          </div>
+          <div class="panel-view-matrix">
+            <div class="cyber-pulse-grid"></div>
+            <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-dark);">
+              <span>X-REF // REALTIME_TELEMETRY</span>
+              <span>PULSE STABLE</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </header>
 
-  <section class="hero">
+  <section class="bento-section" id="bento">
     <div class="container">
-      <div class="hero-tagline">Initializing Offensive Sandbox...</div>
-      <h1>Think Deeper.<br><em>Break Faster.</em></h1>
-      <p class="hero-subtext">
-        Documentation of active threat emulation tactics, step-by-step Capture The Flag breakdowns, and engineering notes from Hack The Box targets.
-      </p>
-
-      <div class="terminal-window">
-        <div class="terminal-header">
-          <div class="terminal-buttons">
-            <div class="terminal-btn close"></div>
-            <div class="terminal-btn minimize"></div>
-            <div class="terminal-btn maximize"></div>
-          </div>
-          <div class="terminal-title">guest@0xroot-terminal:~</div>
-          <div></div>
-        </div>
-        <div class="terminal-body">
-          <div class="terminal-row">
-            <span class="prompt-symbol">guest@0xroot:~$</span> <span class="command-text">cat welcome.md</span>
-          </div>
-          <div class="terminal-row">
-            <div class="output-text">Welcome to the central intelligence vault. Use the control plane below to parse available walk-throughs, custom exploits, and tactical notes.</div>
-          </div>
-          <div class="terminal-row">
-            <span class="prompt-symbol">guest@0xroot:~$</span> <span class="command-text">nmap -sV -p443 security-library.local</span>
-          </div>
-          <div class="terminal-row">
-            <div class="output-text">[+] Port 443/tcp OPEN  |  Service: HTTP over TLS (Blog Module Loaded)</div>
-            <div class="output-text output-success">[+] Integrity check passed. Access Granted.</div>
-          </div>
-        </div>
+      <div style="text-align: center; margin-bottom: 80px;">
+        <div class="cyber-badge">Core Engine Blueprint</div>
+        <h2 class="section-title">High-Fidelity <span>Operational Bento Modules</span></h2>
       </div>
 
+      <div class="bento-network">
+        <div class="bento-block wide">
+          <span class="bento-tag">01 // TELEMETRY MAP</span>
+          <h3>Identity & Trust Hierarchy Mapping</h3>
+          <p>Instantly visualize complex nested credential models, tracking permission logic vectors across multi-tiered corporate architecture targets.</p>
+        </div>
+        
+        <div class="bento-block tall">
+          <span class="bento-tag">02 // EXPLOIT ANALYSIS</span>
+          <h3>Custom Exploit Variant Sandboxing</h3>
+          <p>Run dynamic logic variant verification procedures inside highly granular runtime testing containers, completely isolated from stable baseline modules.</p>
+        </div>
+
+        <div class="bento-block">
+          <span class="bento-tag">03 // FLOW HARDENING</span>
+          <h3>Continuous Drift Audit</h3>
+          <p>Detect subtle shifts in access policies across cloud environments before threat boundaries degrade.</p>
+        </div>
+
+        <div class="bento-block wide">
+          <span class="bento-tag">04 // DATA FLOWS</span>
+          <h3>Exfiltration Path Modeling</h3>
+          <p>Simulate sophisticated outbound transmission strategies, flagging configuration issues in service control perimeters automatically.</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <section class="content-section" id="library">
+  <section class="htb-ledger-section" id="ledger">
     <div class="container">
-      
-      <div class="section-header">
-        <div class="section-title">
-          <h2>Tactical Ledger</h2>
-          <p>Filter entries by core domains or target source.</p>
+      <div class="ledger-header-flex">
+        <div>
+          <div class="cyber-badge">Intelligence Stream</div>
+          <h2 class="section-title">HTB Run <span>& Writeup Ledger</span></h2>
+          <p class="section-desc" style="margin-bottom: 0;">Granular vulnerability mapping logs tracking real-world enterprise exploit surfaces.</p>
         </div>
-        
-        <ul class="tab-filters">
-          <li><button class="filter-btn active" onclick="filterCategory('all', this)">ALL_NODES</button></li>
-          <li><button class="filter-btn" onclick="filterCategory('htb', this)">HTB_MACHINES</button></li>
-          <li><button class="filter-btn" onclick="filterCategory('redteam', this)">RED_TEAMING</button></li>
-          <li><button class="filter-btn" onclick="filterCategory('ctf', this)">CTF_WALKTHROUGHS</button></li>
-        </ul>
+        <a href="#uplink" class="btn-cyber btn-dark">Subscribe to Ledger Feed</a>
       </div>
 
-      <div class="blog-grid" id="blogGrid">
-        
-        <article class="blog-card" data-category="htb">
-          <div>
-            <div class="card-meta">
-              <span class="tag htb">HTB Machine</span>
-              <span class="card-date">May 24, 2026</span>
-            </div>
-            <h3>HackTheBox: Visualized writeup & entry blueprint</h3>
-            <p>Deconstructing an unauthenticated remote code execution vulnerability sequence chain by bypassing custom payload sanitation filters.</p>
-          </div>
-          <div class="card-footer">
-            <a href="#" class="read-more">Analyze Trace &rarr;</a>
-            <span class="difficulty hard">HARD</span>
-          </div>
-        </article>
+      <div class="ledger-matrix">
+        <div class="ledger-row">
+          <div class="htb-tag insane">INSANE_CLASS</div>
+          <div class="row-title">VaultEngine // Logic Chain Exploitation</div>
+          <div class="row-metric">ID: 0x98A1</div>
+          <div class="row-status"><span class="status-dot green"></span>COMPLETED</div>
+        </div>
 
-        <article class="blog-card" data-category="redteam">
-          <div>
-            <div class="card-meta">
-              <span class="tag redteam">Red Team</span>
-              <span class="card-date">Apr 12, 2026</span>
-            </div>
-            <h3>Token Manipulation & Workload Identity Abuse</h3>
-            <p>An in-depth structural exploration into auditing claims verification processes inside complex modern cloud-integrated runtime spaces.</p>
-          </div>
-          <div class="card-footer">
-            <a href="#" class="read-more">Analyze Trace &rarr;</a>
-            <span class="difficulty medium">MEDIUM</span>
-          </div>
-        </article>
+        <div class="ledger-row">
+          <div class="htb-tag hard">HARD_CLASS</div>
+          <div class="row-title">PermNode // Token Validation & OIDC Abuse</div>
+          <div class="row-metric">ID: 0x44F2</div>
+          <div class="row-status"><span class="status-dot green"></span>COMPLETED</div>
+        </div>
 
-        <article class="blog-card" data-category="ctf">
-          <div>
-            <div class="card-meta">
-              <span class="tag ctf">CTF Walkthrough</span>
-              <span class="card-date">Mar 03, 2026</span>
-            </div>
-            <h3>Defcon Quals: Advanced Heap Exploitation Walkthrough</h3>
-            <p>A surgical analysis of modern heap grooming methods, tcache poisoning tricks, and overcoming ASLR protections under tight flag timers.</p>
-          </div>
-          <div class="card-footer">
-            <a href="#" class="read-more">Analyze Trace &rarr;</a>
-            <span class="difficulty hard">INSANE</span>
-          </div>
-        </article>
+        <div class="ledger-row">
+          <div class="htb-tag medium">MEDIUM_CLASS</div>
+          <div class="row-title">ProxyLeak // API Edge Isolation Bypass</div>
+          <div class="row-metric">ID: 0x11B9</div>
+          <div class="row-status"><span class="status-dot green"></span>COMPLETED</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        <article class="blog-card" data-category="htb">
-          <div>
-            <div class="card-meta">
-              <span class="tag htb">HTB Machine</span>
-              <span class="card-date">Feb 18, 2026</span>
-            </div>
-            <h3>HackTheBox: Visual Machine Walkthrough</h3>
-            <p>Leveraging misconfigured local service accounts to achieve system level local privilege escalation routines on updated environments.</p>
-          </div>
-          <div class="card-footer">
-            <a href="#" class="read-more">Analyze Trace &rarr;</a>
-            <span class="difficulty easy">EASY</span>
-          </div>
-        </article>
-
+  <section class="pricing-field" id="pricing">
+    <div class="container">
+      <div style="text-align: center; margin-bottom: 80px;">
+        <div class="cyber-badge">Resource Allocation</div>
+        <h2 class="section-title">Transparent <span>Operator Pricing Matrix</span></h2>
       </div>
 
+      <div class="pricing-mesh">
+        <div class="pricing-node">
+          <div class="price-header">
+            <h3>Scout Tier</h3>
+            <p style="color: var(--text-dim); font-size: 0.95rem;">For single laboratory development frameworks.</p>
+          </div>
+          <div class="price-value">$0<span>/mo</span></div>
+          <ul class="feature-check-list">
+            <li>3 Concurrent Target Vectors</li>
+            <li>Standard Threat Intel Feed</li>
+            <li>Community Matrix Access</li>
+          </ul>
+          <a href="#uplink" class="btn-cyber btn-dark" style="width: 100%; justify-content: center;">Deploy Node</a>
+        </div>
+
+        <div class="pricing-node active-focus">
+          <div class="price-header">
+            <h3>Operator Pro</h3>
+            <p style="color: var(--text-dim); font-size: 0.95rem;">For elite threat intelligence engineering.</p>
+          </div>
+          <div class="price-value">$49<span>/mo</span></div>
+          <ul class="feature-check-list">
+            <li>Unlimited Testing Arrays</li>
+            <li>Real-Time Variant Telemetry</li>
+            <li>Custom API Injection Nodes</li>
+            <li>Priority Verification Channels</li>
+          </ul>
+          <a href="#uplink" class="btn-cyber btn-cyan" style="width: 100%; justify-content: center;">Initialize Pro Uplink</a>
+        </div>
+
+        <div class="pricing-node">
+          <div class="price-header">
+            <h3>Custom Cluster</h3>
+            <p style="color: var(--text-dim); font-size: 0.95rem;">For full enterprise automation grids.</p>
+          </div>
+          <div class="price-value">Custom</div>
+          <ul class="feature-check-list">
+            <li>Dedicated Bare-Metal Clusters</li>
+            <li>Custom Data Lifespan Settings</li>
+            <li>SAML 2.0 Auth Pipelines</li>
+          </ul>
+          <a href="#uplink" class="btn-cyber btn-dark" style="width: 100%; justify-content: center;">Contact Operators</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="uplink-field" id="uplink">
+    <div class="container">
+      <div class="uplink-grid">
+        <div>
+          <div class="cyber-badge">Cryptographic Bridge</div>
+          <h2 class="section-title">Establish Secure <span>Signal Uplink</span></h2>
+          <p class="section-desc">Have unique architecture challenges or looking to scale target infrastructure testing parameters? Transmit your metrics through the secure console array.</p>
+          <div style="font-family: var(--font-mono); font-size: 0.95rem; color: var(--text-dim); line-height: 1.8;">
+            <p style="color: var(--neon-emerald);">✔ CORE_STREAM_CONNECTED</p>
+            <p>PULSE_GATE: secure-uplink@0xroot.io</p>
+          </div>
+        </div>
+
+        <form class="terminal-form" onsubmit="event.preventDefault(); alert('Signal packet successfully committed to the ledger.');">
+          <div class="input-row">
+            <label>Operator Handle</label>
+            <input type="text" placeholder="e.g. Operator_0x7" required />
+          </div>
+          <div class="input-row">
+            <label>Signal Return Routing (Email)</label>
+            <input type="email" placeholder="anonymous@protonmail.ch" required />
+          </div>
+          <div class="input-row">
+            <label>Message Content Vector</label>
+            <textarea rows="5" placeholder="Specify targeted data fields or inquiries..." required></textarea>
+          </div>
+          <button type="submit" class="btn-cyber btn-cyan" style="width: 100%; justify-content: center;">Transmit Payload Packet</button>
+        </form>
+      </div>
     </div>
   </section>
 
   <footer>
     <div class="container">
-      &copy; 2026 0xRoot. All rights reserved. // Connection Secure via TLS_AES_256_GCM_SHA384.
+      <div class="footer-columns">
+        <div class="footer-brand-desc">
+          <div class="nav-logo">0xROOT<span>//</span></div>
+          <p>Providing high-fidelity offensive platform designs and premium tactical walk-through engineering layouts.</p>
+        </div>
+        <div class="footer-column">
+          <h4>Modules</h4>
+          <ul>
+            <li><a href="#">Bento Core</a></li>
+            <li><a href="#">Ledger System</a></li>
+            <li><a href="#">Telemetry Node</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="#">Documentation</a></li>
+            <li><a href="#">Vulnerability Schemas</a></li>
+            <li><a href="#">Platform Build Notes</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Security Node</h4>
+          <ul>
+            <li><a href="#">Privacy Protocol</a></li>
+            <li><a href="#">Terms of Use</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-meta-ground">
+        <span>&copy; 2026 0xROOT Labs Array. All operational paths monitored natively under active TLS metrics.</span>
+        <span>SYS_STATUS // RUNTIME_STABLE</span>
+      </div>
     </div>
   </footer>
 
-  <script>
-    function filterCategory(category, button) {
-      // Update active state class on category switch controllers
-      document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      button.classList.add('active');
-
-      // Sort grid visibility matrix logic
-      const cards = document.querySelectorAll('.blog-card');
-      cards.forEach(card => {
-        if (category === 'all' || card.getAttribute('data-category') === category) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    }
-  </script>
 </body>
 </html>
