@@ -1,4 +1,66 @@
 /**
+ * 0xRoot Matrix Hub // Core Architecture Control Engine
+ */
+
+// Global Route Navigation Handler
+function switchRoute(targetViewId) {
+  // 1. Locate all view sections on the page
+  const views = document.querySelectorAll('.app-view');
+  if (views.length > 0) {
+    views.forEach(view => {
+      view.classList.remove('active-view');
+    });
+    
+    const targetedView = document.getElementById('view-' + targetViewId);
+    if (targetedView) {
+      targetedView.classList.add('active-view');
+    }
+  }
+
+  // 2. Synchronize active state styling across nav targets
+  document.querySelectorAll('.nav-target').forEach(link => {
+    link.classList.remove('active');
+  });
+
+  const targetedNavElement = Array.from(document.querySelectorAll('.nav-target')).find(
+    el => el.getAttribute('href') === '#' + targetViewId || el.getAttribute('href') === targetViewId
+  );
+  if (targetedNavElement) {
+    targetedNavElement.classList.add('active');
+  }
+
+  // 3. Prevent sudden shifts on route load
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+// Multi-Cloud Structure Tab Controller
+function openCloudTab(evt, tabId) {
+  const container = evt.currentTarget.closest('.tab-container');
+  if (!container) return;
+
+  // Deactivate all matching content and buttons inside this tab grid
+  container.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+  container.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+  // Initialize selected target view node
+  const activeTab = document.getElementById(tabId);
+  if (activeTab) {
+    activeTab.classList.add('active');
+  }
+  evt.currentTarget.classList.add('active');
+}
+
+// Auto-detect anchor route targets on landing sequence execution
+window.addEventListener('DOMContentLoaded', () => {
+  const activeHash = window.location.hash.replace('#', '');
+  if (['home', 'writeups', 'about'].includes(activeHash)) {
+    switchRoute(activeHash);
+  }
+});
+
+// Expose handlers globally to catch legacy inline elements
+window.switchRoute = switchRoute;
+window.openCloudTab = openCloudTab;/**
 * Template Name: Personal - v2.1.0
 * Template URL: https://bootstrapmade.com/personal-free-resume-bootstrap-template/
 * Author: BootstrapMade.com
