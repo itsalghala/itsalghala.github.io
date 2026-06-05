@@ -16,49 +16,11 @@
     .wu-accent.hard   { background: linear-gradient(90deg, var(--neon-amber, #f59e0b), transparent); }
     .wu-accent.insane { background: linear-gradient(90deg, #ef4444, transparent); }
 
-
-    .wu-drawer {
-    display: none;
-    grid-column: 1 / -1; /* This makes it span the full width of your grid */
-    background: var(--bg-card);
-    border: var(--border-glow);
-    border-radius: 14px;
-    padding: 32px;
-    margin-top: 10px; /* Adds space between the grid and the drawer */
-    box-sizing: border-box; /* Crucial: ensures padding doesn't push the width out */
-    width: 100%;
-    }
-    
-    .about-layout {
-        display: grid;
-        grid-template-columns: 300px 1fr; /* Sidebar + Content */
-        gap: 40px;
-        width: 100%;
-    }
-    
-    /* Ensure images/code don't overflow */
-    .terminal-window {
-        max-width: 100%;
-        overflow-x: auto;
-    }
     /* --- Card selected state --- */
     .bento-box.selected {
       border-color: var(--neon-purple);
       box-shadow: 0 0 30px rgba(168,85,247,0.15);
     }
-
-    /* --- Inline drawer spans full grid width --- */
-    .wu-drawer {
-      display: none;
-      grid-column: 1 / -1;
-      background: var(--bg-card);
-      border: var(--border-glow);
-      border-radius: 14px;
-      padding: 32px;
-      position: relative;
-      animation: fadeIn 0.3s ease forwards;
-    }
-    .wu-drawer.open { display: block; }
 
     .drawer-close {
       position: absolute;
@@ -109,8 +71,43 @@
       vertical-align: middle;
     }
 
-    /* terminal window reuse */
-    .terminal-window {
+   /* --- Drawer & Layout --- */
+  .wu-drawer {
+      display: none;
+      grid-column: 1 / -1;
+      background: var(--bg-card);
+      border: var(--border-glow);
+      border-radius: 14px;
+      padding: 32px;
+      margin-top: 10px;
+      box-sizing: border-box;
+      position: relative;
+      animation: fadeIn 0.3s ease forwards;
+  }
+  .wu-drawer.open { display: block; }
+
+  .about-layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 40px;
+      width: 100%;
+      min-width: 0; /* Prevents grid items from overflowing */
+  }
+
+  /* --- Timeline & Terminal Fixes --- */
+  .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      min-width: 0; /* CRITICAL: Allows flex items to wrap/shrink */
+  }
+
+  .timeline-node {
+      width: 100%;
+      min-width: 0;
+  }
+
+  .terminal-window {
       background: var(--bg-void);
       border: 1px solid rgba(255,255,255,0.05);
       border-radius: 8px;
@@ -119,9 +116,11 @@
       font-size: 0.82rem;
       line-height: 1.55;
       overflow-x: auto;
-      white-space: pre;
+      white-space: pre-wrap; /* Allows wrapping instead of horizontal scroll */
+      word-break: break-all;
       margin-top: 10px;
-    }
+      box-sizing: border-box;
+  }
   </style>
 </head>
 <body>
@@ -403,93 +402,78 @@
     let activeDrawer = null;
 
     function openDrawer(cardEl, machineId) {
-      // Toggle off
-      if (activeCard === cardEl) { closeDrawer(); return; }
-
-      if (activeDrawer) { activeDrawer.remove(); activeDrawer = null; }
-      if (activeCard)   { activeCard.classList.remove('selected'); activeCard = null; }
-
-      activeCard = cardEl;
-      cardEl.classList.add('selected');
-
-      const d = WRITEUP_DATA[machineId];
-      if (!d) return;
-
-      // Build timeline nodes
-      const nodesHtml = (d.nodes || []).map(n => `
-        <div class="timeline-node">
-          <div class="timeline-time">${n.phase}</div>
-          <div class="timeline-title">${n.title}</div>
-          <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.55;margin-bottom:${n.code?'0':'0'}">${n.body}</p>
-          ${n.code ? `<div class="terminal-window" style="color:var(--neon-cyan);">${n.code}</div>` : ''}
-        </div>
-      `).join('');
-
-      // Build tasks section if present
-      const tasksHtml = (d.tasks && d.tasks.length) ? `
-        <div class="timeline-node">
-          <div class="timeline-title" style="margin-bottom:16px;">Component Interactive Tasks</div>
-          ${d.tasks.map(t => `
-            <div class="panel-card" style="margin-bottom:10px;background:rgba(255,255,255,0.01);">
-              <p style="font-size:0.9rem;color:var(--text-main);margin-bottom:8px;">${t.q}</p>
-              <button class="tab-btn" style="padding:4px 12px;font-size:0.75rem;" onclick="toggleTaskAnswer(this,'${t.a}')">Show Answer</button>
+        // 1. Toggle off if same card clicked
+        if (activeCard === cardEl) { closeDrawer(); return; }
+    
+        // 2. Clear existing
+        if (activeDrawer) { activeDrawer.remove(); activeDrawer = null; }
+        if (activeCard) { activeCard.classList.remove('selected'); activeCard = null; }
+    
+        // 3. Set new active
+        activeCard = cardEl;
+        cardEl.classList.add('selected');
+    
+        const d = WRITEUP_DATA[machineId];
+        if (!d) return;
+    
+        // 4. Build timeline nodes
+        const nodesHtml = (d.nodes || []).map(n => `
+            <div class="timeline-node">
+                <div class="timeline-time">${n.phase}</div>
+                <div class="timeline-title">${n.title}</div>
+                <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.55;margin-bottom:0">${n.body}</p>
+                ${n.code ? `<div class="terminal-window" style="color:var(--neon-cyan);">${n.code}</div>` : ''}
             </div>
-          `).join('')}
-        </div>
-      ` : '';
-
-      // Build flag section if present
-      const flagHtml = d.flag ? `
-        <div class="timeline-node">
-          <div class="timeline-title">Root Operational Flag Vault</div>
-          <div class="panel-card" style="background:rgba(168,85,247,0.03);display:flex;justify-content:space-between;align-items:center;">
-            <div style="font-family:var(--font-mono);font-size:0.9rem;">
-              <span class="flag-blurred-mask" style="filter:blur(4px);opacity:0.2;">${d.flag}</span>
+        `).join('');
+    
+        const flagHtml = d.flag ? `
+            <div class="timeline-node">
+                <div class="timeline-title">Root Operational Flag Vault</div>
+                <div class="panel-card" style="background:rgba(168,85,247,0.03);padding:15px;display:flex;justify-content:space-between;align-items:center;border-radius:8px;border:1px solid rgba(168,85,247,0.1);">
+                    <div style="font-family:var(--font-mono);font-size:0.9rem;">
+                        <span class="flag-blurred-mask" style="filter:blur(4px);opacity:0.2;">${d.flag}</span>
+                    </div>
+                    <button class="tab-btn active" style="padding:6px 12px;font-size:0.75rem;cursor:pointer;" onclick="revealTargetFlag(this,'${d.flag}')">Reveal Flag</button>
+                </div>
             </div>
-            <button class="tab-btn active" style="padding:6px 12px;font-size:0.75rem;" onclick="revealTargetFlag(this,'${d.flag}')">Reveal Flag</button>
-          </div>
-        </div>
-      ` : '';
-
-      // Full writeup link
-      const fullLink = d.hasFullWriteup
-        ? `<a href="target-logs.html?machine=${machineId}" style="display:inline-flex;align-items:center;gap:8px;margin-top:20px;font-family:var(--font-mono);font-size:0.8rem;color:var(--neon-purple);border:var(--border-purple);padding:8px 16px;border-radius:8px;background:rgba(168,85,247,0.06);text-decoration:none;transition:all 0.15s;">OPEN FULL REPORT ↗</a>`
-        : `<div style="font-family:var(--font-mono);font-size:0.78rem;color:var(--text-dark);margin-top:16px;">// Full writeup coming soon</div>`;
-
-      const drawer = document.createElement('div');
-      drawer.className = 'wu-drawer open';
-      drawer.innerHTML = `
-        <button class="drawer-close" onclick="closeDrawer()">✕ CLOSE</button>
-
-        <div class="page-header" style="padding-top:0; margin-bottom:24px;">
-          <div class="sys-badge" style="color:${d.diffColor}; border-color:${d.diffColor}33;">${d.badge}</div>
-          <h2 style="font-size:2rem;font-weight:700;margin-top:8px;">${d.title}</h2>
-        </div>
-
-        <div class="about-layout" style="margin-top:0;">
-          <div class="about-sidebar">
-            <div class="terminal-string">// TELEMETRY</div>
-            <p style="color:var(--text-muted);font-size:0.88rem;line-height:2;font-family:var(--font-mono);">
-              TIME &nbsp;&nbsp;// ${d.time}<br>
-              OS &nbsp;&nbsp;&nbsp;&nbsp;// ${d.os}<br>
-              PORT &nbsp;&nbsp;// ${d.port}
-            </p>
-            <div class="terminal-string" style="margin-top:16px;">// VECTOR</div>
-            <p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--neon-purple);line-height:1.6;">${d.vector}</p>
-            ${fullLink}
-          </div>
-
-          <div class="timeline">
-            ${nodesHtml}
-            ${tasksHtml}
-            ${flagHtml}
-          </div>
-        </div>
-      `;
-
-      cardEl.insertAdjacentElement('afterend', drawer);
-      activeDrawer = drawer;
-      setTimeout(() => drawer.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
+        ` : '';
+    
+        const fullLink = d.hasFullWriteup
+            ? `<a href="target-logs.html?machine=${machineId}" style="display:inline-flex;align-items:center;gap:8px;margin-top:20px;font-family:var(--font-mono);font-size:0.8rem;color:var(--neon-purple);border:var(--border-purple);padding:8px 16px;border-radius:8px;background:rgba(168,85,247,0.06);text-decoration:none;">OPEN FULL REPORT ↗</a>`
+            : `<div style="font-family:var(--font-mono);font-size:0.78rem;color:var(--text-dark);margin-top:16px;">// Full writeup coming soon</div>`;
+    
+        // 5. Create Drawer
+        const drawer = document.createElement('div');
+        drawer.className = 'wu-drawer open';
+        drawer.innerHTML = `
+            <button class="drawer-close" onclick="closeDrawer()">✕ CLOSE</button>
+            <div class="page-header" style="padding-top:0; margin-bottom:24px;">
+                <div class="sys-badge" style="color:${d.diffColor}; border-color:${d.diffColor}33;">${d.badge}</div>
+                <h2 style="font-size:2rem;font-weight:700;margin-top:8px;">${d.title}</h2>
+            </div>
+            <div class="about-layout">
+                <div class="about-sidebar">
+                    <div class="terminal-string">// TELEMETRY</div>
+                    <p style="color:var(--text-muted);font-size:0.88rem;line-height:2;font-family:var(--font-mono);">
+                        TIME // ${d.time}<br>OS // ${d.os}<br>PORT // ${d.port}
+                    </p>
+                    <div class="terminal-string" style="margin-top:16px;">// VECTOR</div>
+                    <p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--neon-purple);line-height:1.6;">${d.vector}</p>
+                    ${fullLink}
+                </div>
+                <div class="timeline">
+                    ${nodesHtml}
+                    ${flagHtml}
+                </div>
+            </div>
+        `;
+    
+        // FIX: Append to the Grid container, not the card itself, to ensure full width
+        const grid = document.getElementById('wu-grid');
+        grid.insertAdjacentElement('afterend', drawer);
+        
+        activeDrawer = drawer;
+        setTimeout(() => drawer.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
     }
 
     function closeDrawer() {
