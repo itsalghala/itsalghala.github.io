@@ -127,6 +127,26 @@
       }
   };
 
+  // This is the ONLY routing logic you need in main.js
+document.addEventListener("DOMContentLoaded", function() {
+    const params = new URLSearchParams(window.location.search);
+    const machine = params.get('machine');
+    
+    // Hide all profile nodes initially
+    document.querySelectorAll('.machine-profile-node').forEach(node => {
+        node.style.display = 'none';
+    });
+
+    const targetDiv = document.getElementById('target-' + machine);
+    const fallback = document.getElementById('fallback-deck');
+    
+    if (machine && targetDiv) {
+        targetDiv.style.display = 'block';
+    } else {
+        if(fallback) fallback.style.display = 'block';
+    }
+});
+
 })(jQuery);
   // --- Initialization ---
   $(document).ready(function() {
