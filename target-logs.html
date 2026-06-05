@@ -1,117 +1,39 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cybersecurity Blog // Operational Logs</title>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>ExploitMinder // Operational Logs</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  
   <style>
-    /* Add this to your existing CSS styles */
-nav {
-  position: sticky;
-  top: 0;
-  z-index: 9999 !important;
-}
-
-.dropdown-node {
-  position: relative;
-  overflow: visible;
-}
-
-.dropdown-ledger {
-  z-index: 10000 !important;
-}
-
-footer {
-  padding: 40px 0;
-  text-align: center;
-  color: #4b5563;
-  font-family: 'Share Tech Mono', monospace;
-  font-size: 0.8rem;
-  border-top: 1px solid rgba(168, 85, 247, 0.2);
-}
-
-footer a {
-  display: none !important;
-}
+    /* Copy the same :root tokens from your index.html here */
+    /* ... (Paste your index.html :root variables here) ... */
     
-    :root {
-      --bg-body: #0f172a;
-      --bg-card: #1e293b;
-      --text-main: #f1f5f9;
-      --text-muted: #94a3b8;
-      --accent: #38bdf8;
-    }
-
-    body {
-      background-color: var(--bg-body);
-      color: var(--text-main);
-      font-family: 'Space Grotesk', sans-serif;
-      line-height: 1.6;
-      padding: 20px;
-    }
-
-    .container { max-width: 900px; margin: 0 auto; }
-    
-    .log-card {
-      background: var(--bg-card);
-      border-radius: 8px;
-      padding: 24px;
-      margin-bottom: 20px;
-    }
-
-    h2 { color: var(--accent); }
-
-    .terminal-output {
-      background: #000;
-      color: #33ff33;
-      padding: 15px;
-      font-family: 'Share Tech Mono', monospace;
-      border-radius: 5px;
-      overflow-x: auto;
-      font-size: 0.9rem;
-    }
+    body { background-color: #03010a; color: #f3f4f6; font-family: 'Space Grotesk', sans-serif; }
+    .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+    .log-card { background: #110b24; border: 1px solid rgba(168, 85, 247, 0.2); border-radius: 14px; padding: 40px; }
+    h2 { color: #a855f7; margin-bottom: 20px; }
+    .terminal-output { background: #03010a; color: #10b981; padding: 20px; font-family: 'Share Tech Mono', monospace; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Operational Logs</h1>
-    
-    <div id="target-reactor" class="log-card">
-      <h2>HTB: Reactor Writeup</h2>
-      <p>This writeup details the methodology used to compromise the Reactor machine, focusing on identifying vulnerabilities in modern web frameworks.</p>
-      
-      <h3>1. Reconnaissance</h3>
-      <p>Initial scan using Nmap to identify open services:</p>
-      <div class="terminal-output">
-        # nmap -sC -sV -p- 10.129.10.200<br>
-        22/tcp open ssh<br>
-        3000/tcp open http (Next.js Application)
-      </div>
-
-      <h3>2. Vulnerability Research</h3>
-      <p>Analysis of JavaScript files revealed the use of Next.js 15.0.3 and React 19.0.0, which are susceptible to prototype pollution leading to RCE.</p>
-
-      <h3>3. Exploitation Path</h3>
-      <p>Using a public Proof of Concept, I was able to verify the vulnerability and obtain a foothold as the <code>node</code> user.</p>
-      
-      <h3>4. Privilege Escalation</h3>
-      <p>After lateral movement to the <code>engineer</code> account, I discovered a Node.js process running with <code>--inspect</code> enabled, allowing root access via the Chrome DevTools Protocol.</p>
+    <a href="index.html" style="color: #9ca3af; text-decoration: none;">← Return to Main Matrix</a>
+    <div id="target-logs" class="log-card" style="margin-top:20px;">
+      <h2 id="log-title">Loading Intelligence...</h2>
+      <div id="log-content"></div>
     </div>
   </div>
 
   <script>
-    // Simple router logic to show the correct log entry based on URL
+    const logs = {
+      'reactor': { title: 'Reactor: Prototype Pollution', body: '...' },
+      'appointment': { title: 'Appointment: SQLi Bypass', body: '...' }
+    };
     const params = new URLSearchParams(window.location.search);
-    const machine = params.get('machine');
-    
-    if (machine !== 'reactor') {
-       // Logic to hide or redirect if not requested
+    const m = params.get('machine');
+    if(logs[m]) {
+      document.getElementById('log-title').innerText = logs[m].title;
     }
   </script>
 </body>
