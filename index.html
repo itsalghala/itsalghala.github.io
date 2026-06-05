@@ -3,322 +3,700 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>0xRoot // Operational Log</title>
+  <title>0xRoot // Security Research & Personal Logs</title>
+  
+  <!-- Premium Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  
+
   <style>
-    html { scroll-behavior: smooth; }
-
-    /* Tactical Center-Page Layout Constraint */
-    .writeup-center-engine {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 16px;
+    /* --- Premium UI Core Tokens --- */
+    :root {
+      --bg-void: #03010a;
+      --bg-surface: #090514;
+      --bg-card: #110b24;
+      
+      --neon-purple: #a855f7;
+      --neon-purple-glow: rgba(168, 85, 247, 0.6);
+      --neon-beam-core: #e9d5ff;
+      --neon-cyan: #22d3ee;
+      --neon-green: #10b981;
+      
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --text-dark: #4b5563;
+      
+      --border-purple: 1px solid rgba(168, 85, 247, 0.2);
+      --border-glow: 1px solid rgba(168, 85, 247, 0.4);
+      
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-mono: 'Share Tech Mono', monospace;
     }
 
-    /* Challenge Top Banner Frame */
-    .target-card-banner {
-      width: 100%;
-      height: 240px;
-      border-radius: 14px;
-      border: var(--border-purple);
-      background: var(--bg-surface);
-      overflow: hidden;
-      position: relative;
-      margin-bottom: 24px;
-      box-shadow: 0 0 30px rgba(168, 85, 247, 0.05);
-    }
-    .target-card-banner img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.6;
-      transition: opacity 0.3s ease;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    /* 4-Column Intelligence Meta Grid */
-    .intel-meta-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-bottom: 32px;
-    }
-    .intel-node {
-      background: rgba(17, 11, 36, 0.4);
-      border: var(--border-purple);
-      border-radius: 8px;
-      padding: 14px;
-      text-align: center;
-      font-family: var(--font-mono);
-    }
-    .intel-node label {
-      display: block;
-      font-size: 0.7rem;
-      color: var(--text-dark);
-      text-transform: uppercase;
-      margin-bottom: 6px;
-      letter-spacing: 1px;
-    }
-    .intel-node span {
-      font-size: 1rem;
-      font-weight: 700;
+    html, body {
+      background-color: var(--bg-void);
       color: var(--text-main);
+      font-family: var(--font-display);
+      overflow-x: hidden;
+      min-height: 100vh;
     }
 
-    /* Phase Jump Anchor Navigation Links */
-    .phase-jump-deck {
-      display: flex;
-      justify-content: space-between;
-      background: var(--bg-surface);
-      border: var(--border-purple);
-      border-radius: 8px;
-      padding: 8px;
-      margin-bottom: 40px;
-    }
-    .jump-link {
-      flex: 1;
-      text-align: center;
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      text-decoration: none;
-      padding: 8px 0;
-      transition: all 0.2s ease;
-      border-radius: 4px;
-    }
-    .jump-link:hover {
-      background: rgba(168, 85, 247, 0.1);
-      color: var(--neon-cyan);
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
     }
 
-    /* Isolated Scope Adjustments for Central Timeline */
-    .timeline {
+    /* --- The Master Grid & Beam Spotlight --- */
+    .hero-matrix {
       position: relative;
-      padding-left: 32px;
-      border-left: 2px solid rgba(168, 85, 247, 0.15);
+      padding: 120px 0 60px 0;
+      text-align: center;
+      background-image: 
+        linear-gradient(rgba(168, 85, 247, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      background-position: center top;
     }
-    .timeline-node { position: relative; margin-bottom: 48px; }
-    .timeline-node::before {
+
+    /* Cosmic Purple Glow Event Horizon */
+    .hero-matrix::after {
       content: "";
       position: absolute;
-      left: -37px;
-      top: 4px;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--bg-void);
-      border: 2px solid var(--neon-purple);
-      box-shadow: 0 0 10px var(--neon-purple);
+      bottom: -150px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140%;
+      height: 400px;
+      background: radial-gradient(ellipse at center, rgba(168, 85, 247, 0.22) 0%, rgba(168, 85, 247, 0.05) 45%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
     }
-    .timeline-time {
+
+    /* --- Cosmic Light Beam Component --- */
+    .neon-beam-source {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 500px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--neon-purple), var(--neon-beam-core), var(--neon-purple), transparent);
+      box-shadow: 0 0 30px 10px var(--neon-purple-glow);
+      z-index: 5;
+    }
+
+    /* --- Navigation --- */
+    nav {
+      background: rgba(3, 1, 10, 0.75);
+      backdrop-filter: blur(20px);
+      border-bottom: var(--border-purple);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 72px;
+    }
+
+    .logo {
+      font-family: var(--font-mono);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span { color: var(--neon-purple); }
+
+    .nav-menu ul {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-menu a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-menu a:hover, .nav-menu li.active a {
+      color: var(--neon-purple);
+    }
+
+    /* --- Typography & Branding Elements --- */
+    .sys-badge {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--neon-purple);
+      background: rgba(168, 85, 247, 0.08);
+      border: var(--border-purple);
+      padding: 6px 16px;
+      border-radius: 100px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .sys-badge::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: var(--neon-purple);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--neon-purple);
+    }
+
+    .philosophy-banner {
+      max-width: 680px;
+      margin: 0 auto 20px auto;
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      color: var(--neon-cyan);
+      letter-spacing: 0.5px;
+      line-height: 1.4;
+      text-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
+    }
+
+    h1 {
+      font-size: 4.5rem;
+      font-weight: 700;
+      letter-spacing: -2px;
+      margin-bottom: 16px;
+      line-height: 1.1;
+    }
+
+    h1 span {
+      background: linear-gradient(to bottom, #ffffff 40%, var(--neon-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-desc {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 620px;
+      margin: 0 auto 48px auto;
+      line-height: 1.6;
+    }
+
+    /* --- Live HTB Telemetry Card --- */
+    .htb-panel {
+      position: relative;
+      z-index: 10;
+      max-width: 750px;
+      margin: 0 auto;
+      background: rgba(17, 11, 36, 0.6);
+      border: var(--border-purple);
+      border-radius: 16px;
+      padding: 28px;
+      backdrop-filter: blur(12px);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 32px;
+      text-align: left;
+      align-items: center;
+    }
+
+    .htb-panel:hover {
+      border: var(--border-glow);
+      box-shadow: 0 0 40px rgba(168, 85, 247, 0.15);
+    }
+
+    .htb-avatar {
+      background: var(--bg-void);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 20px 24px;
+      border-radius: 10px;
+      font-family: var(--font-mono);
+      text-align: center;
+    }
+
+    .htb-avatar .brand {
+      color: var(--neon-green);
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .htb-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .stat-unit {
+      background: rgba(3, 1, 10, 0.4);
+      border: var(--border-purple);
+      padding: 12px 16px;
+      border-radius: 8px;
+    }
+
+    .stat-unit label {
       font-family: var(--font-mono);
       font-size: 0.75rem;
-      color: var(--neon-purple);
-      letter-spacing: 1.5px;
+      color: var(--text-dark);
+      display: block;
       margin-bottom: 4px;
     }
 
-    @media(max-width: 768px) {
-      .intel-meta-grid { grid-template-columns: repeat(2, 1fr); }
-      .phase-jump-deck { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; }
+    .stat-unit span {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    /* --- Bento Matrix Grid System --- */
+    .main-matrix {
+      padding: 100px 0;
+      position: relative;
+      z-index: 20;
+    }
+
+    .matrix-title {
+      font-size: 1.75rem;
+      margin-bottom: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .bento-box {
+      background: var(--bg-surface);
+      border: var(--border-purple);
+      border-radius: 14px;
+      padding: 28px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .bento-box:hover {
+      border-color: var(--neon-purple);
+      transform: translateY(-2px);
+    }
+
+    .bento-box.wide {
+      grid-column: span 2;
+    }
+
+    .box-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(168, 85, 247, 0.1);
+      color: var(--neon-purple);
+    }
+
+    .box-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .box-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    .box-footer {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-dark);
+      border-top: 1px solid rgba(255,255,255,0.04);
+      padding-top: 14px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* --- Offensive Code Shell Poc Framework Subsystem --- */
+    .poc-container {
+      background: var(--bg-surface);
+      border: var(--border-purple);
+      border-radius: 14px;
+      padding: 24px;
+      margin-top: 40px;
+    }
+
+    .poc-nav {
+      display: flex;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+
+    .poc-btn {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+
+    .poc-btn:hover, .poc-btn.active {
+      background: rgba(168, 85, 247, 0.1);
+      border-color: var(--neon-purple);
+      color: #fff;
+    }
+
+    .poc-content {
+      display: none;
+    }
+
+    .poc-content.active {
+      display: block;
+    }
+
+    .code-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 24px;
+    }
+
+    .terminal-window {
+      background: #03010a;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    /* --- Bootstrap Template Transition Layers --- */
+    section {
+      display: none;
+    }
+
+    section.section-show {
+      display: block;
+      animation: fadeIn 0.4s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-header {
+      padding: 60px 0;
+      border-bottom: var(--border-purple);
+      margin-bottom: 40px;
+    }
+
+    .about-layout {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 40px;
+      margin-top: 40px;
+    }
+
+    .about-sidebar {
+      background: var(--bg-surface);
+      border: var(--border-purple);
+      padding: 24px;
+      border-radius: 12px;
+      height: fit-content;
+    }
+
+    .terminal-string {
+      font-family: var(--font-mono);
+      color: var(--neon-cyan);
+      margin-bottom: 12px;
+    }
+
+    /* --- Footer --- */
+    footer {
+      border-top: var(--border-purple);
+      padding: 40px 0;
+      color: var(--text-dark);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 60px;
+    }
+
+    @media (max-width: 900px) {
+      .bento-grid, .code-grid { grid-template-columns: repeat(2, 1fr); }
+      .bento-box.wide { grid-column: span 1; }
+      .htb-panel { grid-template-columns: 1fr; }
+      .about-layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .bento-grid, .code-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 3rem; }
     }
   </style>
 </head>
 <body>
 
-  <nav>
+  <!-- App Header & Navigation Layer -->
+  <header id="header-nav">
     <div class="container nav-wrapper">
-      <a href="main.html" class="logo">0xROOT<span>//</span></a>
-      <div class="nav-links">
-        <a href="main.html">Home</a>
-        <a href="index.html" class="active">Target Writeups</a>
-      </div>
+      <a href="#header" class="logo">0xROOT<span>//</span></a>
+      <nav class="nav-menu">
+        <ul>
+          <li class="active"><a href="#header">Home</a></li>
+          <li><a href="#writeups">Writeups</a></li>
+          <li><a href="#about">About</a></li>
+        </ul>
+      </nav>
     </div>
-  </nav>
+  </header>
 
-  <div class="writeup-center-engine" style="padding-top: 40px;">
-    
-    <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-family: var(--font-mono); font-size: 0.9rem; display: inline-block; margin-bottom: 30px;">&larr; Back to Operational Ledger</a>
-
-    <!-- THE DYNAMIC NODE (Populated entirely by JavaScript) -->
-    <div id="dynamic-target-engine" style="display: none;">
-      
-      <div class="target-card-banner">
-        <img id="m-banner" src="" alt="Target Card Graphic Layer">
-        <div style="position:absolute; bottom:12px; left:16px; font-family:var(--font-mono); font-size:0.75rem; background:rgba(3,1,10,0.8); padding:4px 10px; border-radius:4px; border:1px solid rgba(255,255,255,0.05);">CARD_ASSET_NODE // ATTACHED</div>
-      </div>
-
-      <div class="page-header" style="padding-top:0; border-bottom:none; margin-bottom:20px; text-align:center;">
-        <div id="m-badge" class="sys-badge">OVERVIEW</div>
-        <h2 id="m-title" style="font-size: 2.8rem; font-weight: 700; margin-top: 10px; letter-spacing: -1px;">Loading...</h2>
-      </div>
-
-      <div class="intel-meta-grid">
-        <div class="intel-node"><label>Severity Level</label><span id="m-level">--</span></div>
-        <div class="intel-node"><label>OS Architecture</label><span id="m-os">--</span></div>
-        <div class="intel-node"><label>Primary Vector</label><span id="m-vector" style="color: var(--neon-purple);">--</span></div>
-        <div class="intel-node"><label>Target Metrics</label><span id="m-ip">--</span></div>
-      </div>
-
-      <div class="phase-jump-deck">
-        <a href="#recon" class="jump-link">[ 01 // RECON ]</a>
-        <a href="#enum" class="jump-link">[ 02 // ENUM ]</a>
-        <a href="#exploit" class="jump-link">[ 03 // EXPLOIT ]</a>
-        <a href="#privesc" class="jump-link">[ 04 // PRIV_ESC ]</a>
-      </div>
-
-      <div class="timeline" id="m-timeline-container">
-        <!-- Machine Specific Phases get injected right here -->
-      </div>
-    </div>
-
-    <!-- Exception Catch Fallback Module -->
-    <div id="fallback-deck" style="display: none; text-align: center; padding: 80px 0;">
-      <h3 style="font-family: var(--font-mono); color: var(--neon-purple);">[!] EXCEPTION: RECORD_NOT_FOUND</h3>
-      <p style="color: var(--text-muted); margin-top: 10px;">The targeted operation payload key is unrecognized by this platform instance architecture.</p>
-    </div>
-
-  </div>
-
-  <!-- THE DYNAMIC DATABASE ENGINE CODE -->
-  <script>
-    // 1. THIS IS YOUR DATABASE. Just add a new object here whenever you hack a new machine!
-    const machineDatabase = {
-      "appointment": {
-        title: "HTB: Appointment",
-        image: "assets/appointment-banner.jpg",
-        level: "Very Easy",
-        levelColor: "var(--neon-green)",
-        os: "Linux",
-        vector: "SQL Injection",
-        ip: "10.129.17.133",
-        timeline: [
-          {
-            id: "recon",
-            time: "PHASE_01 // RECONNAISSANCE",
-            title: "Nmap Target Port Verification",
-            content: `<p style="color: var(--text-muted); margin-bottom: 15px;">Executing an infrastructure scan profiles open listener daemons on target hosts:</p>
-                      <div class="panel-card console-box" style="background: var(--bg-void);">
-                        <div class="console-line"># nmap 10.129.17.133</div>
-                        <div class="console-line">PORT   STATE SERVICE</div>
-                        <div class="console-line"><span style="color:var(--neon-green);">80/tcp open  http</span></div>
-                      </div>`
-          },
-          {
-            id: "enum",
-            time: "PHASE_02 // ENUMERATION",
-            title: "Gobuster Path Discovery Sequence",
-            content: `<p style="color: var(--text-muted); margin-bottom: 15px;">Enumerating root directory targets maps active handling entry points:</p>
-                      <div class="panel-card console-box" style="background: var(--bg-void);">
-                        <div class="console-line"># gobuster dir -u http://10.129.17.133:80 -w /usr/share/wordlists/...</div>
-                        <div class="console-line">/images               (Status: 301) [Size: 315]</div>
-                        <div class="console-line">/css                  (Status: 301) [Size: 312]</div>
-                      </div>`
-          },
-          {
-            id: "exploit",
-            time: "PHASE_03 // EXPLOITATION",
-            title: "Comment-Based Authentication Bypass",
-            content: `<p style="color: var(--text-muted); margin-bottom: 12px; font-size: 0.95rem;">The application login screen fails to sanitize database input fields.</p>
-                      <div class="panel-card console-box" style="background: var(--bg-void);">
-                        <div class="console-line"><span style="color:var(--neon-purple);">Username:</span> admin'#</div>
-                        <div class="console-line" style="color: var(--neon-green);">[✓] Verification bypassed. SQL evaluated true.</div>
-                      </div>`
-          },
-          {
-            id: "privesc",
-            time: "PHASE_04 // DATA RECOVERY",
-            title: "Root Operational Flag Vault",
-            content: `<div class="panel-card" style="background: rgba(168, 85, 247, 0.03); border: var(--border-purple); padding: 16px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-family: var(--font-mono); filter: blur(4px); opacity: 0.3;">e3d0796d002a446c0e622226f42e9672</span>
-                        <button class="tab-btn active" style="padding: 6px 12px; font-size: 0.75rem;">HTB{sql_1nj_4uth_byp4ss}</button>
-                      </div>`
-          }
-        ]
-      },
-      "reactor": {
-        title: "HTB: Reactor",
-        image: "assets/reactor-banner.jpg",
-        level: "Hard",
-        levelColor: "var(--neon-amber)",
-        os: "Linux",
-        vector: "Prototype Pollution",
-        ip: "10.129.10.200",
-        timeline: [
-          {
-            id: "recon",
-            time: "PHASE_01 // RECONNAISSANCE",
-            title: "Infrastructure Port Sweep Scanning",
-            content: `<div class="panel-card console-box" style="background: var(--bg-void);"><div class="console-line"># nmap -sC -sV -p3000 10.129.10.200</div></div>`
-          },
-          {
-            id: "enum",
-            time: "PHASE_02 // ENUMERATION",
-            title: "Dynamic Object Field Parsing",
-            content: `<p style="color: var(--text-muted);">Inspecting underlying source tracking files mapped dynamic parameters exposed within Next.js runtime pipelines.</p>`
-          },
-          {
-            id: "exploit",
-            time: "PHASE_03 // EXPLOITATION",
-            title: "Initial Foothold // React2Shell",
-            content: `<div class="panel-card console-box" style="background: var(--bg-void);"><div class="console-line"># python3 react2shell-poc.py</div></div>`
-          },
-          {
-            id: "privesc",
-            time: "PHASE_04 // PRIVILEGE ESCALATION",
-            title: "Root Operational Flag Extraction",
-            content: `<p style="color: var(--text-muted);">Escalating via misconfigured internal pipeline cron instances.</p>`
-          }
-        ]
-      }
-    };
-
-    // 2. PARSE THE URL & RENDER IN REAL-TIME
-    window.addEventListener('DOMContentLoaded', () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const machineKey = urlParams.get('machine');
-
-      const targetData = machineDatabase[machineKey];
-
-      if (targetData) {
-        // Map baseline configuration metadata values
-        document.getElementById('m-title').innerText = targetData.title;
-        document.getElementById('m-banner').src = targetData.image;
-        document.getElementById('m-level').innerText = targetData.level;
-        document.getElementById('m-level').style.color = targetData.levelColor;
-        document.getElementById('m-os').innerText = targetData.os;
-        document.getElementById('m-vector').innerText = targetData.vector;
-        document.getElementById('m-ip').innerText = targetData.ip;
-
-        // Customise context tag coloring based on difficulty rules
-        document.getElementById('m-badge').style.color = targetData.levelColor;
-        document.getElementById('m-badge').style.borderColor = targetData.levelColor + "33"; 
-
-        // Generate full systemic logs list block code
-        const timelineContainer = document.getElementById('m-timeline-container');
-        timelineContainer.innerHTML = ''; // clear initial fallback placeholder
-
-        targetData.timeline.forEach(phase => {
-          const nodeHTML = `
-            <div id="${phase.id}" class="timeline-node">
-              <div class="timeline-time">${phase.time}</div>
-              <div class="timeline-title">${phase.title}</div>
-              ${phase.content}
+  <!-- SECTION 1: HOME VIEW -->
+  <section id="header" class="section-show">
+    <div class="hero-matrix">
+      <div class="container">
+        <div class="philosophy-banner">
+          "To a mind that selects, notices, and observes, there is no such thing as a coincidence. Knowledge is power, but the space between lines is where the truth hides."
+        </div>
+        <div class="sys-badge">Operator Instance Live</div>
+        <h1>Hi, I'm <span>0xRoot</span></h1>
+        <p class="hero-desc">Independent security researcher documenting binary exploits, reverse engineering challenges, and vulnerability testing. This platform functions as my personal operational tracking log.</p>
+                
+        <!-- Premium HTB Live Telemetry Box Component -->
+        <div class="htb-panel">
+          <div class="htb-avatar">
+            <div class="brand">HTB</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">RANKING_NODE</div>
+          </div>
+          <div>
+            <div style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--neon-purple); margin-bottom: 8px;">LIVE CONNECTION ESTABLISHED</div>
+            <div class="htb-stats">
+              <div class="stat-unit"><label>Identity</label><span>0xRoot</span></div>
+              <div class="stat-unit"><label>Rank</label><span style="color:#a855f7;">Omniscient</span></div>
+              <div class="stat-unit"><label>System Owned</label><span>68</span></div>
             </div>
-          `;
-          timelineContainer.innerHTML += nodeHTML;
-        });
+          </div>
+        </div>
+      </div>
+      <!-- Light Beam Aura Element -->
+      <div class="neon-beam-source"></div>
+    </div>
 
-        // Show engine content block
-        document.getElementById('dynamic-target-engine').style.display = 'block';
-      } else {
-        // Display invalid key routing breakdown deck layout block
-        document.getElementById('fallback-deck').style.display = 'block';
-      }
-    });
+    <main class="main-matrix">
+      <div class="container">
+        <h2 class="matrix-title">Recent Offensive Intelligence Ledger</h2>
+        <div class="bento-grid">
+          <!-- External Target Links shifting away dynamically using the query parameters -->
+          <a href="target-logs.html?machine=reactor" class="bento-box wide">
+            <div>
+              <div class="box-meta"><span class="tag">Weaponization Log</span><span style="color:var(--neon-green); font-size:0.85rem;">■ Easy</span></div>
+              <div class="box-title">Reactor: Prototype Pollution Vector</div>
+              <div class="box-desc">Exploiting untrusted key manipulation fields within Next.js runtime architectures to trigger underlying microservice code compilation injection blocks.</div>
+            </div>
+            <div class="box-footer"><span>OS // LINUX</span><span>EXPL_LOGS // EXECUTE ↗</span></div>
+          </a>
+                    
+          <a href="target-logs.html?machine=appointment" class="bento-box">
+            <div>
+              <div class="box-meta"><span class="tag">SQLi Bypass</span><span style="color:var(--neon-green); font-size:0.85rem;">■ Easy</span></div>
+              <div class="box-title">Appointment Injection Bypass</div>
+              <div class="box-desc">Abusing raw database handling query logic fields via basic SQL termination syntax strings.</div>
+            </div>
+            <div class="box-footer"><span>OS // LINUX</span><span>EXPL_LOGS // EXECUTE ↗</span></div>
+          </a>
+        </div>
+
+        <!-- Offensive Weaponization Proof-of-Concept Dashboard Subsystem -->
+        <div class="poc-container">
+          <div class="terminal-string" style="color: var(--neon-purple)">// EXPLOIT_RELIABILITY_SANDBOX_INDEX</div>
+          <div class="poc-nav">
+            <button id="btn-poc-kernel" class="poc-btn active" onclick="openPocTab('poc-kernel')">Kernel Payloads</button>
+            <button id="btn-poc-web" class="poc-btn" onclick="openPocTab('poc-web')">Web RCE Chains</button>
+            <button id="btn-poc-ad" class="poc-btn" onclick="openPocTab('poc-ad')">Active Directory Vectors</button>
+          </div>
+
+          <!-- Kernel Content -->
+          <div id="poc-kernel" class="poc-content active">
+            <div class="code-grid">
+              <div style="font-family: var(--font-mono); border-right: 1px solid rgba(255,255,255,0.05); padding-right:15px;">
+                <div style="color:#fff; margin-bottom:8px;">Target Context:</div>
+                <div style="color:var(--neon-purple); font-weight:bold; margin-bottom:12px;">Linux PrivEsc LPE</div>
+                <div style="color:var(--text-dark); font-size:0.8rem;">Modifying cred structures in memory space via read/write primitives.</div>
+              </div>
+              <div class="terminal-window" style="color: var(--neon-cyan);">// Elevate permissions to root
+struct cred *new_creds = prepare_creds();
+if (new_creds) {
+    new_creds->uid.val = 0;
+    new_creds->gid.val = 0;
+    commit_creds(new_creds);
+}</div>
+            </div>
+          </div>
+
+          <!-- Web RCE Content -->
+          <div id="poc-web" class="poc-content">
+            <div class="code-grid">
+              <div style="font-family: var(--font-mono); border-right: 1px solid rgba(255,255,255,0.05); padding-right:15px;">
+                <div style="color:#fff; margin-bottom:8px;">Target Context:</div>
+                <div style="color:var(--neon-cyan); font-weight:bold; margin-bottom:12px;">NodeJS Pollution to RCE</div>
+                <div style="color:var(--text-dark); font-size:0.8rem;">Overriding object prototypes to hijack child processes executing shell commands.</div>
+              </div>
+              <div class="terminal-window" style="color: var(--neon-green);">// Poison child_process env strings 
+{
+   "__proto__": {
+     "env": { "NODE_OPTIONS": "--require /tmp/malicious.js" },
+     "shell": "/bin/sh"
+   }
+ }</div>
+            </div>
+          </div>
+
+          <!-- AD Vector Content -->
+          <div id="poc-ad" class="poc-content">
+            <div class="code-grid">
+              <div style="font-family: var(--font-mono); border-right: 1px solid rgba(255,255,255,0.05); padding-right:15px;">
+                <div style="color:#fff; margin-bottom:8px;">Target Context:</div>
+                <div style="color:var(--neon-green); font-weight:bold; margin-bottom:12px;">Kerberoasting Extraction</div>
+                <div style="color:var(--text-dark); font-size:0.8rem;">Requesting Service Tickets for accounts with SPNs to crack offline.</div>
+              </div>
+              <div class="terminal-window" style="color: #fff;"># Query Active Directory for TGS tickets
+Get-DomainUser -SPN | Get-DomainSPNTicket -InvokeKerberoast | Select-Object -ExpandProperty Hash | Out-File -FilePath hashes.txt</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </section>
+
+  <!-- SECTION 2: ALL WRITEUPS LEDGER -->
+  <section id="writeups">
+    <div class="container">
+      <div class="page-header">
+        <div class="sys-badge">Ledger Database</div>
+        <h2 style="font-size: 2.5rem; font-weight: 700;">All Target Profiles</h2>
+      </div>
+            
+      <div class="bento-grid" style="margin-bottom: 80px;">
+        <div class="bento-box">
+          <div>
+            <div class="box-meta"><span class="tag">Machine</span><span style="color:var(--neon-cyan); font-size:0.85rem;">■ Medium</span></div>
+            <div class="box-title">Analytics Engine Leak</div>
+            <div class="box-desc">Exposing pre-auth environment configurations via unvetted query parsing mechanics.</div>
+          </div>
+          <div class="box-footer"><span>OS // LINUX</span><span>BYPASS // RCE</span></div>
+        </div>
+
+        <div class="bento-box">
+          <div>
+            <div class="box-meta"><span class="tag">Challenge</span><span style="color:orange; font-size:0.85rem;">■ Hard</span></div>
+            <div class="box-title">CryptoForge Matrix</div>
+            <div class="box-desc">Breaking down weak initialization vector re-use models across microservice validation endpoints.</div>
+          </div>
+          <div class="box-footer"><span>CAT // CRYPTO</span><span>DATED // APR 2026</span></div>
+        </div>
+
+        <div class="bento-box">
+          <div>
+            <div class="box-meta"><span class="tag">Machine</span><span style="color:red; font-size:0.85rem;">■ Insane</span></div>
+            <div class="box-title">ActiveDirectory SyncNode</div>
+            <div class="box-desc">Abusing local certificate allocation authorities to achieve forest-wide domain takeover.</div>
+          </div>
+          <div class="box-footer"><span>OS // WINDOWS</span><span>BYPASS // KERBEROS</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: ABOUT INTERFACE -->
+  <section id="about">
+    <div class="container">
+      <div class="page-header">
+        <div class="sys-badge">System Operator Bio</div>
+        <h2 style="font-size: 2.5rem; font-weight: 700;">Core Directives</h2>
+      </div>
+            
+      <div class="about-layout" style="margin-bottom: 80px;">
+        <div class="about-sidebar">
+          <div class="terminal-string">> whoami</div>
+          <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 16px;">
+            Security operator, developer, and computational enthusiast focusing on technical exploitation pipelines.
+          </p>
+          <div class="terminal-string">> tools_in_use</div>
+          <div style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-muted); line-height: 1.8;">
+            - GDB / Gef<br>
+            - Ghidra Decompiler<br>
+            - Rust Language Core<br>
+            - Python Exploitation Engines
+          </div>
+        </div>
+                
+        <div style="line-height: 1.7; color: var(--text-muted);">
+          <h3 style="color:#fff; margin-bottom:16px; font-size:1.4rem;">Operational Scope</h3>
+          <p style="margin-bottom: 16px;">My research targets low-level execution pipelines, secure kernel validation layers, and binary reverse engineering projects. This personal blog functions as a clean, decentralized repository of historical challenges cleared on global platforms like Hack The Box.</p>
+          <p>All materials are provided solely for academic study, secure development enhancement tracking, and threat profile hardening strategies.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- System Footer -->
+  <footer class="container">
+    <div>&copy; 2026 0xRoot Matrix Hub. All Rights Preserved.</div>
+    <div>STABLE // BUILD_0x99A</div>
+  </footer>
+
+  <!-- Native JavaScript Tab Handler -->
+  <script>
+    function openPocTab(tabId) {
+      document.querySelectorAll('.poc-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.querySelectorAll('.poc-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.getElementById(tabId).classList.add('active');
+      document.getElementById('btn-' + tabId).classList.add('active');
+    }
   </script>
+
+  <!-- Core JavaScript Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
