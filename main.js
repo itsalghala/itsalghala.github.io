@@ -104,3 +104,27 @@ window.revealTargetFlag = function(btn, explicitFlag) {
     btn.style.display = 'none';
   }
 };
+
+
+// --- Logic for writeups.html ---
+$(document).ready(function() {
+    const container = document.getElementById('writeup-container');
+    if (!container) return; // Only run if we are on the writeups page
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const view = urlParams.get('view');
+    const machineId = urlParams.get('machine');
+
+    // 1. Handle Machine Detail View
+    if (machineId) {
+        // Fetch machine data from your registry (the object we discussed earlier)
+        const machine = getMachineContent(machineId); 
+        if (machine) {
+            container.innerHTML = `<h1>${machine.title}</h1>...`; // Render logic
+        }
+    } 
+    // 2. Handle List View (Machines or Blogs)
+    else if (view === 'machines') {
+        container.innerHTML = `<h2>Listing all HTB Machines...</h2>`;
+    }
+});
