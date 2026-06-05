@@ -170,13 +170,22 @@
       </div>
           <!-- CARD: Reactor -->
       <div class="bento-box wide" style="cursor:pointer; padding:0;"
-           data-difficulty="hard" data-tags="web,privesc" data-machine="reactor"
+           data-difficulty="Easy" data-tags="web,privesc" data-machine="reactor"
            onclick="openDrawer(this,'reactor')">
         <div class="wu-accent hard"></div>
         <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
-            <div class="box-meta"><span class="tag">Weaponization Log</span></div>
-            <div class="box-title">HTB: Reactor</div>
-            <div class="box-footer"><span>CLICK TO EXPAND ↓</span></div>
+          
+          <div style="margin-bottom: 12px;">
+            <img src="https://htb-mp-prod-public-storage.s3.eu-central-1.amazonaws.com/avatars/56868ca419111fc0721393a2ffa0cefe.png" 
+                 alt="Reactor Icon" style="width: 48px; height: 48px; border-radius: 8px;">
+          </div>
+      
+          <div>
+              <div class="box-meta"><span class="tag">Weaponization Log</span></div>
+              <div class="box-title">HTB: Reactor</div>
+          </div>
+          
+          <div class="box-footer"><span>CLICK TO EXPAND ↓</span></div>
         </div>
       </div>
       
@@ -293,8 +302,9 @@
 
    reactor: {
       title: "HTB: Reactor", 
+      icon: "https://htb-mp-prod-public-storage.s3.eu-central-1.amazonaws.com/avatars/56868ca419111fc0721393a2ffa0cefe.png",
       badge: "Linux // Hard",
-      os: "Linux", diff: "Hard", diffColor: "#f59e0b",
+      os: "Linux", diff: "Easy", diffColor: "#f59e0b",
       port: "22, 3000", time: "1h 45m", 
       vector: "React2Shell RCE → SQLite Credential Reuse → Node.js Debugger (root)",
       hasFullWriteup: true,
