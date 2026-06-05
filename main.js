@@ -195,6 +195,44 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const params = new URLSearchParams(window.location.search);
+    const machine = params.get('machine');
+    
+    // Hide all profile nodes initially
+    document.querySelectorAll('.machine-profile-node').forEach(node => {
+        node.style.display = 'none';
+    });
+
+    const targetDiv = document.getElementById('target-' + machine);
+    const fallback = document.getElementById('fallback-deck');
+    
+    if (machine && targetDiv) {
+        targetDiv.style.display = 'block';
+    } else if (fallback) {
+        fallback.style.display = 'block';
+    }
+});
+
+// Helper for your "Show Answer" buttons
+window.toggleTaskAnswer = function(btn, answer) {
+  btn.innerText = answer;
+  btn.style.background = "var(--neon-green)";
+  btn.style.color = "#000";
+};
+
+// Helper for your "Reveal Flag" buttons
+window.revealTargetFlag = function(btn, flag) {
+  const mask = btn.previousElementSibling.querySelector('.flag-blurred-mask');
+  if (mask) {
+    mask.innerText = flag;
+    mask.style.filter = "none";
+    mask.style.opacity = "1";
+    btn.style.display = "none";
+  }
+};
+
 })(jQuery);
   // --- Initialization ---
   $(document).ready(function() {
