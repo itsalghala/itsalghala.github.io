@@ -511,34 +511,24 @@
 <body>
 
   <!-- App Header & Navigation Layer -->
-<header id="header-nav">
-<nav>
-  <div class="container nav-wrapper">
-    <a href="index.html" class="logo">0xROOT<span>//</span></a>
-    <div class="nav-links">
-      <a href="index.html#blogs">Blogs</a>
-      <a href="index.html#machines">Machines</a>
-      <a href="index.html#about">About Me</a>
+  <header id="header-nav">
+    <div class="container nav-wrapper">
+      <a href="#header" class="logo">ExploitMinder<span>//</span></a>
+      <nav class="nav-menu">
+        <ul>
+          <li class="active"><a href="main.html#header">Home</a></li>
+          <li class="dropdown-node">
+            <a class="dropdown-trigger">Writeups <span style="font-size:0.7rem; color:var(--neon-purple);">▼</span></a>
+            <ul class="dropdown-ledger">
+              <li><a href="writeups.html?view=machines">HTB Machines</a></li>
+              <li><a href="writeups.html?view=blog">Blogs</a></li>
+            </ul>
+          </li>
+          <li><a href="main.html#about">About</a></li>
+        </ul>
+      </nav>
     </div>
-  </div>
-</nav>
-
-<div id="machines" class="container">
-  <h2>Operational Ledger</h2>
-  <div class="grid-layout">
-    <a href="writeups.html?machine=reactor" class="box-card">
-      <img src="reactor-icon.png">
-      <h3>HTB: Reactor</h3>
-      <p>Hard // Linux // Prototype Pollution</p>
-    </a>
-    <a href="writeups.html?machine=appointment" class="box-card">
-      <img src="appointment-icon.png">
-      <h3>HTB: Appointment</h3>
-      <p>Very Easy // Linux // SQLi</p>
-    </a>
-  </div>
-</div>
-</header>
+  </header>
 
   <!-- SECTION 1: HOME VIEW -->
   <section id="header" class="section-show">
