@@ -1,17 +1,13 @@
 /**
- * 0xRoot Matrix Hub // Core Architecture Control Engine
- */
-/**
- * 0xRoot Matrix Hub // Core Target Router Engine
+ * 0xRoot Matrix Hub // Core Control & Router Engine
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Check if we are on a multi-view layout page
+  // 1. Dynamic Router: Check for isolated machine logs (?machine=)
   const urlParams = new URLSearchParams(window.location.search);
   const targetMachine = urlParams.get('machine');
 
   if (targetMachine) {
-    // Force activate the single chosen machine node, hide all others
     const blocks = document.querySelectorAll('.machine-profile-node');
     if (blocks.length > 0) {
       blocks.forEach(block => block.style.display = 'none');
@@ -19,13 +15,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const activeBlock = document.getElementById('target-' + targetMachine);
       if (activeBlock) {
         activeBlock.style.display = 'block';
-        // Dynamically shift title based on selected asset context
         document.title = `0xRoot // Log [${targetMachine.toUpperCase()}]`;
       } else {
-        // Fallback fallback if machine parameter is unmapped
-        document.getElementById('fallback-deck').style.display = 'block';
+        const fallback = document.getElementById('fallback-deck');
+        if (fallback) fallback.style.display = 'block';
       }
     }
+  }
+
+  // 2. Auto-detect traditional anchor route targets (#home, #writeups, etc.)
+  const activeHash = window.location.hash.replace('#', '');
+  if (['home', 'writeups', 'about'].includes(activeHash)) {
+    switchRoute(activeHash);
   }
 });
 
@@ -62,9 +63,10 @@ function revealTargetFlag(btn, explicitFlag) {
     btn.style.display = 'none';
   }
 }
+
 // Global Route Navigation Handler
 function switchRoute(targetViewId) {
-  // 1. Locate all view sections on the page
+  // Locate all view sections on the page
   const views = document.querySelectorAll('.app-view');
   if (views.length > 0) {
     views.forEach(view => {
@@ -77,7 +79,7 @@ function switchRoute(targetViewId) {
     }
   }
 
-  // 2. Synchronize active state styling across nav targets
+  // Synchronize active state styling across nav targets
   document.querySelectorAll('.nav-target').forEach(link => {
     link.classList.remove('active');
   });
@@ -89,7 +91,6 @@ function switchRoute(targetViewId) {
     targetedNavElement.classList.add('active');
   }
 
-  // 3. Prevent sudden shifts on route load
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
 
@@ -98,11 +99,9 @@ function openCloudTab(evt, tabId) {
   const container = evt.currentTarget.closest('.tab-container');
   if (!container) return;
 
-  // Deactivate all matching content and buttons inside this tab grid
   container.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
   container.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
 
-  // Initialize selected target view node
   const activeTab = document.getElementById(tabId);
   if (activeTab) {
     activeTab.classList.add('active');
@@ -110,26 +109,20 @@ function openCloudTab(evt, tabId) {
   evt.currentTarget.classList.add('active');
 }
 
-// Auto-detect anchor route targets on landing sequence execution
-window.addEventListener('DOMContentLoaded', () => {
-  const activeHash = window.location.hash.replace('#', '');
-  if (['home', 'writeups', 'about'].includes(activeHash)) {
-    switchRoute(activeHash);
-  }
-});
-
-// Expose handlers globally to catch legacy inline elements
+// Expose vanilla handlers globally
 window.switchRoute = switchRoute;
-window.openCloudTab = openCloudTab;/**
-* Template Name: Personal - v2.1.0
-* Template URL: https://bootstrapmade.com/personal-free-resume-bootstrap-template/
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
-*/
+window.openCloudTab = openCloudTab;
+
+/* =========================================================================
+   Legacy / Theme Specific jQuery Pipeline
+   ========================================================================= */
 !(function($) {
   "use strict";
 
-  // Nav Menu
+  // Prevent collisions if elements don't exist in modern views
+  if (typeof $ === 'undefined') return;
+
+  // Nav Menu Click Logic
   $(document).on('click', '.nav-menu a, .mobile-nav a', function(e) {
     if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
       var hash = this.hash;
@@ -164,17 +157,15 @@ window.openCloudTab = openCloudTab;/**
           $('.mobile-nav-toggle i').toggleClass('icofont-navigation-menu icofont-close');
           $('.mobile-nav-overly').fadeOut();
         }
-
         return false;
-
       }
     }
   });
 
-  // Activate/show sections on load with hash links
+  // Activate sections on load with legacy hash links
   if (window.location.hash) {
     var initial_nav = window.location.hash;
-    if ($(initial_nav).length) {
+    if ($(initial_nav).length && !['#home', '#writeups', '#about'].includes(initial_nav)) {
       $('#header').addClass('header-top');
       $('.nav-menu .active, .mobile-nav .active').removeClass('active');
       $('.nav-menu, .mobile-nav').find('a[href="' + initial_nav + '"]').parent('li').addClass('active');
@@ -185,8 +176,8 @@ window.openCloudTab = openCloudTab;/**
     }
   }
 
-  // Mobile Navigation
-  if ($('.nav-menu').length) {
+  // Mobile Navigation Structure Cloning
+  if ($('.nav-menu').length && $('.mobile-nav').length === 0) {
     var $mobile_nav = $('.nav-menu').clone().prop({
       class: 'mobile-nav d-lg-none'
     });
@@ -210,64 +201,48 @@ window.openCloudTab = openCloudTab;/**
         }
       }
     });
-  } else if ($(".mobile-nav, .mobile-nav-toggle").length) {
+  } else if ($(".mobile-nav, .mobile-nav-toggle").length && !$('.nav-menu').length) {
     $(".mobile-nav, .mobile-nav-toggle").hide();
   }
 
-  // jQuery counterUp
-  $('[data-toggle="counter-up"]').counterUp({
-    delay: 10,
-    time: 1000
-  });
+  // Plugins safely bound by checking presence
+  if ($.fn.counterUp) {
+    $('[data-toggle="counter-up"]').counterUp({ delay: 10, time: 1000 });
+  }
 
-  // Skills section
-  $('.skills-content').waypoint(function() {
-    $('.progress .progress-bar').each(function() {
-      $(this).css("width", $(this).attr("aria-valuenow") + '%');
+  if ($.fn.waypoint) {
+    $('.skills-content').waypoint(function() {
+      $('.progress .progress-bar').each(function() {
+        $(this).css("width", $(this).attr("aria-valuenow") + '%');
+      });
+    }, { offset: '80%' });
+  }
+
+  if ($.fn.owlCarousel) {
+    $(".testimonials-carousel").owlCarousel({
+      autoplay: true,
+      dots: true,
+      loop: true,
+      responsive: { 0: { items: 1 }, 768: { items: 2 }, 900: { items: 3 } }
     });
-  }, {
-    offset: '80%'
-  });
+  }
 
-  // Testimonials carousel (uses the Owl Carousel library)
-  $(".testimonials-carousel").owlCarousel({
-    autoplay: true,
-    dots: true,
-    loop: true,
-    responsive: {
-      0: {
-        items: 1
-      },
-      768: {
-        items: 2
-      },
-      900: {
-        items: 3
-      }
-    }
-  });
-
-  // Porfolio isotope and filter
-  $(window).on('load', function() {
-    var portfolioIsotope = $('.portfolio-container').isotope({
-      itemSelector: '.portfolio-item',
-      layoutMode: 'fitRows'
-    });
-
-    $('#portfolio-flters li').on('click', function() {
-      $("#portfolio-flters li").removeClass('filter-active');
-      $(this).addClass('filter-active');
-
-      portfolioIsotope.isotope({
-        filter: $(this).data('filter')
+  if ($.fn.isotope) {
+    $(window).on('load', function() {
+      var portfolioIsotope = $('.portfolio-container').isotope({
+        itemSelector: '.portfolio-item',
+        layoutMode: 'fitRows'
+      });
+      $('#portfolio-flters li').on('click', function() {
+        $("#portfolio-flters li").removeClass('filter-active');
+        $(this).addClass('filter-active');
+        portfolioIsotope.isotope({ filter: $(this).data('filter') });
       });
     });
+  }
 
-  });
-
-  // Initiate venobox (lightbox feature used in portofilo)
-  $(document).ready(function() {
-    $('.venobox').venobox();
-  });
+  if ($.fn.venobox) {
+    $(document).ready(function() { $('.venobox').venobox(); });
+  }
 
 })(jQuery);
