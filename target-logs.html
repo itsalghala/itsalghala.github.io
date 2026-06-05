@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>0xRoot // Loading Manifest...</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -21,12 +24,61 @@
   <div class="container" style="padding-top: 40px;">
     <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-family: var(--font-mono); font-size: 0.9rem; display: inline-block; margin-bottom: 30px;">&larr; Back to Operational Ledger</a>
 
+    <!-- REACTOR DATA -->
     <div id="target-reactor" class="machine-profile-node" style="display: none;">
-      <h2>HTB: Reactor</h2>
+      <div class="page-header" style="padding-top:0;">
+        <div class="sys-badge" style="color: var(--neon-amber); border-color: rgba(245,158,11,0.2);">Linux // Hard</div>
+        <h2 style="font-size: 2.5rem; font-weight: 700; margin-top: 10px;">HTB: Reactor</h2>
+      </div>
+      <div class="about-layout" style="margin-top:0;">
+        <div class="about-sidebar">
+          <div class="terminal-string">// TELEMETRY</div>
+          <p style="color: var(--text-muted); font-size:0.9rem; line-height:1.8; font-family: var(--font-mono);">
+            TIME: 1h 45m<br>TARGET: 10.129.10.200<br>PORT_EXP: 3000/TCP
+          </p>
+        </div>
+        <div class="timeline">
+          <div class="timeline-node">
+            <div class="timeline-title">Initial Foothold // React2Shell</div>
+            <p style="color: var(--text-muted); margin-bottom: 15px;">Exploiting prototype pollution patterns within modern React structures:</p>
+            <div class="panel-card console-box" style="background: var(--bg-void);">
+              <div class="console-line"># python3 react2shell-poc.py -t http://10.129.10.200:3000 -c "id"</div>
+              <div class="console-line" style="color: var(--neon-green);">uid=1001(node) gid=1001(node) groups=1001(node)</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
+    <!-- APPOINTMENT DATA -->
     <div id="target-appointment" class="machine-profile-node" style="display: none;">
-      <h2>HTB: Appointment</h2>
+      <div class="page-header" style="padding-top:0;">
+        <div class="sys-badge">Linux // Very Easy</div>
+        <h2 style="font-size: 2.5rem; font-weight: 700; margin-top: 10px;">HTB: Appointment</h2>
+      </div>
+      <div class="about-layout" style="margin-top: 0;">
+        <div class="about-sidebar">
+          <div class="terminal-string">// CAPTURED_VECTORS</div>
+          <div class="tag" style="margin-bottom: 10px; display: inline-block;">SQL Injection</div>
+          <div class="tag" style="margin-bottom: 20px; display: inline-block;">Auth Bypass</div>
+          <div class="terminal-string">// OPEN_PORTS</div>
+          <div style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-muted);">
+            <span style="color: var(--neon-cyan);">80/tcp</span> - Apache httpd 2.4.38
+          </div>
+        </div>
+        <div class="timeline">
+          <div class="timeline-node">
+            <div class="timeline-time">RECONNAISSANCE</div>
+            <div class="timeline-title">Nmap Target Port Verification</div>
+            <div class="panel-card console-box" style="background: var(--bg-void); margin-bottom: 15px;">
+              <div class="console-line"># nmap 10.129.17.133</div>
+              <div class="console-line">PORT   STATE SERVICE</div>
+              <div class="console-line"><span class="success">80/tcp open  http</span></div>
+            </div>
+          </div>
+          <!-- ... Rest of your appointment content ... -->
+        </div>
+      </div>
     </div>
 
     <div id="fallback-deck" style="display: none; text-align: center; padding: 80px 0;">
