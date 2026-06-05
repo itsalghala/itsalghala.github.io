@@ -3,35 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ExploitMinder // Loading Manifest...</title>
+  <title>0xRoot // Loading Manifest...</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <nav>
     <div class="container nav-wrapper">
-      <a href="index.html" class="logo">ExploitMinder<span>//</span></a>
+      <a href="main.html" class="logo">0xROOT<span>//</span></a>
       <div class="nav-links">
-        <a href="index.html">Home</a>
+        <a href="main.html">Home</a>
+        <a href="index.html" class="active">Target Writeups</a>
       </div>
     </div>
   </nav>
 
   <div class="container" style="padding-top: 40px;">
-    <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-family: var(--font-mono); font-size: 0.9rem;">&larr; Back to Ledger</a>
+    <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-family: var(--font-mono); font-size: 0.9rem; display: inline-block; margin-bottom: 30px;">&larr; Back to Operational Ledger</a>
 
     <div id="target-reactor" class="machine-profile-node" style="display: none;">
-        <h1>HTB: Reactor</h1>
-        <p>Your Reactor content goes here...</p>
+      <h2>HTB: Reactor</h2>
     </div>
 
     <div id="target-appointment" class="machine-profile-node" style="display: none;">
-        <h1>HTB: Appointment</h1>
-        <p>Your Appointment content goes here...</p>
+      <h2>HTB: Appointment</h2>
     </div>
 
-    <div id="fallback-deck" style="display: none; padding: 80px 0; text-align: center;">
-      <h3>[!] EXCEPTION: RECORD_NOT_FOUND</h3>
+    <div id="fallback-deck" style="display: none; text-align: center; padding: 80px 0;">
+      <h3 style="font-family: var(--font-mono); color: var(--neon-purple);">[!] EXCEPTION: RECORD_NOT_FOUND</h3>
     </div>
   </div>
 
