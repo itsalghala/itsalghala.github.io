@@ -523,7 +523,7 @@
         <h2 class="matrix-title">Recent Offensive Intelligence Ledger</h2>
         <div class="bento-grid">
           <!-- External Target Links shifting away dynamically using the query parameters -->
-          <a href="target-logs.html?machine=reactor" class="bento-box wide">
+          <a href="writeups.html?machine=reactor" class="bento-box wide">
             <div>
               <div class="box-meta"><span class="tag">Weaponization Log</span><span style="color:var(--neon-green); font-size:0.85rem;">■ Easy</span></div>
               <div class="box-title">Reactor: Prototype Pollution Vector</div>
@@ -532,7 +532,7 @@
             <div class="box-footer"><span>OS // LINUX</span><span>EXPL_LOGS // EXECUTE ↗</span></div>
           </a>
                     
-          <a href="target-logs.html?machine=appointment" class="bento-box">
+          <a href="writeups.html?machine=appointment" class="bento-box">
             <div>
               <div class="box-meta"><span class="tag">SQLi Bypass</span><span style="color:var(--neon-green); font-size:0.85rem;">■ Easy</span></div>
               <div class="box-title">Appointment Injection Bypass</div>
@@ -546,42 +546,37 @@
         <div class="poc-container">
           <div class="terminal-string" style="color: var(--neon-purple)">// EXPLOIT_RELIABILITY_SANDBOX_INDEX</div>
           <div class="poc-nav">
-            <button id="btn-poc-kernel" class="poc-btn active" onclick="openPocTab('poc-kernel')">Kernel Payloads</button>
-            <button id="btn-poc-web" class="poc-btn" onclick="openPocTab('poc-web')">Web RCE Chains</button>
-            <button id="btn-poc-ad" class="poc-btn" onclick="openPocTab('poc-ad')">Active Directory Vectors</button>
+            <button id="btn-poc-kernel" class="poc-btn active" onclick="openPocTab('poc-kernel')"> Tookl Kit </button>
+            <button id="btn-poc-web" class="poc-btn" onclick="openPocTab('poc-web')"> Certificates </button>
+            <button id="btn-poc-ad" class="poc-btn" onclick="openPocTab('poc-ad')"> AD </button>
           </div>
 
-          <!-- Kernel Content -->
+          <!-- My Tool Kit Content -->
           <div id="poc-kernel" class="poc-content active">
             <div class="code-grid">
               <div style="font-family: var(--font-mono); border-right: 1px solid rgba(255,255,255,0.05); padding-right:15px;">
-                <div style="color:#fff; margin-bottom:8px;">Target Context:</div>
+                <div style="color:#fff; margin-bottom:8px;"> My Toolkit </div>
                 <div style="color:var(--neon-purple); font-weight:bold; margin-bottom:12px;">Linux PrivEsc LPE</div>
                 <div style="color:var(--text-dark); font-size:0.8rem;">Modifying cred structures in memory space via read/write primitives.</div>
               </div>
-              <div class="terminal-window" style="color: var(--neon-cyan);">// Elevate permissions to root
-struct cred *new_creds = prepare_creds();
-if (new_creds) {
-    new_creds->uid.val = 0;
-    new_creds->gid.val = 0;
-    commit_creds(new_creds);
+              <div class="terminal-window" style="color: var(--neon-cyan);">// 
 }</div>
             </div>
           </div>
 
-          <!-- Web RCE Content -->
+          <!-- Certificates Content -->
           <div id="poc-web" class="poc-content">
             <div class="code-grid">
               <div style="font-family: var(--font-mono); border-right: 1px solid rgba(255,255,255,0.05); padding-right:15px;">
-                <div style="color:#fff; margin-bottom:8px;">Target Context:</div>
-                <div style="color:var(--neon-cyan); font-weight:bold; margin-bottom:12px;">NodeJS Pollution to RCE</div>
-                <div style="color:var(--text-dark); font-size:0.8rem;">Overriding object prototypes to hijack child processes executing shell commands.</div>
+                <div style="color:#fff; margin-bottom:8px;">Certificates </div>
+                <div style="color:var(--neon-cyan); font-weight:bold; margin-bottom:12px;">Certification</div>
+                <div style="color:var(--text-dark); font-size:0.8rem;"> Certification are part of my side-quests.</div>
               </div>
-              <div class="terminal-window" style="color: var(--neon-green);">// Poison child_process env strings 
+              <div class="terminal-window" style="color: var(--neon-green);">// HTB LABS 
 {
-   "__proto__": {
-     "env": { "NODE_OPTIONS": "--require /tmp/malicious.js" },
-     "shell": "/bin/sh"
+    *   Dante Pro Lab
+    *   Zypher Pro LAB
+        
    }
  }</div>
             </div>
@@ -615,9 +610,9 @@ Get-DomainUser -SPN | Get-DomainSPNTicket -InvokeKerberoast | Select-Object -Exp
       <div class="bento-grid" style="margin-bottom: 80px;">
         <div class="bento-box">
           <div>
-            <div class="box-meta"><span class="tag">Machine</span><span style="color:var(--neon-cyan); font-size:0.85rem;">■ Medium</span></div>
-            <div class="box-title">Analytics Engine Leak</div>
-            <div class="box-desc">Exposing pre-auth environment configurations via unvetted query parsing mechanics.</div>
+            <div class="box-meta"><span class="tag">Machine</span><span style="color:var(--neon-cyan); font-size:0.85rem;">■ Easy</span></div>
+            <div class="box-title">Reactor </div>
+            <div class="box-desc">The Reactor machine involves exploiting prototype pollution in a Node.js/Next.js environment to inject malicious code into the runtime and achieve Remote Code Execution (RCE).</div>
           </div>
           <div class="box-footer"><span>OS // LINUX</span><span>BYPASS // RCE</span></div>
         </div>
