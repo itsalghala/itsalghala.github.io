@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>0xRoot // Security Research & Personal Logs</title>
+  <title>ExploitMinder // Security Research & Personal Logs</title>
   
   <!-- Premium Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -93,7 +93,7 @@
       z-index: 5;
     }
 
-    /* --- Navigation --- */
+    /* --- Navigation Layer Layout --- */
     nav {
       background: rgba(3, 1, 10, 0.75);
       backdrop-filter: blur(20px);
@@ -125,6 +125,7 @@
       display: flex;
       gap: 32px;
       list-style: none;
+      align-items: center;
     }
 
     .nav-menu a {
@@ -135,8 +136,56 @@
       transition: color 0.2s;
     }
 
-    .nav-menu a:hover, .nav-menu li.active a {
+    .nav-menu a:hover, .nav-menu li.active > a {
       color: var(--neon-purple);
+    }
+
+    /* --- Dropdown Subsystem Styling Architecture --- */
+    .dropdown-node {
+      position: relative;
+    }
+    
+    .dropdown-trigger {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .dropdown-ledger {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-surface);
+      border: var(--border-purple);
+      border-radius: 8px;
+      padding: 8px 0;
+      min-width: 160px;
+      list-style: none;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      z-index: 1100;
+      margin-top: 10px;
+    }
+
+    .dropdown-ledger li a {
+      display: block;
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      transition: all 0.2s;
+      text-align: left;
+    }
+
+    .dropdown-ledger li a:hover {
+      color: var(--neon-cyan);
+      background: rgba(168, 85, 247, 0.05);
+    }
+
+    .dropdown-node:hover .dropdown-ledger {
+      display: block;
     }
 
     /* --- Typography & Branding Elements --- */
@@ -446,18 +495,6 @@
       margin-bottom: 12px;
     }
 
-    /* --- Footer --- */
-    footer {
-      border-top: var(--border-purple);
-      padding: 40px 0;
-      color: var(--text-dark);
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      display: flex;
-      justify-content: space-between;
-      margin-top: 60px;
-    }
-
     @media (max-width: 900px) {
       .bento-grid, .code-grid { grid-template-columns: repeat(2, 1fr); }
       .bento-box.wide { grid-column: span 1; }
@@ -476,11 +513,17 @@
   <!-- App Header & Navigation Layer -->
   <header id="header-nav">
     <div class="container nav-wrapper">
-      <a href="#header" class="logo">0xROOT<span>//</span></a>
+      <a href="#header" class="logo">ExploitMinder<span>//</span></a>
       <nav class="nav-menu">
         <ul>
           <li class="active"><a href="#header">Home</a></li>
-          <li><a href="#writeups">Writeups</a></li>
+          <li class="dropdown-node">
+            <a class="dropdown-trigger">Writeups <span style="font-size:0.7rem; color:var(--neon-purple);">▼</span></a>
+            <ul class="dropdown-ledger">
+              <li><a href="#writeups">HTB Machines</a></li>
+              <li><a href="#writeups?filter=blog">Blogs</a></li>
+            </ul>
+          </li>
           <li><a href="#about">About</a></li>
         </ul>
       </nav>
@@ -495,7 +538,7 @@
           "To a mind that selects, notices, and observes, there is no such thing as a coincidence. Knowledge is power, but the space between lines is where the truth hides."
         </div>
         <div class="sys-badge">Operator Instance Live</div>
-        <h1>Hi, I'm <span>0xRoot</span></h1>
+        <h1>Hi, I'm <span>ExploitMinder</span></h1>
         <p class="hero-desc">Independent security researcher documenting binary exploits, reverse engineering challenges, and vulnerability testing. This platform functions as my personal operational tracking log.</p>
                 
         <!-- Premium HTB Live Telemetry Box Component -->
@@ -507,7 +550,7 @@
           <div>
             <div style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--neon-purple); margin-bottom: 8px;">LIVE CONNECTION ESTABLISHED</div>
             <div class="htb-stats">
-              <div class="stat-unit"><label>Identity</label><span>0xRoot</span></div>
+              <div class="stat-unit"><label>Identity</label><span>ExploitMinder</span></div>
               <div class="stat-unit"><label>Rank</label><span style="color:#a855f7;">Omniscient</span></div>
               <div class="stat-unit"><label>System Owned</label><span>68</span></div>
             </div>
@@ -674,12 +717,6 @@ Get-DomainUser -SPN | Get-DomainSPNTicket -InvokeKerberoast | Select-Object -Exp
       </div>
     </div>
   </section>
-
-  <!-- System Footer -->
-  <footer class="container">
-    <div>&copy; 2026 0xRoot Matrix Hub. All Rights Preserved.</div>
-    <div>STABLE // BUILD_0x99A</div>
-  </footer>
 
   <!-- Native JavaScript Tab Handler -->
   <script>
