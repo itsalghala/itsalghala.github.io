@@ -155,16 +155,22 @@
       </div>
 
       <!-- CARD: Reactor (wide) -->
-      <div class="bento-box wide" style="cursor:pointer; padding:0;"
+      <div class="bento-box wide" style="cursor:pointer; padding:0; display:flex; flex-direction:column;"
            data-difficulty="hard" data-tags="web,privesc" data-machine="reactor"
            onclick="openDrawer(this,'reactor')">
         <div class="wu-accent hard"></div>
+        
+        <div style="width:100%; height:140px; overflow:hidden;">
+          <img src="https://htb-mp-prod-public-storage.s3.eu-central-1.amazonaws.com/avatars/56868ca419111fc0721393a2ffa0cefe.png" 
+               alt="Reactor" style="width:100%; height:100%; object-fit:cover; opacity:0.8; transition:opacity 0.3s;">
+        </div>
+      
         <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
           <div>
             <div class="box-meta">
               <span class="tag">Weaponization Log</span>
               <span style="font-size:0.85rem; color:#f59e0b;">
-                <span class="diff-dot" style="background:#f59e0b;box-shadow:0 0 6px #f59e0b;"></span>Hard
+                <span class="diff-dot" style="background:#f59e0b;box-shadow:0 0 6px #f59e0b;"></span>Easy
               </span>
             </div>
             <div class="box-title">HTB: Reactor — Prototype Pollution Vector</div>
