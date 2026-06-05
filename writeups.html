@@ -345,8 +345,9 @@
           <div class="sys-badge" style="color:${d.diffColor}; border-color:${d.diffColor}33;">${d.badge}</div>
           <h2 style="font-size:2rem;font-weight:700;margin-top:8px;">${d.title}</h2>
         </div>
-        <div class="about-layout">
+        <div class="about-layout" style="display:grid; grid-template-columns: 250px 1fr; gap:32px;">
           <div class="about-sidebar">
+            ${d.image ? `<img src="${d.image}" alt="${d.title}" style="width:100%; border-radius:12px; margin-bottom:20px; border:1px solid rgba(255,255,255,0.1);">` : ''}
             <div class="terminal-string">// TELEMETRY</div>
             <p style="color:var(--text-muted);font-size:0.88rem;line-height:2;font-family:var(--font-mono);">
               TIME &nbsp;&nbsp;// ${d.time}<br>
