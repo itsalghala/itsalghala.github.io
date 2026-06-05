@@ -3,52 +3,113 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>0xRoot // Target Writeups Ledger</title>
+  <title>0xRoot // Core Command Matrix</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <nav>
     <div class="container nav-wrapper">
-      <a href="main.html" class="logo">0xROOT<span>//</span></a>
+      <a href="#" onclick="switchRoute('home'); return false;" class="logo">0xROOT<span>//</span></a>
       <div class="nav-links">
-        <a href="main.html">Home</a>
-        <a href="index.html" class="active">Target Writeups</a>
+        <a href="#" onclick="switchRoute('home'); return false;" class="nav-target active">Home</a>
+        <a href="#" onclick="switchRoute('writeups'); return false;" class="nav-target">Target Writeups</a>
+        <a href="#" onclick="switchRoute('about'); return false;" class="nav-target">About</a>
       </div>
     </div>
   </nav>
 
-  <div class="container">
+  <main id="view-home" class="app-view active-view container" style="padding-top: 40px;">
+    <div class="page-header">
+      <div class="sys-badge">Status: Operational</div>
+      <h2 style="font-size: 2.5rem; font-weight: 700;">Welcome to 0xRoot Hub</h2>
+    </div>
+    <p style="color: var(--text-muted); max-width: 600px; line-height: 1.6;">
+      Secured storage facility for vulnerability research documentation, multi-cloud structural indexing, and active offensive simulation field notes. Use the navigation vectors to cycle runtime frames.
+    </p>
+  </main>
+
+
+  <div id="view-writeups" class="app-view container" style="padding-top: 40px; display: none;">
     <div class="page-header">
       <div class="sys-badge">Target Manifest</div>
       <h2 style="font-size: 2.5rem; font-weight: 700;">Offensive Operation Logs</h2>
     </div>
 
-    <div class="bento-grid" style="margin-bottom: 80px;">
+    <div class="bento-grid" style="margin-bottom: 40px;">
       
-      <a href="target-logs.html?machine=reactor" class="bento-box">
+      <a href="target-logs.html?machine=reactor" class="bento-box" style="text-decoration: none;">
         <div>
-          <div class="box-meta"><span class="tag">Next.js RCE</span><span style="color: orange;">■ Hard</span></div>
+          <div class="box-meta">
+            <span class="tag">Next.js RCE</span>
+            <span style="color: orange; font-size: 0.85rem;">■ Hard</span>
+          </div>
           <h3 class="box-title">Reactor</h3>
-          <p class="box-desc">Prototype pollution vector exploitation within unauthenticated React Server Component trees.</p>
+          <p class="box-desc">
+            Prototype pollution vector exploitation within unauthenticated React Server Component trees leading to automated shell drops.
+          </p>
         </div>
-        <div class="box-footer"><span>OS // LINUX</span><span>IP // 10.129.10.200</span></div>
+        <div class="box-footer">
+          <span>OS // LINUX</span>
+          <span>IP // 10.129.10.200</span>
+        </div>
       </a>
 
-      <a href="target-logs.html?machine=appointment" class="bento-box">
+      <a href="target-logs.html?machine=appointment" class="bento-box" style="text-decoration: none;">
         <div>
-          <div class="box-meta"><span class="tag">SQL Injection</span><span style="color: #10b981;">■ Very Easy</span></div>
+          <div class="box-meta">
+            <span class="tag">SQL Injection</span>
+            <span style="color: #10b981; font-size: 0.85rem;">■ Very Easy</span>
+          </div>
           <h3 class="box-title">Appointment</h3>
-          <p class="box-desc">Authentication mechanism bypass using inline comment execution strings against relational backend database engines.</p>
+          <p class="box-desc">
+            Authentication mechanism bypass via inline trailing inline database comment execution payloads.
+          </p>
         </div>
-        <div class="box-footer"><span>OS // LINUX</span><span>IP // 10.129.17.133</span></div>
+        <div class="box-footer">
+          <span>OS // LINUX</span>
+          <span>IP // 10.129.17.133</span>
+        </div>
       </a>
 
     </div>
   </div>
 
+
+  <div id="view-about" class="app-view container" style="padding-top: 40px; display: none;">
+    <div class="page-header">
+      <div class="sys-badge">Operator Bio</div>
+      <h2 style="font-size: 2.5rem; font-weight: 700;">Security Researcher Profile</h2>
+    </div>
+    
+    <div class="about-layout" style="margin-top: 0;">
+      <div class="about-sidebar">
+        <div class="terminal-string">// RUNTIME_FOCUS</div>
+        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+          • Cloud Security Governance<br>
+          • Prototype Pollution Mechanics<br>
+          • Identity & Access Infrastructure
+        </p>
+      </div>
+      <div>
+        <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 20px;">
+          Analytical sandbox engine tracking standard vulnerabilities, compliance mappings, and continuous exploit mechanics. This environment serves as a local reference node for academic audits and verification reviews.
+        </p>
+      </div>
+    </div>
+  </div>
+
+
+  <footer class="container" style="margin-top: 80px;">
+    <div>&copy; 2026 0xRoot Matrix Hub. All Rights Preserved.</div>
+    <div>STABLE // CORE_BUILD_v2</div>
+  </footer>
+
+  <script src="main.js"></script>
 </body>
 </html>
