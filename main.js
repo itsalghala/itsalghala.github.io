@@ -1,7 +1,67 @@
 /**
  * 0xRoot Matrix Hub // Core Architecture Control Engine
  */
+/**
+ * 0xRoot Matrix Hub // Core Target Router Engine
+ */
 
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. Check if we are on a multi-view layout page
+  const urlParams = new URLSearchParams(window.location.search);
+  const targetMachine = urlParams.get('machine');
+
+  if (targetMachine) {
+    // Force activate the single chosen machine node, hide all others
+    const blocks = document.querySelectorAll('.machine-profile-node');
+    if (blocks.length > 0) {
+      blocks.forEach(block => block.style.display = 'none');
+      
+      const activeBlock = document.getElementById('target-' + targetMachine);
+      if (activeBlock) {
+        activeBlock.style.display = 'block';
+        // Dynamically shift title based on selected asset context
+        document.title = `0xRoot // Log [${targetMachine.toUpperCase()}]`;
+      } else {
+        // Fallback fallback if machine parameter is unmapped
+        document.getElementById('fallback-deck').style.display = 'block';
+      }
+    }
+  }
+});
+
+// Interactive task answer reveal logic 
+function toggleTaskAnswer(btn, answerText) {
+  const parent = btn.parentElement;
+  let answerNode = parent.querySelector('.revealed-answer');
+  
+  if (!answerNode) {
+    answerNode = document.createElement('div');
+    answerNode.className = 'revealed-answer';
+    answerNode.style.marginTop = '10px';
+    answerNode.style.padding = '10px';
+    answerNode.style.background = 'rgba(34, 211, 238, 0.05)';
+    answerNode.style.border = '1px dashed rgba(34, 211, 238, 0.3)';
+    answerNode.style.borderRadius = '6px';
+    answerNode.style.fontFamily = 'var(--font-mono)';
+    answerNode.style.fontSize = '0.85rem';
+    answerNode.style.color = 'var(--neon-cyan)';
+    answerNode.innerText = `[>] ANSWER: ${answerText}`;
+    parent.appendChild(answerNode);
+    btn.innerText = "Hide Answer";
+  } else {
+    answerNode.remove();
+    btn.innerText = "Show Answer";
+  }
+}
+
+// Global flag un-blur utility script
+function revealTargetFlag(btn, explicitFlag) {
+  const wrapper = btn.previousElementSibling;
+  if (wrapper) {
+    wrapper.innerHTML = `<span style="color: var(--neon-green); font-weight: bold; letter-spacing: 1px;">${explicitFlag}</span>`;
+    btn.style.display = 'none';
+  }
+}
 // Global Route Navigation Handler
 function switchRoute(targetViewId) {
   // 1. Locate all view sections on the page
