@@ -1,7 +1,57 @@
-<div class="container" style="padding-top: 40px;">
-    <a href="main.html" style="color: var(--text-muted); text-decoration: none; font-family: var(--font-mono); font-size: 0.9rem; margin-bottom: 30px; display: block;">&larr; Back to Ledger</a>
-    
-    <div id="writeup-container">
-        <p style="color: var(--neon-purple); font-family: var(--font-mono);">// INITIALIZING_TARGET_STREAM...</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ExploitMinder // Loading Manifest...</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <nav>
+    <div class="container nav-wrapper">
+      <a href="main.html" class="logo">ExploitMinder<span>//</span></a>
+      <div class="nav-links">
+        <a href="main.html">Home</a>
+        <a href="index.html" class="active">Target Writeups</a>
+      </div>
     </div>
-</div>
+  </nav>
+
+  <div class="container" style="padding-top: 40px;">
+    <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-family: var(--font-mono); font-size: 0.9rem; display: inline-block; margin-bottom: 30px;">&larr; Back to Operational Ledger</a>
+
+    <div id="target-reactor" class="machine-profile-node" style="display: none;">
+      </div>
+
+    <div id="target-appointment" class="machine-profile-node" style="display: none;">
+      </div>
+
+    <div id="fallback-deck" style="display: none; text-align: center; padding: 80px 0;">
+      <h3 style="font-family: var(--font-mono); color: var(--neon-purple);">[!] EXCEPTION: RECORD_NOT_FOUND</h3>
+      <p style="color: var(--text-muted); margin-top: 10px;">The targeted operation payload key is unrecognized.</p>
+    </div>
+  </div>
+
+  <script>
+    // Component Helpers
+    function toggleTaskAnswer(btn, answer) {
+        btn.innerText = answer;
+        btn.style.background = "var(--neon-green)";
+        btn.style.color = "#000";
+    }
+
+    function revealTargetFlag(btn, flag) {
+        const mask = btn.previousElementSibling.querySelector('.flag-blurred-mask');
+        mask.innerText = flag;
+        mask.style.filter = "none";
+        mask.style.opacity = "1";
+        btn.style.display = "none";
+    }
+  </script>
+  <script src="main.js"></script>
+</body>
+</html>
