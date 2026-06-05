@@ -88,7 +88,46 @@
       btn.style.display = 'none';
     }
   };
+!(function($) {
+  "use strict";
 
+  $(document).ready(function() {
+    // 1. Get the parameter from the URL (e.g., ?machine=reactor)
+    const params = new URLSearchParams(window.location.search);
+    const machineId = params.get('machine');
+
+    if (machineId) {
+      const targetDiv = document.getElementById('target-' + machineId);
+      
+      // Hide everything first
+      $('.machine-profile-node').hide();
+
+      if (targetDiv) {
+        // Show only the requested one
+        targetDiv.style.display = 'block';
+      } else {
+        // Show fallback if machine doesn't exist
+        $('#fallback-deck').show();
+      }
+    }
+  });
+
+  // Global helper functions
+  window.toggleTaskAnswer = function(btn, answer) {
+      btn.innerText = answer;
+      btn.style.background = "var(--neon-green)";
+  };
+
+  window.revealTargetFlag = function(btn, flag) {
+      const mask = btn.previousElementSibling.querySelector('.flag-blurred-mask');
+      if (mask) {
+          mask.innerText = flag;
+          mask.style.filter = "none";
+          btn.style.display = "none";
+      }
+  };
+
+})(jQuery);
   // --- Initialization ---
   $(document).ready(function() {
     initMachineEngine();
