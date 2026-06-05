@@ -1,951 +1,612 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<!-- edited by Alghala at July 2022 -->
 <head>
-  <!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-5BB8W2X');</script>
-  <!-- End Google Tag Manager -->
-  <link rel="icon" type="image/png" href="/favicon.png"/>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>0xRoot | Offensive Security & CTF Writeups</title>
+  <meta name="description" content="Deep dives into HTB machines, custom exploit development, red teaming tactics, and CTF walkthroughs.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
 
-  <title> Alghala's </title>
-  <meta content="" name="descriptison">
-  <meta content="" name="keywords">
+  <style>
+    /* --- CSS Variables & Design Tokens --- */
+    :root {
+      --bg-main: #05020c;
+      --bg-surface: #0e091b;
+      --bg-terminal: #090514;
+      --accent-purple: #a855f7;
+      --accent-purple-glow: rgba(168, 85, 247, 0.6);
+      --accent-purple-dim: rgba(168, 85, 247, 0.15);
+      --text-primary: #f3f1f6;
+      --text-secondary: #9a8fbc;
+      --text-muted: #625784;
+      --terminal-green: #22c55e;
+      --terminal-red: #ef4444;
+      --border-color: #24193d;
+      --font-sans: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+    /* --- Global Resets & Basics --- */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  <!-- Vendor CSS Files -->
-  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="vendor/icofont/icofont.min.css" rel="stylesheet">
-  <link href="vendor/remixicon/remixicon.css" rel="stylesheet">
-  <link href="vendor/owl.carousel/assets/owl.carousel.min.css" rel="stylesheet">
-  <link href="vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-  <link href="vendor/venobox/venobox.css" rel="stylesheet">
+    html, body {
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
 
-  <!-- Template Main CSS File -->
-  <link href="style.css" rel="stylesheet">
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
+    /* --- Decorative Elements: The Neon Beam --- */
+    .hero-glow-container {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100vw;
+      height: 650px;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-169007209-3"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+    /* Horizontal Horizon Beam */
+    .neon-horizon-beam {
+      position: absolute;
+      top: 380px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent 10%, var(--accent-purple) 50%, transparent 90%);
+      box-shadow: 
+        0 0 15px var(--accent-purple),
+        0 0 35px var(--accent-purple),
+        0 0 70px var(--accent-purple);
+      opacity: 0.8;
+    }
 
-    gtag('config', 'UA-169007209-3');
-  </script>
+    /* Central Singularity Arc (The Aura Dome) */
+    .neon-singularity-arc {
+      position: absolute;
+      top: 240px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 450px;
+      height: 280px;
+      border-radius: 50% 50% 0 0;
+      background: transparent;
+      border: 4px solid var(--accent-purple);
+      border-bottom: none;
+      box-shadow: 
+        0 -10px 30px var(--accent-purple-glow),
+        inset 0 10px 40px var(--accent-purple-dim);
+      filter: blur(1px);
+    }
 
+    /* Massive ambient back-glow */
+    .ambient-purple-wash {
+      position: absolute;
+      top: 150px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.25) 0%, transparent 70%);
+      filter: blur(50px);
+    }
 
+    /* Scanline Overlay for Terminal Feel */
+    body::before {
+      content: " ";
+      display: block;
+      position: fixed;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(rgba(18, 10, 36, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+      z-index: 99999;
+      background-size: 100% 4px, 6px 100%;
+      pointer-events: none;
+    }
 
-  <!-- =======================================================
-  * Template Name: Personal - v2.1.0
-  * Template URL: https://bootstrapmade.com/personal-free-resume-bootstrap-template/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
+    /* --- Typography & Components --- */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 10;
+    }
+
+    header {
+      padding: 32px 0;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(5, 2, 12, 0.6);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo span {
+      color: var(--accent-purple);
+      text-shadow: 0 0 10px var(--accent-purple-glow);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--text-primary);
+      text-shadow: 0 0 8px var(--accent-purple-glow);
+    }
+
+    /* --- Hero Section --- */
+    .hero {
+      text-align: center;
+      padding: 90px 0 40px 0;
+    }
+
+    .hero-tagline {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent-purple);
+      border: 1px solid var(--border-color);
+      padding: 6px 16px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 24px;
+      background: rgba(14, 9, 27, 0.5);
+      backdrop-filter: blur(4px);
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+      line-height: 1.1;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--text-secondary);
+    }
+
+    .hero-subtext {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto 48px auto;
+    }
+
+    /* --- Terminal UI Component --- */
+    .terminal-window {
+      background-color: var(--bg-terminal);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 40px var(--accent-purple-dim);
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: left;
+      font-family: var(--font-mono);
+      overflow: hidden;
+    }
+
+    .terminal-header {
+      background: #120b24;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .terminal-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .terminal-btn {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .terminal-btn.close { background: var(--terminal-red); }
+    .terminal-btn.minimize { background: #eab308; }
+    .terminal-btn.maximize { background: var(--terminal-green); }
+
+    .terminal-title {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .terminal-body {
+      padding: 24px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      min-height: 280px;
+    }
+
+    .terminal-row {
+      margin-bottom: 12px;
+    }
+
+    .prompt-symbol {
+      color: var(--accent-purple);
+      font-weight: bold;
+    }
+
+    .command-text {
+      color: var(--text-primary);
+    }
+
+    .output-text {
+      color: var(--text-secondary);
+      margin-left: 16px;
+    }
+
+    .output-success {
+      color: var(--terminal-green);
+    }
+
+    /* --- Filter Tabs --- */
+    .content-section {
+      padding: 100px 0;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 40px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 16px;
+    }
+
+    .section-title h2 {
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    .section-title p {
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .tab-filters {
+      display: flex;
+      gap: 12px;
+      list-style: none;
+    }
+
+    .filter-btn {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--accent-purple);
+      color: var(--text-primary);
+      box-shadow: 0 0 10px var(--accent-purple-dim);
+    }
+
+    /* --- Grid & Blog Cards --- */
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px;
+    }
+
+    .blog-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .blog-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(168, 85, 247, 0.4);
+    }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      margin-bottom: 16px;
+    }
+
+    .tag {
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    .tag.htb { background: rgba(34, 197, 94, 0.1); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.2); }
+    .tag.redteam { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
+    .tag.ctf { background: rgba(168, 85, 247, 0.1); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.2); }
+
+    .card-date {
+      color: var(--text-muted);
+    }
+
+    .blog-card h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .blog-card p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 24px;
+      flex-grow: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+    }
+
+    .read-more {
+      color: var(--accent-purple);
+      font-weight: 500;
+    }
+
+    .difficulty {
+      font-size: 0.8rem;
+    }
+    .difficulty.hard { color: var(--terminal-red); }
+    .difficulty.medium { color: #f97316; }
+    .difficulty.easy { color: var(--terminal-green); }
+
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 40px 0;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* --- Responsive Adjustments --- */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.5rem; }
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+      }
+      .tab-filters {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 8px;
+      }
+    }
+  </style>
 </head>
-
 <body>
-  
-  <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5BB8W2X"
-  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
-  <!-- ======= Header ======= -->
-  <header id="header" class="header-tops">
 
-    <div class="container">
+  <div class="hero-glow-container">
+    <div class="ambient-purple-wash"></div>
+    <div class="neon-singularity-arc"></div>
+    <div class="neon-horizon-beam"></div>
+  </div>
 
-      <h1><a href="index.html">Alghala Yousef</a></h1>
-      <h2 style="color:#fff"><span class="typing" style="color:#67e4fa"></span></h2>
-      <nav class="nav-menu d-none d-lg-block">
-        <ul>
-          <li class="active"><a href="#header"> <span>Home</span></a></li>
-          <li><a href="#about"><span>About</span></a></li>
-          <li><a href="#education"> <span>Education</span></a></li>
-          <!-- <li><a href="#experience"> <span>Experience</span></a></li> -->
-<!--          <li><a href="#projects"> <span>Projects</span></a></li>-->
-          <li><a href="#portfolio"> <span>Projects</span></a></li>
-          <li><a href="#blog"> <span>Blog</span></a></li>
-          <li><a href="#skills"> <span>Skills</span></a></li>
-          <li><a href="" target="_blank"> <span>Resume</span></a></li>
-          <!-- <li><a href="#links"> <span>Resume & Links</span></a></li> -->
-          <li><a href="#contacts"> <span>Contact</span></a></li>
-
+  <header>
+    <div class="container nav-wrapper">
+      <div class="logo">
+        <span>#</span> 0xRoot_
+      </div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#" class="active">Home</a></li>
+          <li><a href="#library">Writeups</a></li>
+          <li><a href="#about">About</a></li>
         </ul>
-      </nav><!-- .nav-menu -->
-
-      <div class="social-links">
-          <a href="https://www.linkedin.com/in/itsalghala" target="_blank" class="linkedin"><i class="bx bxl-linkedin"></i></a>
-          <a href="https://www.github.com/itsalghala" target="_blank" class="github"><i class="bx bxl-github"></i></a>
-          <a href="mailto:alghala.221b@gmail.com" target="_blank" class="google"><i class="bx bxl-google"></i></a>
-
-      </div>
-
+      </nav>
     </div>
-  </header><!-- End Header -->
+  </header>
 
-  <!-- ======= About Section ======= -->
-  <section id="about" class="about">
-
-    <!-- ======= About Me ======= -->
-    <div class="about-me container">
-
-      <div class="section-title">
-        <h2>About</h2>
-      </div>
-
-      <div class="row">
-        <div class="col-lg-4" data-aos="fade-right">
-          <img src="img/LOGO-MINE-WEB.svg" class="img-fluid" alt="">
-        </div>
-        <script src="https://tryhackme.com/badge/888291"></script>
-        <div class="col-lg-8 pt-4 pt-lg-0 content" data-aos="fade-left">
-          <p>Focused and enthusiastic Cyber Security student with a keen interest in Digital Forensics and Network Security. 
-            I am a passionate individual who thrives to solve real-world industry problems. and a data-driven, detail-oriented 
-            cyber security analyst who always strives to learn new information. 
-          </p>
-          <!-- <div class="row">
-            <div class="col-lg-6">
-              <ul>
-                <li><i class="icofont-rounded-right"></i> <strong>Birthday:</strong> 12 October 1996</li>
-                <li><i class="icofont-rounded-right"></i> <strong>Phone:</strong></li>
-              </ul>
-            </div> -->
-            <!-- <div class="col-lg-6">
-              <ul>
-                <li><i class="icofont-rounded-right"></i> <strong>City:</strong> Khobar, Eastern Province - SA</li>
-                <li><i class="icofont-rounded-right"></i> <strong>Email:</strong> alghala.221b@gmail.com</li>
-              </ul>
-            </div> -->
-          <!-- </div> -->
-        </div> 
-      </div>
-
-    </div><!-- End About Me -->
-
-    <!-- ======= Interests ======= -->
-    <div class="interests container">
-
-      <div class="section-title">
-        <h2>Interests</h2>
-      </div>
-
-      <div class="row">
-        <div class="col-lg-3 col-md-4">
-          <div class="icon-box">
-            <i class="ri-shield-line" style="color: #2ce6ff;"></i>
-            <h3>Cyber Security</h3>
-          </div>
-        </div>
-        <div class="col-lg-3 col-md-4 mt-4 mt-md-0">
-          <div class="icon-box">
-            <i class="ri-fingerprint-fill" style="color: #5578ff;"></i>
-            <h3>Digital Forensics</h3>
-          </div>
-        </div>
-        <div class="col-lg-3 col-md-4 mt-4 mt-md-0">
-          <div class="icon-box">
-            <i class="ri-wifi-line" style="color: #03e890;"></i>
-            <h3>Network Security</h3>
-          </div>
-        </div>
-        <div class="col-lg-3 col-md-4 mt-4 mt-lg-0">
-          <div class="icon-box">
-            <i class="ri-bug-line" style="color: #f1ae1e;"></i>
-            <h3>Penetration Testing</h3>
-          </div>
-        </div>
-        <div class="col-lg-3 col-md-4 mt-4">
-          <div class="icon-box">
-            <i class="ri-html5-line" style="color: #61e6c4;"></i>
-            <h3>Web Development</h3>
-          </div>
-        </div>
-        <div class="col-lg-3 col-md-4 mt-4">
-          <div class="icon-box">
-            <i class="ri-spy-line" style="color: #d178fa;"></i>
-            <h3>Ethical Hacking</h3>
-          </div>
-        </div>
-        <div class="col-lg-3 col-md-4 mt-4">
-          <div class="icon-box">
-            <i class="ri-terminal-box-line" style="color: #f36987;"></i>
-            <h3>Programming </h3>
-          </div>
-        </div>
-        <div class="col-lg-3 col-md-4 mt-4">
-          <div class="icon-box">
-            <i class="ri-flag-line" style="color: #ffc107;"></i>
-            <h3>CTF player</h3>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- End Interests -->
-  </section><!-- End About Section -->
-
-
-
-  <!-- ======= Education Section ======= -->
-  <section id="education" class="services">
+  <section class="hero">
     <div class="container">
-      <div class="section-title">
-        <h2>Education</h2>
-      </div>
-      <div class="row">
-        <div class="col-lg-12" data-aos="fade-up" style="display: inline-block;">
-            <div class="col-md-4 mt-4 mt-md-0 icon-box" data-aos="fade-up" data-aos-delay="100" style="padding:0px 0px;padding-bottom: 5px;display: inline-block;">
-              <img src="img/education/CCSIT.png" class="img-fluid" alt="">
-              <!-- <h4 style="text-align:left;"><a href="https://ahduni.edu.in/" target="_blank" style="color:#12d640">Ahmedabad University</a><br> </h4> -->
-              <p style="text-align:left;color:#67e4fa;padding: 5px 10px;"><em>BSc. in Cyber Security and Digital Forensics</em></p>
-              <h5 style="text-align:left;padding: 0px 10px;">August 2018 - Present</h5>
-              <h6 style="text-align:left;color:#67e4fa;padding: 0px 10px;">Relevant Coursework</h6>
-              <ul style="text-align:left;color:#ffffff;">
-                
-                <li>Digital Forensic Techniques and Tools</li>
-                <li>Ethical Hacking </li>
-                <li>Network Security </li>
-                <li> Secure Software Desing</li>
-                <li>Data Structures &amp; Algorithms</li>
-                <li>Programming for Cyber Security</li>
-                <li>Netwrok and Information Technology</li>
-              </ul>
-            </div>
+      <div class="hero-tagline">Initializing Offensive Sandbox...</div>
+      <h1>Think Deeper.<br><em>Break Faster.</em></h1>
+      <p class="hero-subtext">
+        Documentation of active threat emulation tactics, step-by-step Capture The Flag breakdowns, and engineering notes from Hack The Box targets.
+      </p>
+
+      <div class="terminal-window">
+        <div class="terminal-header">
+          <div class="terminal-buttons">
+            <div class="terminal-btn close"></div>
+            <div class="terminal-btn minimize"></div>
+            <div class="terminal-btn maximize"></div>
+          </div>
+          <div class="terminal-title">guest@0xroot-terminal:~</div>
+          <div></div>
+        </div>
+        <div class="terminal-body">
+          <div class="terminal-row">
+            <span class="prompt-symbol">guest@0xroot:~$</span> <span class="command-text">cat welcome.md</span>
+          </div>
+          <div class="terminal-row">
+            <div class="output-text">Welcome to the central intelligence vault. Use the control plane below to parse available walk-throughs, custom exploits, and tactical notes.</div>
+          </div>
+          <div class="terminal-row">
+            <span class="prompt-symbol">guest@0xroot:~$</span> <span class="command-text">nmap -sV -p443 security-library.local</span>
+          </div>
+          <div class="terminal-row">
+            <div class="output-text">[+] Port 443/tcp OPEN  |  Service: HTTP over TLS (Blog Module Loaded)</div>
+            <div class="output-text output-success">[+] Integrity check passed. Access Granted.</div>
           </div>
         </div>
       </div>
 
-
-    <div class="portfolio">
-    <div class="container">
-      <div class="section-title">
-        <h2>Online Certification</h2>
-      </div>
-      <div class="row">
-        <div class="col-lg-12" data-aos="fade-up" style="display: inline-block;">
-          <div class="col-lg-4 col-md-6 portfolio-item filter-app" style="position: absolute; left: 0px; top: 0px;">
-              <img src="https://api.accredible.com/v1/frontend/credential_website_embed_image/certificate/79643312" class="img-fluid" alt="">
-              <p style="text-align:left;color:#67e4fa;padding: 5px 10px;"><em>Junior Penetration Tester (eJPT)</em></p>
-              <h5 style="text-align:left;padding: 0px 10px;">September 3, 2022 - Present</h5>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- here --!>
-
-      <div class="row portfolio-container" style="position: relative; height: 437.75px;">
-
-         <div class="col-lg-4 col-md-6 portfolio-item filter-app" style="position: absolute; left: 0px; top: 0px;">
-          <div class="portfolio-wrap">
-            <img src="assets/img/certification/stanford.jpg" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              <h4>Junior Penetration Tester (eJPT) </h4>
-              <div class="portfolio-links">
-                <a href="https://api.accredible.com/v1/frontend/credential_website_embed_image/certificate/79643312" target="_blank" title="Certificate"><i class="bx bx-link"></i></a>
-              </div>
-            </div>
-           </div>
-          </div>
-
-        <div class="col-lg-4 col-md-6 portfolio-item filter-app" style="position: absolute; left: 370px; top: 0px;">
-          <div class="portfolio-wrap">
-            <img src="assets/img/certification/stanford.jpg" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              <h4>Professional Penetration Tester (eCPPT) </h4>
-              <div class="portfolio-links">
-                <a href="https://api.accredible.com/v1/frontend/credential_website_embed_image/certificate/94371495" target="_blank" title="Certificate"><i class="bx bx-link"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      <!--    <div class="col-lg-4 col-md-6 portfolio-item filter-app" style="position: absolute; left: 740px; top: 0px;">
-          <div class="portfolio-wrap">
-            <img src="assets/img/certification/ucsd.jpg" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              <h4>Security+</h4>
-              <div class="portfolio-links">
-                <a href="https://coursera.org/share/98bbfb990484fac370d5e5ed14334ea4" target="_blank" title="Certificate"><i class="bx bx-link"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-4 col-md-6 portfolio-item filter-project" style="position: absolute; left: 0px; top: 218.875px;">
-          <div class="portfolio-wrap">
-            <img src="assets/img/certification/ibm.jpg" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              <h4>CyAP UK</h4>
-              <div class="portfolio-links">
-                <a href="https://drive.google.com/file/d/1FSwPt19EzY_tpvqkE6igtLf3gccKcssC/view?usp=sharing" target="_blank" title="Certificate"><i class="bx bx-link"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-4 col-md-6 portfolio-item filter-project" style="position: absolute; left: 370px; top: 218.875px;">
-          <div class="portfolio-wrap">
-            <img src="assets/img/certification/ibm.jpg" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              <h4>Machine Learning with Python</h4>
-              <div class="portfolio-links">
-                <a href="https://drive.google.com/file/d/1gimySw_NPzCJ54dqZ2j2wYyz-JDOg-S0/view?usp=sharing" target="_blank" title="Certificate"><i class="bx bx-link"></i></a>
-              </div>
-            </div>
-          </div>
-        </div> -->
-
-
-        <!-- <div class="col-lg-4 col-md-6 portfolio-item filter-project" style="position: absolute; left: 740px; top: 218.875px;">
-          <div class="portfolio-wrap">
-            <img src="assets/img/certification/dai.jpg" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              <h4>Neural Networks and Deep Learning</h4>
-              <div class="portfolio-links">
-                <a href="https://www.coursera.org/account/accomplishments/certificate/ELXZ6FE2BU7X?utm_medium=certificate&amp;utm_source=link&amp;utm_campaign=copybutton_certificate/" target="_blank" title="Certificate"><i class="bx bx-link"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <div class="container"> -->
-      <div class="section-title">
-        <h2>University Certifications</h2>
-      </div>
-
-      <div class="row portfolio-container" style="position: relative; height: 437.75px;">
-
- 
-
-
-        <!-- </div>
-
-        <div class="col-lg-4 col-md-6 portfolio-item filter-project" style="position: absolute; left: 0px; top: 218.875px;">
-          <div class="portfolio-wrap">
-            <img src="assets/img/certification/ibm.jpg" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              <h4>CyAP UK</h4>
-              <div class="portfolio-links">
-                <a href="https://drive.google.com/file/d/1FSwPt19EzY_tpvqkE6igtLf3gccKcssC/view?usp=sharing" target="_blank" title="Certificate"><i class="bx bx-link"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-4 col-md-6 portfolio-item filter-project" style="position: absolute; left: 370px; top: 218.875px;">
-          <div class="portfolio-wrap">
-            <img src="assets/img/certification/ibm.jpg" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              <h4>Machine Learning with Python</h4>
-              <div class="portfolio-links">
-                <a href="https://drive.google.com/file/d/1gimySw_NPzCJ54dqZ2j2wYyz-JDOg-S0/view?usp=sharing" target="_blank" title="Certificate"><i class="bx bx-link"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
-        <div class="col-lg-4 col-md-6 portfolio-item filter-project" style="position: absolute; left: 740px; top: 218.875px;">
-          <div class="portfolio-wrap">
-            <img src="assets/img/certification/dai.jpg" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              <h4>Neural Networks and Deep Learning</h4>
-              <div class="portfolio-links">
-                <a href="https://www.coursera.org/account/accomplishments/certificate/ELXZ6FE2BU7X?utm_medium=certificate&amp;utm_source=link&amp;utm_campaign=copybutton_certificate/" target="_blank" title="Certificate"><i class="bx bx-link"></i></a>
-              </div>
-            </div>
-          </div>
-        </div> -->
-
-      </div>
-    </div>
-    </div>
-
-  </section>
-  <!-- End Education Section -->
-
-
-
-  <!-- Start Experience Section -->
-
-  <section id="experience" class="services">
-    <div class="container">
-      <div class="section-title">
-        <h2>Experience</h2>
-      </div>
-      <div class="row">
-          <div class="col-lg-12" data-aos="fade-up">
-              <div class="col-md-12 mt-4 mt-md-0 icon-box" data-aos="fade-up" data-aos-delay="100">
-                <h4 style="text-align:left;"><a href="https://www.asu.edu/" style="color:#12d640">Arizona State University</a><br> </h4>
-                <h5 style="text-align:left;">January 2021 - Present</h5>
-                <p style="text-align:left;color:#fff"><em>Software Engineer </em></p>
-                <ul style="text-align:left;">
-                  <li>Managed large‑scale deployment of JupyterHub with Nbgrader and webwork software, facilitating approx 5500 students.</li>
-                  <li>Configured, troubleshot, and administered server‑side web applications for the statistics department.</li>
-                  <li>Handled Linux server administration and Apache configuration; automated tasks like user account creation, managing student database, and system maintenance using Shell and automation scripts, reducing manual work by 200%.</li>
-                </ul>
-              </div>
-              <div class="col-md-12 mt-4 mt-md-0 icon-box" data-aos="fade-up" data-aos-delay="100">
-                <h4 style="text-align:left;"><a href="https://www.augmenify.com/" style="color:#12d640">Augmenify Infotech Pvt. Ltd.</a><br> </h4>
-                <h5 style="text-align:left;">August 2020 - November 2020</h5>
-                <p style="text-align:left;color:#fff"><em>Backend Developer</em></p>
-                <ul style="text-align:left;">
-                  <li>Documented and coded server‑less web application for the hotel industry and designed REST API using Flask‑based JWT authentication.</li>
-                  <li>Redeveloped an existing system to support customer account management, scheduling, and time tracking; enabled dynamic API calls with the help of Amazon API Gateway, AWS Lambda, and DynamoDB.</li>
-                </ul>
-              </div>
-              <div class="col-md-12 mt-4 mt-md-0 icon-box" data-aos="fade-up" data-aos-delay="100">
-                <h4 style="text-align:left;"><a href="https://www.epitomesolutions.in/" style="color:#12d640">Epitome Corporation Pvt. Ltd.</a><br> </h4>
-                <h5 style="text-align:left;">July 2019 - Dec 2019</h5>
-                <p style="text-align:left;color:#fff"><em>Software Developer</em></p>
-                <ul style="text-align:left;">
-                  <li>Tested, designed, and developed backend APIs of WebRTC enabled multi‑party video conferencing web application and delivered the project 15 days ahead of schedule by efficiently designing the flow of the project.</li>
-                </ul>
-              </div>
-              <div class="col-md-12 mt-4 mt-md-0 icon-box" data-aos="fade-up" data-aos-delay="100">
-                <h4 style="text-align:left;"><a href="https://www.meditab.com/" target="_blank" style="color:#12d640">Meditab Software Pvt. Ltd.</a><br> </h4>
-                <h5 style="text-align:left;">May 2018 - June 2018</h5>
-                <p style="text-align:left;color:#fff"><em>Programmer Analyst</em></p>
-                <ul style="text-align:left;">
-                  <li>Optimized image processing algorithm of pill detection by creating customized MASKRCNN  algorithm, increasing accuracy by 15%; trained classification algorithm with the help of triplet loss to learn the image embedding of pill, reducing the hassle of collecting data of new pills. </li>
-                  <li>Devised a pipeline of the project to incorporate it into the product of the company. Implemented Restful APIs in Django that enabled our quality Analyst team to increase reporting speed by 46%.</li>
-                  <li>Built a web app to onboard data from the company’s product using Flask, Postgres, and AWS S3, enabling interactive charts in real-time.</li>
-                  <li>Mentored 2 interns to optimize the pill detection algorithm and to include the multiprocessing pipeline, increasing overall speed by 75%.</li>
-                </ul>
-              </div>
-              <div class="col-md-12 mt-4 mt-md-0 icon-box" data-aos="fade-up" data-aos-delay="100">
-                <h4 style="text-align:left;"><a href="https://www.sac.gov.in/Vyom/index.jsp" target="_blank" style="color:#12d640">Space Application Centre, ISRO</a><br> </h4>
-                <h5 style="text-align:left;">Jan 2018 - May 2018</h5>
-                <p style="text-align:left;color:#fff"><em>Research Intern</em></p>
-                <ul style="text-align:left;">
-                  <li>Implemented noise reduction algorithm on the satellite image and prepared architecture for detecting objects in high‑resolution satellite images, achieving 80% accuracy.</li>
-                  <li>Increased accessibility of satellite image data by redesigning database and application for showcasing graphical data.</li>
-                </ul>
-            </div>
-          </div>
-        </div>
     </div>
   </section>
 
-  <!-- End Experience Section -->
-
-
-
-  <!-- Start Project Section -->
-  <section id="portfolio" class="portfolio">
+  <section class="content-section" id="library">
     <div class="container">
-
-      <div class="section-title">
-        <h2>Projects</h2>
+      
+      <div class="section-header">
+        <div class="section-title">
+          <h2>Tactical Ledger</h2>
+          <p>Filter entries by core domains or target source.</p>
+        </div>
+        
+        <ul class="tab-filters">
+          <li><button class="filter-btn active" onclick="filterCategory('all', this)">ALL_NODES</button></li>
+          <li><button class="filter-btn" onclick="filterCategory('htb', this)">HTB_MACHINES</button></li>
+          <li><button class="filter-btn" onclick="filterCategory('redteam', this)">RED_TEAMING</button></li>
+          <li><button class="filter-btn" onclick="filterCategory('ctf', this)">CTF_WALKTHROUGHS</button></li>
+        </ul>
       </div>
 
-      <div class="row">
-        <div class="col-lg-12 d-flex justify-content-center">
-          <ul id="portfolio-flters">
-            <li data-filter="*" class="filter-active">All</li>
-            <li data-filter=".filter-u">University Projects</li>
-            <li data-filter=".filter-p">Personal Project</li>
-          </ul>
-        </div>
+      <div class="blog-grid" id="blogGrid">
+        
+        <article class="blog-card" data-category="htb">
+          <div>
+            <div class="card-meta">
+              <span class="tag htb">HTB Machine</span>
+              <span class="card-date">May 24, 2026</span>
+            </div>
+            <h3>HackTheBox: Visualized writeup & entry blueprint</h3>
+            <p>Deconstructing an unauthenticated remote code execution vulnerability sequence chain by bypassing custom payload sanitation filters.</p>
+          </div>
+          <div class="card-footer">
+            <a href="#" class="read-more">Analyze Trace &rarr;</a>
+            <span class="difficulty hard">HARD</span>
+          </div>
+        </article>
+
+        <article class="blog-card" data-category="redteam">
+          <div>
+            <div class="card-meta">
+              <span class="tag redteam">Red Team</span>
+              <span class="card-date">Apr 12, 2026</span>
+            </div>
+            <h3>Token Manipulation & Workload Identity Abuse</h3>
+            <p>An in-depth structural exploration into auditing claims verification processes inside complex modern cloud-integrated runtime spaces.</p>
+          </div>
+          <div class="card-footer">
+            <a href="#" class="read-more">Analyze Trace &rarr;</a>
+            <span class="difficulty medium">MEDIUM</span>
+          </div>
+        </article>
+
+        <article class="blog-card" data-category="ctf">
+          <div>
+            <div class="card-meta">
+              <span class="tag ctf">CTF Walkthrough</span>
+              <span class="card-date">Mar 03, 2026</span>
+            </div>
+            <h3>Defcon Quals: Advanced Heap Exploitation Walkthrough</h3>
+            <p>A surgical analysis of modern heap grooming methods, tcache poisoning tricks, and overcoming ASLR protections under tight flag timers.</p>
+          </div>
+          <div class="card-footer">
+            <a href="#" class="read-more">Analyze Trace &rarr;</a>
+            <span class="difficulty hard">INSANE</span>
+          </div>
+        </article>
+
+        <article class="blog-card" data-category="htb">
+          <div>
+            <div class="card-meta">
+              <span class="tag htb">HTB Machine</span>
+              <span class="card-date">Feb 18, 2026</span>
+            </div>
+            <h3>HackTheBox: Visual Machine Walkthrough</h3>
+            <p>Leveraging misconfigured local service accounts to achieve system level local privilege escalation routines on updated environments.</p>
+          </div>
+          <div class="card-footer">
+            <a href="#" class="read-more">Analyze Trace &rarr;</a>
+            <span class="difficulty easy">EASY</span>
+          </div>
+        </article>
+
       </div>
 
-      <div class="row portfolio-container">
-<!-- project 1 Keylogger -->
-        <div class="col-lg-4 col-md-6 portfolio-item filter-p">
-          <center><h4>Key Logger</h4></center>
-          <div class="portfolio-wrap">
-            <img src="img/project/keylogger-png.png" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              
-              <div class="portfolio-links">
-                <a href="projects/keylogger.html" data-gall="portfolioDetailsGallery" data-vbtype="iframe" class="venobox" title="Project Details"><i class="bx bx-info-circle"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-<!-- project 2 Web -->
-       <div class="col-lg-4 col-md-6 portfolio-item filter-u">
-          <center><h4>Web Application & Security</h4></center>
-          <div class="portfolio-wrap">
-            <img src="img/project/websecapp-png.png" class="img-fluid" alt="">
-            <div class="portfolio-info">
-   
-              <div class="portfolio-links">
-                <a href="projects/websecapp.html" data-gall="portfolioDetailsGallery" data-vbtype="iframe" class="venobox" title="Project Details"><i class="bx bx-info-circle"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-<!-- project 3 OOP -->       
-       <div class="col-lg-4 col-md-6 portfolio-item filter-u">
-          <center><h4>Boutique Hotel</h4></center>
-          <div class="portfolio-wrap">
-            <img src="img/project/hotel-png.png" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              
-              <div class="portfolio-links">
-                <a href="projects/hotel.html" data-gall="portfolioDetailsGallery" data-vbtype="iframe" class="venobox" title="Project Details"><i class="bx bx-info-circle"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-<!-- project 4 HTML -->       
-       <div class="col-lg-4 col-md-6 portfolio-item filter-u">
-          <center><h4>Front End Website</h4></center>
-          <div class="portfolio-wrap">
-            <img src="img/project/front-end-png.png" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              
-              <div class="portfolio-links">
-                <a href="projects/hotel.html" data-gall="portfolioDetailsGallery" data-vbtype="iframe" class="venobox" title="Project Details"><i class="bx bx-info-circle"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-  
-  <!-- project 5 PYTHON -->       
-       <div class="col-lg-4 col-md-6 portfolio-item filter-u">
-          <center><h4>InfoCrawler</h4></center>
-          <div class="portfolio-wrap">
-            <img src="img/project/infocrawler.png" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              
-              <div class="portfolio-links">
-                <a href="projects/hotel.html" data-gall="portfolioDetailsGallery" data-vbtype="iframe" class="venobox" title="Project Details"><i class="bx bx-info-circle"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-<!-- project 6 WMINDER -->       
-       <div class="col-lg-4 col-md-6 portfolio-item filter-p">
-          <center><h4>WMINDER</h4></center>
-          <div class="portfolio-wrap">
-            <img src="img/project/wminder-png.png" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              
-              <div class="portfolio-links">
-                <a href="projects/hotel.html" data-gall="portfolioDetailsGallery" data-vbtype="iframe" class="venobox" title="Project Details"><i class="bx bx-info-circle"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-   <!-- project 6 MACROMINDER -->       
-       <div class="col-lg-4 col-md-6 portfolio-item filter-p">
-          <center><h4>MACROMINDER</h4></center>
-          <div class="portfolio-wrap">
-            <img src="img/project/macrominder-png.png" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              
-              <div class="portfolio-links">
-                <a href="projects/hotel.html" data-gall="portfolioDetailsGallery" data-vbtype="iframe" class="venobox" title="Project Details"><i class="bx bx-info-circle"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-        
- <!-- project 7 Cryptor -->       
-       <div class="col-lg-4 col-md-6 portfolio-item filter-p">
-          <center><h4>CRYPTOMINDER</h4></center>
-          <div class="portfolio-wrap">
-            <img src="img/project/cryptominder-png.png" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              
-              <div class="portfolio-links">
-                <a href="projects/hotel.html" data-gall="portfolioDetailsGallery" data-vbtype="iframe" class="venobox" title="Project Details"><i class="bx bx-info-circle"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- <div class="col-lg-4 col-md-6 portfolio-item filter-app">
-          <center><h4>Image recognition as Service</h4></center>
-          <div class="portfolio-wrap">
-            <img src="assets/img/project/iras.jpeg" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              
-              <div class="portfolio-links">
-                <a href="projects/iras.html" data-gall="portfolioDetailsGallery" data-vbtype="iframe" class="venobox" title="Project Details"><i class="bx bx-info-circle"></i></a>
-              </div>
-            </div>
-          </div>
-        </div> -->
-
-        <!-- <div class="col-lg-4 col-md-6 portfolio-item filter-app">
-          <center><h4>Music Streaming Website</h4></center>
-          <div class="portfolio-wrap">
-            <img src="assets/img/project/musicplayer.jpg" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              
-              <div class="portfolio-links">
-                <a href="projects/musicplayer.html" data-gall="portfolioDetailsGallery" data-vbtype="iframe" class="venobox" title="Project Details"><i class="bx bx-info-circle"></i></a>
-              </div>
-            </div>
-          </div>
-        </div> -->
-
-        <!-- <div class="col-lg-4 col-md-6 portfolio-item filter-app">
-          <center><h4>Movie Recommender</h4></center>
-          <div class="portfolio-wrap">
-            <img src="assets/img/project/recommender.jpg" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              
-              <div class="portfolio-links">
-                <a href="projects/recommender.html" data-gall="portfolioDetailsGallery" data-vbtype="iframe" class="venobox" title="Project Details"><i class="bx bx-info-circle"></i></a>
-              </div>
-            </div>
-          </div>
-        </div> -->
-
-        <!-- <div class="col-lg-4 col-md-6 portfolio-item filter-app">
-          <center><h4>To-Do App</h4></center>
-          <div class="portfolio-wrap">
-            <img src="assets/img/project/todo.jpg" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              <div class="portfolio-links">
-                <a href="projects/todo.html" data-gall="portfolioDetailsGallery" data-vbtype="iframe" class="venobox" title="Project Details"><i class="bx bx-info-circle"></i></a>
-              </div>
-            </div>
-          </div>
-        </div> -->
-
-        <!-- <div class="col-lg-4 col-md-6 portfolio-item filter-project"> -->
-          <!-- <br> -->
-          <!-- <center><h4>Resume Section Classifier</h4></center>
-          <div class="portfolio-wrap">
-            <img src="assets/img/project/resume.jpg" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              <h4>Resume Section Classifier</h4>
-              <div class="portfolio-links">
-                <a href="projects/resume.html" data-gall="portfolioDetailsGallery" data-vbtype="iframe" class="venobox" title="Project Details"><i class="bx bx-info-circle"></i></a>
-              </div>
-            </div>
-          </div>
-        </div> -->
-
-        <!-- <div class="col-lg-4 col-md-6 portfolio-item filter-app">
-          <br>
-          <center><h4>Tech Blog</h4></center>
-          <div class="portfolio-wrap">
-            <img src="assets/img/project/blog.jpg" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              <div class="portfolio-links">
-                <a href="projects/blog.html" data-gall="portfolioDetailsGallery" data-vbtype="iframe" class="venobox" title="Project Details"><i class="bx bx-info-circle"></i></a>
-              </div>
-            </div>
-          </div>
-        </div> -->
-
-        <!-- <div class="col-lg-4 col-md-6 portfolio-item filter-project">
-          <center><h4>Video Description Generator</h4></center>
-          <div class="portfolio-wrap">
-            <img src="assets/img/project/vdg.jpg" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              <div class="portfolio-links">
-                <a href="projects/vdg.html" data-gall="portfolioDetailsGallery" data-vbtype="iframe" class="venobox" title="Project Details"><i class="bx bx-info-circle"></i></a>
-              </div>
-            </div>
-          </div>
-        </div> -->
-
-        <!-- <div class="col-lg-4 col-md-6 portfolio-item filter-app">
-          <center><h4>ML-DL Web-App</h4></center>
-          <div class="portfolio-wrap">
-            <img src="assets/img/project/ml.jpg" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              <div class="portfolio-links">
-                <a href="projects/ml.html" data-gall="portfolioDetailsGallery" data-vbtype="iframe" class="venobox" title="Project Details"><i class="bx bx-info-circle"></i></a>
-              </div>
-            </div>
-          </div>
-        </div> -->
-
-        
-
-        <!-- <div class="col-lg-4 col-md-6 portfolio-item filter-project"> -->
-          <!-- <br> -->
-          <!-- <center><h4>Image Generator</h4></center>
-          <div class="portfolio-wrap">
-            <img src="assets/img/project/gan.jpg" class="img-fluid" alt="">
-            <div class="portfolio-info">
-              <div class="portfolio-links">
-                <a href="projects/gan.html" data-gall="portfolioDetailsGallery" data-vbtype="iframe" class="venobox" title="Project Details"><i class="bx bx-info-circle"></i></a>
-              </div>
-            </div>
-          </div>
-        </div> -->
-
-      </div>
     </div>
   </section>
 
-  <!-- End Project Section -->
-
-<!-- Start Blog Section -->
- <section id="blog" class="services">
-  <div class="container">
-
-    <div class="section-title">
-      <h2>Blog</h2>
-    </div>
-
-    <div class="row">
-      
-      <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
-        <div class="icon-box">
-          <div class="icon"><i class="bx bx-file"></i></div>
-          <h4><a href="">Web Application Security</a></h4>
-          <p>Understanding web application basics, attacks, and countermeasures is vital for protecting an application's assets.</p>
-          <br>
-          <br>
-          <br>
-          <br>
-          <a href="https://exploitminder.gitbook.io/web-application-security/" class="btn blog">Read More</a> 
-        </div>
-      </div>
-      
-      <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
-        <div class="icon-box">
-          <div class="icon"><i class="bx bx-flag"></i></div>
-          <h4><a href="">HTB: XOR Write-Up</a></h4>
-          <p>Walkthrough to XOR Flag on the HackTheBox website, an online platform for learning and teaching cyber security.</p>
-          <br>
-          <br>
-          <br>
-          <br>
-          <a href="https://exploitminder.gitbook.io/write-ups/" class="btn blog">Read More</a> 
-        </div>
-      </div>
-      
-        <div class="col-lg-4 col-md-6 d-flex align-items-stretch">
-        <div class="icon-box">
-          <div class="icon"><i class="bx bx-flag"></i></div>
-          <h4><a href="">HTB: Nuclear Sale Write-Up</a></h4>
-          <p>Walkthrough to challange on the HackTheBox website, an online platform for learning and teaching cyber security.</p>
-          <br>
-          <br>
-          <br>
-          <a href="https://exploitminder.gitbook.io/write-ups/htb/htb-nuclear-sale" class="btn blog">Read More</a> 
-        </div>
-      </div>
-
-        <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-md-0">
-        <div class="icon-box">
-          <div class="icon"><i class="bx bx-file"></i></div>
-          <h4><a href="">TrustLine Write Up</a></h4>
-          <p> Trust Line is a platform for detecting, managing, and fixing security vulnerabilities, offering challenges to enhance penetration testers' skills. </p>
-          <br>
-          <br>
-          <br>
-          <br>
-          <a href="https://github.com/itsalghala/PDFs/blob/main/TrustLine-Write-UPS-1.pdf" class="btn blog">Read More</a> 
-        </div>
-      </div>
-
-      <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-md-0">
-        <div class="icon-box">
-          <div class="icon"><i class="bx bx-file"></i></div>
-          <h4><a href="">Volatility cheat sheet</a></h4>
-          <p>In this cheat sheet, you will find a series of practical example commands for running Volatility (memory analysis and forensics tool) and getting the most of this powerful tool.</p>
-          <br>
-          <br>
-          <br>
-          <br>
-          <a href="https://exploitminder.gitbook.io/blog/cheat-sheets/volatility" class="btn blog">Read More</a> 
-        </div>
-      </div>
-
-      
-        
-      
-      </div>
-   
-    
-      
-    </div>
-    </section>
-      
-  <!-- End Blog Section -->
-  <!-- Start Skills Section -->
-
-  <section id="skills" class="services">
+  <footer>
     <div class="container">
-      <div class="section-title">
-        <h2>Skills</h2>
-      </div>
-      <div class="row">
-        <div class="col-lg-12" data-aos="fade-up">
-          <div class="col-md-12 mt-4 mt-md-0 icon-box" data-aos="fade-up" data-aos-delay="100" style="background:#fff">
-            <h4 style="text-align:left;color:#09203a">Languages and Databases</h4>
-                <p style="text-align:left;">
-                  <img src="https://www.vectorlogo.zone/logos/python/python-horizontal.svg" alt="vectorlogo.zone" height="50" width="150">
-                  <img src="https://www.vectorlogo.zone/logos/java/java-horizontal.svg" alt="vectorlogo.zone" height="50" width="120">
-                  <img src="https://www.vectorlogo.zone/logos/w3_html5/w3_html5-ar21.svg" alt="vectorlogo.zone">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/CSS3_logo_and_wordmark.svg" alt="upload.wikimedia.org" height="60" width="90">
-                  <img src="https://www.vectorlogo.zone/logos/mysql/mysql-horizontal.svg" alt="vectorlogo.zone" height="70" width="130">
-                  <img src="https://www.vectorlogo.zone/logos/javascript/javascript-vertical.svg" alt="vectorlogo.zone" height="70" width="70">
-                  
-                  <img src="https://www.vectorlogo.zone/logos/phpmyadmin/phpmyadmin-ar21.svg" alt="vectorlogo.zone" height="70" width="130">
-                  <img src="https://www.vectorlogo.zone/logos/php/php-horizontal.svg" alt="vectorlogo.zone" height="50" width="100">
-                  <img src="img/tools/C++-image.png" alt="vectorlogo.zone" height="60" width="90">
-
-                </p>
-            </div>
-            <div class="col-md-12 mt-4 mt-md-0 icon-box" data-aos="lefade-up" data-aos-delay="100" style="background:#fff">
-              <h4 style="text-align:left;color:#09203a">Tools and Frameworks</h4>
-                <p style="text-align:left;">
-                  <img src="https://www.vectorlogo.zone/logos/apache/apache-ar21.svg" alt="vectorlogo.zone">
-                  <img src="img/tools/volatility-image.png" alt="volatility-image.zone" width="90" height="70">
-                  <img src="img/tools/burpsuite-image.png" alt="vectorlogo.zone" width="150" height="90">
-                  <img src="img/tools/NetworkMiner-image.png" alt="volatility-image.zone" width="40" height="40">
-                  <img src="img/tools/nmap-image.png" alt="vectorlogo.zone" width="90" height="70">
-                  <img src="img/tools/OSForensics-image.webp" alt="volatility-image.zone" width="150" height="90">
-                  <img src="img/tools/prodiscover-image.svg" alt="vectorlogo.zone" width="150" height="90">
-                  <img src="img/tools/splunk-image.png" alt="vectorlogo.zone" width="90" height="70">
-                  <img src="img/tools/wireshark-image.png" alt="vectorlogo.zone" width="90" height="70">
-              </p>
-          </div>
-          <div class="col-md-12 mt-4 mt-md-0 icon-box" data-aos="lefade-up" data-aos-delay="100" style="background:#fff">
-              <h4 style="text-align:left;color:#09203a">Others</h4>
-                <p style="text-align:left;">
-                  <img src="img/tools/Adobe-Photoshop-image.png" alt="vectorlogo.zone"width="70" height="70">
-                  <img src="img/tools/Adobe-Premiere-image.png" alt="vectorlogo.zone"width="70" height="70">
-                  <img src="img/tools/Arduino-image.png" alt="vectorlogo.zone" height="50" width="70">
-                  <img src="img/tools/overleaf-image.png" alt="vectorlogo.zone" height="50" width="140">
-              </p>
-          </div>
-        </div>
-      </div>
+      &copy; 2026 0xRoot. All rights reserved. // Connection Secure via TLS_AES_256_GCM_SHA384.
     </div>
-  </section>
+  </footer>
 
-  <!-- End Skills Section -->
+  <script>
+    function filterCategory(category, button) {
+      // Update active state class on category switch controllers
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      button.classList.add('active');
 
-
-
-
-  <!-- Start Links section -->
-  <!-- <section id="links" class="services">
-    <div class="container">
-      <div class="section-title">
-        <h2>Resume & Links</h2> -->
-      <!-- </div>
-      <div class="row">
-        <div class="col-md-3 mt-4 mt-md-0 icon-box" data-aos="fade-up" data-aos-delay="100">
-          <a href="https://drive.google.com/file/d/1iHBNV2UkH5LkhAP-1hYRZ2Ez_BQ6g4S7/view?usp=sharing" target="_blank"><div class="icon"><i class="icofont-page"></i></div></a>
-          <h4 class="title"><a href="https://drive.google.com/file/d/1iHBNV2UkH5LkhAP-1hYRZ2Ez_BQ6g4S7/view?usp=sharing" target="_blank">Resume</a></h4>
-          <p class="description" style="color:#fff;">The link contains downloadable resume</p>
-        </div>
-        <div class="col-md-3 mt-4 mt-md-0 icon-box" data-aos="fade-up">
-          <a href="https://github.com/rajaprerak/LeetCode_Problems" target="_blank"><div class="icon"><i class="icofont-link"></i></div></a>
-          <h4 class="title"><a href="https://github.com/rajaprerak/LeetCode_Problems" target="_blank">LeetCode Repository</a></h4>
-          <p class="description" style="color:#fff;"> The github repository contains leetcode problems solution in python.</p>
-        </div> -->
-        <!-- <div class="col-md-3 mt-4 mt-md-0 icon-box" data-aos="fade-up" data-aos-delay="100">
-          <a href="https://techingenious.herokuapp.com/" target="_blank"><div class="icon"><i class="icofont-page"></i></div></a>
-          <h4 class="title"><a href="https://techingenious.herokuapp.com/" target="_blank">Blog</a></h4>
-          <p class="description" style="color:#fff;">Blog containing articles on AI, coding, development</p>
-        </div> -->
-      <!-- </div>
-    </div> -->
-  <!-- </section>  -->
-  <!--End Links Section -->
-
-
-  <!-- Start Contact Section -->
-
-  <section id="contacts" class="contact">
-    <div class="container">
-
-      <div class="section-title">
-        <h2>Contact</h2>
-      </div>
-
-      <div class="row mt-2">
-
-        <div class="col-md-6 d-flex align-items-stretch">
-          <div class="info-box">
-            <i class="bx bx-map"></i>
-            <h3>My Address</h3>
-            <!-- <p>1275 E University Dr</p>
-            <p>Unit 212</p> -->
-            <p>Khobar, Saudi Arabia</p>
-          </div>
-        </div>
-
-        <div class="col-md-6 mt-4 mt-md-0 d-flex align-items-stretch">
-          <div class="info-box">
-            <i class="bx bx-share-alt"></i>
-            <h3>Social Profiles</h3>
-            <div class="social-links">
-              <a href="https://www.linkedin.com/in/itsalghala" target="_blank" class="linkedin"><i class="bx bxl-linkedin"></i></a>
-              <a href="https://www.github.com/itsalghala" target="_blank" class="github"><i class="bx bxl-github"></i></a>
-              <a href="mailto:alghala.221b@gmail.com" target="_blank" class="google"><i class="bx bxl-google"></i></a>
-
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-6 mt-4 d-flex align-items-stretch">
-          <div class="info-box">
-            <i class="bx bx-envelope"></i>
-            <h3>Email</h3>
-            <p>alghala.221b@gmail.com</p>
-          </div>
-        </div>
-        <div class="col-md-6 mt-4 d-flex align-items-stretch">
-          <div class="info-box">
-            <i class="bx bxl-twitter"></i>
-            <h3>Twitter</h3>
-            <a href="https://twitter.com/itsalghala"> @itsalghala </a>
-          </div>
-        </div>
-      </div>
-      <!-- <div id="sfczmlqxr5caww28rswrt8849ghbekgnh3j" ></div><script type="text/javascript" src="https://counter1.stat.ovh/private/counter.js?c=zmlqxr5caww28rswrt8849ghbekgnh3j&down=async" async></script><noscript><a href="https://www.freecounterstat.com" title="free web counter"><img src="https://counter1.stat.ovh/private/freecounterstat.php?c=zmlqxr5caww28rswrt8849ghbekgnh3j" border="0" title="free web counter" alt="free web counter" style="visibility: none;"></a></noscript> -->
-    </div>
-  </section>
-
-  <!-- End Contact Section -->
-
-  <!-- Vendor JS Files -->
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="vendor/jquery.easing/jquery.easing.min.js"></script>
-  <script src="vendor/php-email-form/validate.js"></script>
-  <script src="vendor/waypoints/jquery.waypoints.min.js"></script>
-  <script src="vendor/counterup/counterup.min.js"></script>
-  <script src="vendor/owl.carousel/owl.carousel.min.js"></script>
-  <script src="vendor/isotope-layout/isotope.pkgd.min.js"></script>
-  <script src="vendor/venobox/venobox.min.js"></script>
-  <script src="vendor/typed.js/typed.min.js"></script>
-  <script type="text/javascript">
-    var typed = new Typed('.typing',{
-      strings: ["Cybersecurity Researcher","Red Teamer","Pen Tester","Digital Forensics Investigator","Always Learning"],
-      loop: true,
-      typeSpeed: 65,
-      backSpeed: 65
-    });
+      // Sort grid visibility matrix logic
+      const cards = document.querySelectorAll('.blog-card');
+      cards.forEach(card => {
+        if (category === 'all' || card.getAttribute('data-category') === category) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
   </script>
-
-  <!-- Template Main JS File -->
-  <script src="main.js"></script>
-
 </body>
-
 </html>
