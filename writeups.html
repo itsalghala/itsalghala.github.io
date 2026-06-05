@@ -121,6 +121,16 @@
       margin-top: 10px;
       box-sizing: border-box;
   }
+
+  .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      display: block;
+      /* Add this to prevent it from looking stretched */
+      object-fit: cover; 
+  }
   </style>
 </head>
 <body>
@@ -469,6 +479,7 @@
         drawer.className = 'wu-drawer open';
         drawer.innerHTML = `
             <button class="drawer-close" onclick="closeDrawer()">✕ CLOSE</button>
+            <img src="${d.icon}" class="card-icon" alt="Machine Icon">
             <div class="page-header" style="padding-top:0; margin-bottom:24px;">
                 <div class="sys-badge" style="color:${d.diffColor}; border-color:${d.diffColor}33;">${d.badge}</div>
                 <h2 style="font-size:2rem;font-weight:700;margin-top:8px;">${d.title}</h2>
