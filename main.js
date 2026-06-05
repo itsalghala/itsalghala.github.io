@@ -1,17 +1,25 @@
 /**
- * 0xRoot Matrix Hub // Core Control & Router Engine
+ * Template Name: Personal - v2.1.0 (Restored & Enhanced)
+ * Template URL: https://bootstrapmade.com/personal-free-resume-bootstrap-template/
+ * Author: BootstrapMade.com
+ * License: https://bootstrapmade.com/license/
  */
 
+/* =========================================================================
+   1. Matrix Target Engine (Handles standalone CTF writeup nodes via ?machine=)
+   ========================================================================= */
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Dynamic Router: Check for isolated machine logs (?machine=)
   const urlParams = new URLSearchParams(window.location.search);
   const targetMachine = urlParams.get('machine');
 
+  // Only execute separation logic if the machine query parameter exists
   if (targetMachine) {
     const blocks = document.querySelectorAll('.machine-profile-node');
     if (blocks.length > 0) {
+      // Hide all default nodes
       blocks.forEach(block => block.style.display = 'none');
       
+      // Isolate and wake up the requested node
       const activeBlock = document.getElementById('target-' + targetMachine);
       if (activeBlock) {
         activeBlock.style.display = 'block';
@@ -22,15 +30,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
-
-  // 2. Auto-detect traditional anchor route targets (#home, #writeups, etc.)
-  const activeHash = window.location.hash.replace('#', '');
-  if (['home', 'writeups', 'about'].includes(activeHash)) {
-    switchRoute(activeHash);
-  }
 });
 
-// Interactive task answer reveal logic 
+/**
+ * Interactive writeup answer reveal utility
+ */
 function toggleTaskAnswer(btn, answerText) {
   const parent = btn.parentElement;
   let answerNode = parent.querySelector('.revealed-answer');
@@ -40,12 +44,11 @@ function toggleTaskAnswer(btn, answerText) {
     answerNode.className = 'revealed-answer';
     answerNode.style.marginTop = '10px';
     answerNode.style.padding = '10px';
-    answerNode.style.background = 'rgba(34, 211, 238, 0.05)';
-    answerNode.style.border = '1px dashed rgba(34, 211, 238, 0.3)';
+    answerNode.style.background = 'rgba(0, 255, 65, 0.05)';
+    answerNode.style.border = '1px dashed rgba(0, 255, 65, 0.3)';
     answerNode.style.borderRadius = '6px';
-    answerNode.style.fontFamily = 'var(--font-mono)';
-    answerNode.style.fontSize = '0.85rem';
-    answerNode.style.color = 'var(--neon-cyan)';
+    answerNode.style.fontFamily = 'monospace';
+    answerNode.style.color = '#00ff41';
     answerNode.innerText = `[>] ANSWER: ${answerText}`;
     parent.appendChild(answerNode);
     btn.innerText = "Hide Answer";
@@ -55,74 +58,29 @@ function toggleTaskAnswer(btn, answerText) {
   }
 }
 
-// Global flag un-blur utility script
+/**
+ * Global flag un-blur utility
+ */
 function revealTargetFlag(btn, explicitFlag) {
   const wrapper = btn.previousElementSibling;
   if (wrapper) {
-    wrapper.innerHTML = `<span style="color: var(--neon-green); font-weight: bold; letter-spacing: 1px;">${explicitFlag}</span>`;
+    wrapper.innerHTML = `<span style="color: #00ff41; font-weight: bold; letter-spacing: 1px;">${explicitFlag}</span>`;
     btn.style.display = 'none';
   }
 }
 
-// Global Route Navigation Handler
-function switchRoute(targetViewId) {
-  // Locate all view sections on the page
-  const views = document.querySelectorAll('.app-view');
-  if (views.length > 0) {
-    views.forEach(view => {
-      view.classList.remove('active-view');
-    });
-    
-    const targetedView = document.getElementById('view-' + targetViewId);
-    if (targetedView) {
-      targetedView.classList.add('active-view');
-    }
-  }
+// Expose utilities to window context to catch dynamic inline triggers
+window.toggleTaskAnswer = toggleTaskAnswer;
+window.revealTargetFlag = revealTargetFlag;
 
-  // Synchronize active state styling across nav targets
-  document.querySelectorAll('.nav-target').forEach(link => {
-    link.classList.remove('active');
-  });
-
-  const targetedNavElement = Array.from(document.querySelectorAll('.nav-target')).find(
-    el => el.getAttribute('href') === '#' + targetViewId || el.getAttribute('href') === targetViewId
-  );
-  if (targetedNavElement) {
-    targetedNavElement.classList.add('active');
-  }
-
-  window.scrollTo({ top: 0, behavior: 'instant' });
-}
-
-// Multi-Cloud Structure Tab Controller
-function openCloudTab(evt, tabId) {
-  const container = evt.currentTarget.closest('.tab-container');
-  if (!container) return;
-
-  container.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-  container.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-
-  const activeTab = document.getElementById(tabId);
-  if (activeTab) {
-    activeTab.classList.add('active');
-  }
-  evt.currentTarget.classList.add('active');
-}
-
-// Expose vanilla handlers globally
-window.switchRoute = switchRoute;
-window.openCloudTab = openCloudTab;
 
 /* =========================================================================
-   Legacy / Theme Specific jQuery Pipeline
+   2. Original Bootstrap Personal Theme Pipeline (Untouched Architecture)
    ========================================================================= */
 !(function($) {
   "use strict";
 
-  // Prevent collisions if elements don't exist in modern views
-  if (typeof $ === 'undefined') return;
-
-  // Nav Menu Click Logic
+  // Nav Menu
   $(document).on('click', '.nav-menu a, .mobile-nav a', function(e) {
     if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
       var hash = this.hash;
@@ -157,15 +115,16 @@ window.openCloudTab = openCloudTab;
           $('.mobile-nav-toggle i').toggleClass('icofont-navigation-menu icofont-close');
           $('.mobile-nav-overly').fadeOut();
         }
+
         return false;
       }
     }
   });
 
-  // Activate sections on load with legacy hash links
+  // Activate/show sections on load with hash links
   if (window.location.hash) {
     var initial_nav = window.location.hash;
-    if ($(initial_nav).length && !['#home', '#writeups', '#about'].includes(initial_nav)) {
+    if ($(initial_nav).length) {
       $('#header').addClass('header-top');
       $('.nav-menu .active, .mobile-nav .active').removeClass('active');
       $('.nav-menu, .mobile-nav').find('a[href="' + initial_nav + '"]').parent('li').addClass('active');
@@ -176,8 +135,8 @@ window.openCloudTab = openCloudTab;
     }
   }
 
-  // Mobile Navigation Structure Cloning
-  if ($('.nav-menu').length && $('.mobile-nav').length === 0) {
+  // Mobile Navigation
+  if ($('.nav-menu').length) {
     var $mobile_nav = $('.nav-menu').clone().prop({
       class: 'mobile-nav d-lg-none'
     });
@@ -201,48 +160,67 @@ window.openCloudTab = openCloudTab;
         }
       }
     });
-  } else if ($(".mobile-nav, .mobile-nav-toggle").length && !$('.nav-menu').length) {
+  } else if ($(".mobile-nav, .mobile-nav-toggle").length) {
     $(".mobile-nav, .mobile-nav-toggle").hide();
   }
 
-  // Plugins safely bound by checking presence
+  // jQuery counterUp
   if ($.fn.counterUp) {
-    $('[data-toggle="counter-up"]').counterUp({ delay: 10, time: 1000 });
+    $('[data-toggle="counter-up"]').counterUp({
+      delay: 10,
+      time: 1000
+    });
   }
 
-  if ($.fn.waypoint) {
+  // Skills section
+  if ($('.skills-content').length && typeof $.fn.waypoint !== 'undefined') {
     $('.skills-content').waypoint(function() {
       $('.progress .progress-bar').each(function() {
         $(this).css("width", $(this).attr("aria-valuenow") + '%');
       });
-    }, { offset: '80%' });
+    }, {
+      offset: '80%'
+    });
   }
 
+  // Testimonials carousel (uses the Owl Carousel library)
   if ($.fn.owlCarousel) {
     $(".testimonials-carousel").owlCarousel({
       autoplay: true,
       dots: true,
       loop: true,
-      responsive: { 0: { items: 1 }, 768: { items: 2 }, 900: { items: 3 } }
+      responsive: {
+        0: { items: 1 },
+        768: { items: 2 },
+        900: { items: 3 }
+      }
     });
   }
 
+  // Porfolio isotope and filter
   if ($.fn.isotope) {
     $(window).on('load', function() {
       var portfolioIsotope = $('.portfolio-container').isotope({
         itemSelector: '.portfolio-item',
         layoutMode: 'fitRows'
       });
+
       $('#portfolio-flters li').on('click', function() {
         $("#portfolio-flters li").removeClass('filter-active');
         $(this).addClass('filter-active');
-        portfolioIsotope.isotope({ filter: $(this).data('filter') });
+
+        portfolioIsotope.isotope({
+          filter: $(this).data('filter')
+        });
       });
     });
   }
 
-  if ($.fn.venobox) {
-    $(document).ready(function() { $('.venobox').venobox(); });
-  }
+  // Initiate venobox (lightbox feature used in portofilo)
+  $(document).ready(function() {
+    if ($.fn.venobox) {
+      $('.venobox').venobox();
+    }
+  });
 
 })(jQuery);
