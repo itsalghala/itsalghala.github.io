@@ -1,40 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ExploitMinder // Operational Logs</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  <style>
-    /* Copy the same :root tokens from your index.html here */
-    /* ... (Paste your index.html :root variables here) ... */
-    
-    body { background-color: #03010a; color: #f3f4f6; font-family: 'Space Grotesk', sans-serif; }
-    .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
-    .log-card { background: #110b24; border: 1px solid rgba(168, 85, 247, 0.2); border-radius: 14px; padding: 40px; }
-    h2 { color: #a855f7; margin-bottom: 20px; }
-    .terminal-output { background: #03010a; color: #10b981; padding: 20px; font-family: 'Share Tech Mono', monospace; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
-  </style>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="style.css">
+  <title>ExploitMinder // Operational Ledger</title>
 </head>
 <body>
-  <div class="container">
-    <a href="index.html" style="color: #9ca3af; text-decoration: none;">← Return to Main Matrix</a>
-    <div id="target-logs" class="log-card" style="margin-top:20px;">
-      <h2 id="log-title">Loading Intelligence...</h2>
-      <div id="log-content"></div>
+  <nav><div class="container nav-wrapper"><a href="index.html" class="logo">ExploitMinder<span>//</span></a></div></nav>
+
+  <div class="container" style="padding-top: 60px;">
+    <div id="reactor" class="machine-profile" style="display:none;">
+      <img src="reactor.png" style="width:100%; border-radius:12px; margin-bottom:20px;">
+      <div class="sys-badge">Linux // Hard</div>
+      <h1>HTB: Reactor</h1>
+      <p style="color:var(--text-muted);">TECH: Prototype Pollution | TYPE: Web RCE</p>
+      
+      <div class="about-layout">
+        <div class="about-sidebar">
+           <div class="terminal-string">// TELEMETRY</div>
+           <p>Target: 10.129.10.200</p>
+        </div>
+        <div class="timeline">
+           <h3>Reconnaissance</h3>
+           <p>Standard Nmap procedures...</p>
+        </div>
+      </div>
     </div>
-  </div>
+    
+    </div>
 
   <script>
-    const logs = {
-      'reactor': { title: 'Reactor: Prototype Pollution', body: '...' },
-      'appointment': { title: 'Appointment: SQLi Bypass', body: '...' }
-    };
-    const params = new URLSearchParams(window.location.search);
-    const m = params.get('machine');
-    if(logs[m]) {
-      document.getElementById('log-title').innerText = logs[m].title;
-    }
+    // This tiny script handles the routing instantly
+    const machineId = window.location.hash.substring(1);
+    const target = document.getElementById(machineId);
+    if (target) target.style.display = "block";
+    else document.body.innerHTML = "<h1>404: Payload Not Found</h1>";
   </script>
 </body>
 </html>
