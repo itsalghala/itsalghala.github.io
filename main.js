@@ -246,3 +246,31 @@ window.revealTargetFlag = function(btn, flag) {
   });
 
 })(jQuery);
+
+!(function($) {
+  "use strict";
+
+  $(document).ready(function() {
+    // A. Machine Loader (Runs only on writeups.html)
+    const params = new URLSearchParams(window.location.search);
+    const machine = params.get('machine');
+    
+    if (machine) {
+      $('.machine-profile-node').hide(); // Hide all
+      const target = $('#target-' + machine);
+      if (target.length) target.show(); // Show specific one
+      else $('#fallback-deck').show();
+    }
+  });
+
+  // B. UI Helpers for Flags/Tasks
+  window.toggleTaskAnswer = function(btn, ans) {
+    btn.innerText = ans;
+    btn.style.background = "var(--neon-green)";
+  };
+
+  window.revealTargetFlag = function(btn, flag) {
+    btn.previousElementSibling.innerHTML = flag;
+    btn.style.display = 'none';
+  };
+})(jQuery);
