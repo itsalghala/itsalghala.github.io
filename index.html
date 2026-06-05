@@ -3,12 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>0xRoot // Target Writeups & Offensive Security Logs</title>
-  
+  <title>0xRoot // Target Writeups Ledger</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -25,57 +23,32 @@
 
   <div class="container">
     <div class="page-header">
-      <div class="sys-badge">Exploitation Ledger</div>
-      <h2 style="font-size: 2.5rem; font-weight: 700;">HTB Machines & Offensive Research</h2>
+      <div class="sys-badge">Target Manifest</div>
+      <h2 style="font-size: 2.5rem; font-weight: 700;">Offensive Operation Logs</h2>
     </div>
-          
-    <p style="color: var(--text-muted); margin-bottom: 40px; max-width: 600px;">
-      Documenting technical proof-of-concepts, post-exploitation vectors, and tactical boundary escapes for selected targets.
-    </p>
 
     <div class="bento-grid" style="margin-bottom: 80px;">
       
-      <div class="bento-box wide">
+      <a href="target-logs.html?machine=reactor" class="bento-box">
         <div>
-          <div class="box-meta">
-            <span class="tag">HTB Machine Walkthrough</span>
-            <span style="color: red; font-size: 0.85rem;">■ Insane</span>
-          </div>
-          <h3 class="box-title">[Insert Chosen Target Name]</h3>
-          <p class="box-desc">
-            Provide a high-level summary of your chosen machine's initial access foothold, privilege escalation vectors, and core misconfigurations exploited here.
-          </p>
+          <div class="box-meta"><span class="tag">Next.js RCE</span><span style="color: orange;">■ Hard</span></div>
+          <h3 class="box-title">Reactor</h3>
+          <p class="box-desc">Prototype pollution vector exploitation within unauthenticated React Server Component trees.</p>
         </div>
-        <div class="box-footer">
-          <span>OS // [LINUX/WINDOWS]</span>
-          <span>TARGET IP // 10.10.11.X</span>
-        </div>
-      </div>
+        <div class="box-footer"><span>OS // LINUX</span><span>IP // 10.129.10.200</span></div>
+      </a>
 
-      <div class="bento-box">
+      <a href="target-logs.html?machine=appointment" class="bento-box">
         <div>
-          <div class="box-meta">
-            <span class="tag">Offensive Technique</span>
-            <span style="color: orange; font-size: 0.85rem;">■ Hard</span>
-          </div>
-          <h3 class="box-title">[Exploit Primitive / CVE]</h3>
-          <p class="box-desc">
-            Deep dive into a specific offensive topic, payload engineering structure, or token hijacking methodology you choose to break down.
-          </p>
+          <div class="box-meta"><span class="tag">SQL Injection</span><span style="color: #10b981;">■ Very Easy</span></div>
+          <h3 class="box-title">Appointment</h3>
+          <p class="box-desc">Authentication mechanism bypass using inline comment execution strings against relational backend database engines.</p>
         </div>
-        <div class="box-footer">
-          <span>CATEGORY // [PWN/CRYPTO/INFRA]</span>
-          <span>STATUS // ACTIVE</span>
-        </div>
-      </div>
+        <div class="box-footer"><span>OS // LINUX</span><span>IP // 10.129.17.133</span></div>
+      </a>
 
-      </div>
+    </div>
   </div>
-
-  <footer class="container">
-    <div>&copy; 2026 0xRoot Matrix Hub. All Rights Preserved.</div>
-    <div>STABLE // BUILD_0x99A</div>
-  </footer>
 
 </body>
 </html>
