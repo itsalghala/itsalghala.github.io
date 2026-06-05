@@ -135,7 +135,7 @@
     <div class="bento-grid" id="wu-grid">
 
       <!-- CARD: Appointment -->
-      <div class="bento-box" style="cursor:pointer; padding:0;"
+      <div class="bento-box wide" style="cursor:pointer; padding:0;"
          data-difficulty="medium" data-tags="web,privesc" data-machine="devhub"
          onclick="openDrawer(this,'devhub')">
      </div>
@@ -144,11 +144,11 @@
           <div>
             <div class="box-meta">
               <span class="tag">RCE / Pivot</span>
-              <span style="font-size:0.85rem; color:var(--neon-cyan);">
-                <span class="diff-dot" style="background:var(--neon-cyan);box-shadow:0 0 6px var(--neon-cyan);"></span>Medium
+              <span style="font-size:0.85rem; color:#f59e0b;">
+                <span class="diff-dot" style="background:#f59e0b;box-shadow:0 0 6px #f59e0b;"></span>Medium
               </span>
             </div>
-            <div class="box-title">HTB: DevHub</div>
+           <div class="box-title">HTB: DevHub</div>
             <div class="box-desc">Exploiting MCPJam RCE, pivoting via SSH tunneling, and dumping root credentials via debug API endpoints.</div>
           </div>
           <div class="box-footer"><span>OS // LINUX</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
@@ -157,7 +157,7 @@
 
       <!-- CARD: Reactor (wide) -->
       <div class="bento-box wide" style="cursor:pointer; padding:0;"
-           data-difficulty="hard" data-tags="web,privesc" data-machine="reactor"
+           data-difficulty="Easy" data-tags="web,privesc" data-machine="reactor"
            onclick="openDrawer(this,'reactor')">
         <div class="wu-accent hard"></div>
         <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
@@ -175,30 +175,30 @@
         </div>
       </div>
 
-      <!-- CARD: Analytics -->
+      <!-- CARD: Active -->
       <div class="bento-box" style="cursor:pointer; padding:0;"
-           data-difficulty="medium" data-tags="web" data-machine="analytics"
-           onclick="openDrawer(this,'analytics')">
+           data-difficulty="Easy" data-tags="web" data-machine="active"
+           onclick="openDrawer(this,'acitve')">
         <div class="wu-accent medium"></div>
         <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
           <div>
             <div class="box-meta">
               <span class="tag">Machine</span>
               <span style="font-size:0.85rem; color:var(--neon-cyan);">
-                <span class="diff-dot" style="background:var(--neon-cyan);box-shadow:0 0 6px var(--neon-cyan);"></span>Medium
+                <span class="diff-dot" style="background:var(--neon-cyan);box-shadow:0 0 6px var(--neon-cyan);"></span>Easy
               </span>
             </div>
-            <div class="box-title">Analytics Engine Leak</div>
-            <div class="box-desc">Exposing pre-auth environment configurations via unvetted query parsing mechanics leading to RCE.</div>
+            <div class="box-title">Active</div>
+            <div class="box-desc">Active was an example of an easy box that still provided a lot of opportunity to learn. The box was centered around common vulnerabilities associated with Active Directory. There’s a good chance to practice SMB enumeration. It also gives the opportunity to use Kerberoasting against a Windows Domain, which, if you’re not a pentester, you may not have had the chance to do before.</div>
           </div>
           <div class="box-footer"><span>OS // LINUX</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
         </div>
       </div>
 
-      <!-- CARD: CryptoForge -->
+      <!-- CARD: DummyData2 -->
       <div class="bento-box" style="cursor:pointer; padding:0;"
            data-difficulty="hard" data-tags="crypto" data-machine="cryptoforge"
-           onclick="openDrawer(this,'cryptoforge')">
+           onclick="openDrawer(this,'DummyData2')">
         <div class="wu-accent hard"></div>
         <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
           <div>
@@ -215,10 +215,10 @@
         </div>
       </div>
 
-      <!-- CARD: SyncNode -->
+      <!-- CARD: DummyData1 -->
       <div class="bento-box" style="cursor:pointer; padding:0;"
            data-difficulty="insane" data-tags="ad,privesc" data-machine="syncnode"
-           onclick="openDrawer(this,'syncnode')">
+           onclick="openDrawer(this,'DummyData1')">
         <div class="wu-accent insane"></div>
         <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
           <div>
