@@ -356,23 +356,84 @@
 
   };
   </script>
-
-  <script>
+<script>
     let activeCard = null;
     let activeDrawer = null;
 
+    // 1. Core Drawer Logic
     function openDrawer(cardEl, machineId) {
-      // Toggle off
+      // Toggle off logic
       if (activeCard === cardEl) { closeDrawer(); return; }
-
+      
       if (activeDrawer) { activeDrawer.remove(); activeDrawer = null; }
       if (activeCard)   { activeCard.classList.remove('selected'); activeCard = null; }
 
       activeCard = cardEl;
       cardEl.classList.add('selected');
+      history.replaceState(null, null, '#' + machineId);
 
       const d = WRITEUP_DATA[machineId];
       if (!d) return;
+
+      // [INSERT YOUR HTML CONSTRUCTION CODE HERE FROM YOUR PREVIOUS VERSION]
+      // (The code starting with "const drawer = document.createElement('div');")
+      
+      cardEl.insertAdjacentElement('afterend', drawer);
+      activeDrawer = drawer;
+      setTimeout(() => drawer.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
+    }
+
+    // 2. Close Drawer Logic
+    function closeDrawer() {
+      if (activeDrawer) { activeDrawer.remove(); activeDrawer = null; }
+      if (activeCard)   { activeCard.classList.remove('selected'); activeCard = null; }
+      history.replaceState(null, null, ' '); // Clean URL
+    }
+
+    // 3. Page Load Handler (Deep Linking)
+    document.addEventListener("DOMContentLoaded", function() {
+      const hash = window.location.hash.substring(1);
+      if (hash && WRITEUP_DATA[hash]) {
+        const targetCard = document.querySelector(`[data-machine="${hash}"]`);
+        if (targetCard) {
+          targetCard.scrollIntoView();
+          openDrawer(targetCard, hash);
+        }
+      }
+    });
+
+    // 4. Helper Functions (Tasks/Flags/Filters)
+    function toggleTaskAnswer(btn, answer) {
+      btn.innerText = answer;
+      btn.style.background = "var(--neon-green)";
+      btn.style.color = "#000";
+    }
+    
+    function revealTargetFlag(btn, flag) {
+      const mask = btn.previousElementSibling.querySelector('.flag-blurred-mask');
+      if (mask) {
+        mask.innerText = flag;
+        mask.style.filter = "none";
+        mask.style.opacity = "1";
+        btn.style.display = "none";
+      }
+    }
+
+    document.querySelectorAll('.filter-pill').forEach(pill => {
+      pill.addEventListener('click', function() {
+        document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        closeDrawer();
+        const f = this.dataset.filter;
+        document.querySelectorAll('#wu-grid .bento-box').forEach(card => {
+          const show = f === 'all' || card.dataset.difficulty === f || (card.dataset.tags||'').includes(f);
+          card.style.display = show ? '' : 'none';
+        });
+      });
+    });
+  </script>
+
+
 
       // Build timeline nodes
       const nodesHtml = (d.nodes || []).map(n => `
@@ -412,7 +473,7 @@
 
       // Full writeup link
       const fullLink = d.hasFullWriteup
-        ? `<a href="target-logs.html?machine=${machineId}" style="display:inline-flex;align-items:center;gap:8px;margin-top:20px;font-family:var(--font-mono);font-size:0.8rem;color:var(--neon-purple);border:var(--border-purple);padding:8px 16px;border-radius:8px;background:rgba(168,85,247,0.06);text-decoration:none;transition:all 0.15s;">OPEN FULL REPORT ↗</a>`
+        ? `<a href="writeups.html?machine=${machineId}" style="display:inline-flex;align-items:center;gap:8px;margin-top:20px;font-family:var(--font-mono);font-size:0.8rem;color:var(--neon-purple);border:var(--border-purple);padding:8px 16px;border-radius:8px;background:rgba(168,85,247,0.06);text-decoration:none;transition:all 0.15s;">OPEN FULL REPORT ↗</a>`
         : `<div style="font-family:var(--font-mono);font-size:0.78rem;color:var(--text-dark);margin-top:16px;">// Full writeup coming soon</div>`;
 
       const drawer = document.createElement('div');
