@@ -474,18 +474,13 @@
 <body>
 
   <!-- App Header & Navigation Layer -->
-  <header id="header-nav">
-    <div class="container nav-wrapper">
-      <a href="#header" class="logo">ExploitMinder<span>//</span></a>
-      <nav class="nav-menu">
-        <ul>
-          <li class="active"><a href="#header">Home</a></li>
-          <li><a href="#writeups">Writeups</a></li>
-          <li><a href="#about">About</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+<nav class="nav-menu">
+  <ul>
+    <li class="active"><a href="#" data-target="header">Home</a></li>
+    <li><a href="#" data-target="writeups">Writeups</a></li>
+    <li><a href="#" data-target="about">About</a></li>
+  </ul>
+</nav>
 
   <!-- SECTION 1: HOME VIEW -->
   <section id="header" class="section-show">
@@ -681,8 +676,8 @@ Get-DomainUser -SPN | Get-DomainSPNTicket -InvokeKerberoast | Select-Object -Exp
     <div>STABLE // BUILD_0x99A</div>
   </footer>
 
-  <!-- Native JavaScript Tab Handler -->
-  <script>
+<script>
+    // 1. Existing PoC Tab Handler
     function openPocTab(tabId) {
       document.querySelectorAll('.poc-content').forEach(content => {
         content.classList.remove('active');
@@ -693,9 +688,28 @@ Get-DomainUser -SPN | Get-DomainSPNTicket -InvokeKerberoast | Select-Object -Exp
       document.getElementById(tabId).classList.add('active');
       document.getElementById('btn-' + tabId).classList.add('active');
     }
+
+    // 2. New Section Switcher Logic
+    document.querySelectorAll('.nav-menu a').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Remove active class from all nav items and sections
+        document.querySelectorAll('.nav-menu li').forEach(li => li.classList.remove('active'));
+        document.querySelectorAll('section').forEach(s => s.classList.remove('section-show'));
+        
+        // Add active class to current nav item
+        this.parentElement.classList.add('active');
+        
+        // Show the target section (requires data-target attribute in HTML)
+        const target = this.getAttribute('data-target');
+        document.getElementById(target).classList.add('section-show');
+        
+        window.scrollTo(0, 0);
+      });
+    });
   </script>
 
-  <!-- Core JavaScript Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="main.js"></script>
 </body>
