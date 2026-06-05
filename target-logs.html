@@ -1,40 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ExploitMinder // Loading Manifest...</title>
   <link rel="stylesheet" href="style.css">
-  <title>ExploitMinder // Operational Ledger</title>
 </head>
 <body>
-  <nav><div class="container nav-wrapper"><a href="index.html" class="logo">ExploitMinder<span>//</span></a></div></nav>
 
-  <div class="container" style="padding-top: 60px;">
-    <div id="reactor" class="machine-profile" style="display:none;">
-      <img src="reactor.png" style="width:100%; border-radius:12px; margin-bottom:20px;">
-      <div class="sys-badge">Linux // Hard</div>
-      <h1>HTB: Reactor</h1>
-      <p style="color:var(--text-muted);">TECH: Prototype Pollution | TYPE: Web RCE</p>
-      
-      <div class="about-layout">
-        <div class="about-sidebar">
-           <div class="terminal-string">// TELEMETRY</div>
-           <p>Target: 10.129.10.200</p>
-        </div>
-        <div class="timeline">
-           <h3>Reconnaissance</h3>
-           <p>Standard Nmap procedures...</p>
-        </div>
+  <nav>
+    <div class="container nav-wrapper">
+      <a href="index.html" class="logo">ExploitMinder<span>//</span></a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
       </div>
     </div>
-    
+  </nav>
+
+  <div class="container" style="padding-top: 40px;">
+    <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-family: var(--font-mono); font-size: 0.9rem;">&larr; Back to Ledger</a>
+
+    <div id="target-reactor" class="machine-profile-node" style="display: none;">
+        <h1>HTB: Reactor</h1>
+        <p>Your Reactor content goes here...</p>
     </div>
 
-  <script>
-    // This tiny script handles the routing instantly
-    const machineId = window.location.hash.substring(1);
-    const target = document.getElementById(machineId);
-    if (target) target.style.display = "block";
-    else document.body.innerHTML = "<h1>404: Payload Not Found</h1>";
-  </script>
+    <div id="target-appointment" class="machine-profile-node" style="display: none;">
+        <h1>HTB: Appointment</h1>
+        <p>Your Appointment content goes here...</p>
+    </div>
+
+    <div id="fallback-deck" style="display: none; padding: 80px 0; text-align: center;">
+      <h3>[!] EXCEPTION: RECORD_NOT_FOUND</h3>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
 </body>
 </html>
