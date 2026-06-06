@@ -187,12 +187,18 @@
 
     /* The coin */
     .node-coin {
-      width: 72px; height: 72px; border-radius: 50%;
+/* 🟢 REPLACE WITH THIS SLIGHTLY LARGER SIZING: */
+      width: 84px; 
+      height: 84px; 
+      border-radius: 50%;
+      
       position: relative;
       background: radial-gradient(circle at 35% 30%, #1e0840, #07010f);
-      border: 1px solid rgba(168,85,247,.4);
-      box-shadow: 0 0 18px rgba(168,85,247,.2), inset 0 0 14px rgba(168,85,247,.07);
-      display: flex; align-items: center; justify-content: center;
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      box-shadow: 0 0 18px rgba(168, 85, 247, 0.2), inset 0 0 14px rgba(168, 85, 247, 0.07);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       overflow: hidden;
       animation: coin-float linear infinite;
     }
@@ -289,10 +295,134 @@
     /* ─── FOOTER ─── */
     #site-footer { border-top: 1px solid rgba(168,85,247,.08); padding: 36px 0; font-family: var(--font-mono); font-size: .78rem; color: var(--text-dark); display: flex; justify-content: space-between; }
     #site-footer span { color: var(--neon-purple); }
+    /* 🟢 PLACED JUST BEFORE THE @media QUERY */
+    
+    /* HTB Panel UI Component */
+    .htb-panel {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 680px;
+      margin: 24px auto 0 auto;
+      background: rgba(17, 11, 36, 0.6);
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      border-radius: 12px;
+      padding: 16px 24px;
+      backdrop-filter: blur(12px);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 24px;
+      text-align: left;
+      align-items: center;
+      opacity: 0;
+      pointer-events: all;
+      animation: telemetry-fade-up .8s .8s forwards; /* Fixed animation name conflict */
+    }
+    .htb-panel:hover {
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      box-shadow: 0 0 30px rgba(168, 85, 247, 0.15);
+    }
+    .htb-avatar {
+      background: #03010a;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      text-align: center;
+    }
+    .htb-avatar .brand {
+      color: #10b981;
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .htb-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .stat-unit {
+      background: rgba(3, 1, 10, 0.4);
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      padding: 8px 12px;
+      border-radius: 6px;
+    }
+    .stat-unit label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: #4b5563;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .stat-unit span {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    /* 3D Engine Overwrite Rules */
+    .side-quest-node {
+      perspective: 1000px !important;
+    }
+    .side-quest-node .node-coin {
+      animation: coin-flip linear infinite !important;
+      transform-style: preserve-3d !important;
+    }
+
+    .coin-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .side-quest-node:hover .coin-inner {
+      transform: rotateY(180deg);
+    }
+    .coin-front, .coin-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: 50%;
+    }
+    .coin-front {
+      z-index: 2;
+      transform: rotateY(0deg);
+    }
+    .coin-back {
+      background: #03010a;
+      border: 1px solid rgba(168, 85, 247, 0.5);
+      transform: rotateY(180deg);
+      z-index: 1;
+    }
+    .coin-logo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    
+    @keyframes telemetry-fade-up {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes coin-flip {
+      0% { transform: rotateY(0deg); }
+      100% { transform: rotateY(360deg); }
+    }
 
     @media(max-width:600px){
       #name-beam{width:200px} .corner{font-size:.6rem}
-      .nodes-field{gap:20px} .node-coin{width:58px;height:58px} .node-icon{font-size:1.3rem}
+      .nodes-field{gap:20px} 
+      .node-coin { width: 68px; height: 68px; } 
+      .node-icon { font-size: 1.5rem; }
       .cta-buttons{flex-direction:column}
     }
   </style>
@@ -321,6 +451,7 @@
       <div id="name-beam"></div>
     </div>
     <div id="quote-wrap"><div id="quote-text"></div></div>
+
     <a id="enter-btn" href="index.html">ENTER SYSTEM ↗</a>
   </div>
 
@@ -348,6 +479,23 @@
         <li>Detached from the structure —<br>I only look for the friction.</li>
         <li>Red team by nature. Purple team by philosophy.</li>
       </ul>
+      <!-- 🟢 HTB PANEL PLACED EXACTLY AFTER THE PURPLE TEAM QUOTE LINE -->
+      <div class="htb-panel-wrapper" id="htbTelemetryNode">
+        <div class="htb-panel">
+          <div class="htb-avatar">
+            <div class="brand">HTB</div>
+            <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">RANKING_NODE</div>
+          </div>
+          <div>
+            <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--neon-purple); margin-bottom: 4px;">LIVE CONNECTION ESTABLISHED</div>
+            <div class="htb-stats">
+              <div class="stat-unit"><label>Identity</label><span>ExploitMinder</span></div>
+              <div class="stat-unit"><label>Rank</label><span style="color:#a855f7;">Skilled</span></div>
+              <div class="stat-unit"><label>System Owned</label><span>0</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -399,59 +547,104 @@
   </section>
 
   <!-- INTERESTS NODE CERTIFCIATES -->
-  <section id="interests">
-    <canvas id="interests-canvas"></canvas>
+  <section id="side-quests" style="position: relative; padding: 80px 0 100px;">
     <div class="container">
-      <div class="int-header">ACTIVE_RESEARCH_VECTORS</div>
+      <div class="int-header">ACQUIRED_CREDENTIALS</div>
       <h2 class="int-title">Side <span>Quests</span></h2>
-      <div class="nodes-field" id="nodesField">
+      <div class="nodes-field" id="nodesFieldCerts">
 
-        <div class="int-node" style="--d:.05s">
-          <div class="node-coin" style="animation-duration:3.8s;animation-delay:0s">
-            <span class="node-icon">⚙️</span>
-          </div>
-          <div class="node-label">eJPT<br> by INE</div>
-        </div>
+    <div class="int-node side-quest-node" style="--d:.05s">
+            <div class="node-coin" style="animation-duration:4s; animation-delay:0s">
+                <div class="coin-inner">
+                <div class="coin-front">
+                <img src="https://us-east-1.graphassets.com/AwCYQkwjSUCbfkm08Ct1Mz/cmcc3wze0lx3007irps13e6k3" alt="eJPT Front" class="coin-logo">
+                </div>
+                <div class="coin-back">
+                    <img src="https://us-east-1.graphassets.com/AwCYQkwjSUCbfkm08Ct1Mz/cmcc3wze0lx3007irps13e6k3" alt="eJPT" class="coin-logo">
+                </div>
+                </div>
+            </div>
+            <div class="node-label">eJPT<br>by INE</div>
+    </div>
 
-        <div class="int-node" style="--d:.15s">
-          <div class="node-coin" style="animation-duration:4.4s;animation-delay:-.8s">
-            <span class="node-icon">🧠</span>
-          </div>
+        <div class="int-node side-quest-node" style="--d:.15s">
+          <div class="node-coin" style="animation-duration:4.5s; animation-delay:-0.8s">
+                <div class="coin-inner">
+                <div class="coin-front">
+                <img src="https://us-east-1.graphassets.com/AwCYQkwjSUCbfkm08Ct1Mz/cmcc4rcyjmlbk07ir6t6m20d2" alt="eWPT Front" class="coin-logo">
+                </div>
+                <div class="coin-back">
+                    <img src="https://us-east-1.graphassets.com/AwCYQkwjSUCbfkm08Ct1Mz/cmcc4rcyjmlbk07ir6t6m20d2" alt="eWPT" class="coin-logo">
+                </div>
+                </div>
+            </div>
           <div class="node-label">eWPT<br>by INE</div>
         </div>
 
-        <div class="int-node" style="--d:.25s">
-          <div class="node-coin" style="animation-duration:3.2s;animation-delay:-1.6s">
-            <span class="node-icon">🌐</span>
-          </div>
+
+
+        <div class="int-node side-quest-node" style="--d:.25s">
+          <div class="node-coin" style="animation-duration:3.8s; animation-delay:-1.6s">
+            <div class="coin-inner">
+                <div class="coin-front">
+                <img src="https://us-east-1.graphassets.com/AwCYQkwjSUCbfkm08Ct1Mz/cmcc5xv63nfpn07irxufr2b8z" alt="eCPPT Front" class="coin-logo">
+                </div>
+                <div class="coin-back">
+                    <img src="https://us-east-1.graphassets.com/AwCYQkwjSUCbfkm08Ct1Mz/cmcc5xv63nfpn07irxufr2b8z" alt="eCPPT" class="coin-logo">
+                </div>
+                </div>
+            </div>
           <div class="node-label">eCPPT<br>by INE</div>
         </div>
 
-        <div class="int-node" style="--d:.35s">
-          <div class="node-coin" style="animation-duration:5s;animation-delay:-.4s">
-            <span class="node-icon">💣</span>
-          </div>
+        <div class="int-node side-quest-node" style="--d:.35s">
+          <div class="node-coin" style="animation-duration:5.2s; animation-delay:-0.4s">
+            <div class="coin-inner">
+                <div class="coin-front">
+                <img src="https://images.credly.com/size/680x680/images/c89c0e5a-3675-4012-a7fb-dd04fbb32805/blob" alt="GCAD Front" class="coin-logo">
+                </div>
+                <div class="coin-back">
+                    <img src="https://images.credly.com/size/680x680/images/c89c0e5a-3675-4012-a7fb-dd04fbb32805/blob" alt="GCAD" class="coin-logo">
+                </div>
+                </div>
+            </div>
           <div class="node-label">GCAD<br>by SANS</div>
         </div>
 
-        <div class="int-node" style="--d:.45s">
-          <div class="node-coin" style="animation-duration:4s;animation-delay:-2s">
-            <span class="node-icon">🦠</span>
-          </div>
-          <div class="node-label">DANTE<br>HTB Pro Labs</div>
+        <div class="int-node side-quest-node" style="--d:.45s">
+          <div class="node-coin" style="animation-duration:4.2s; animation-delay:-2s">
+            <div class="coin-inner">
+                <div class="coin-front">
+                <img src="https://www.hackthebox.com/images/landingv3/dante-icon.webp" alt="Dante Front" class="coin-logo">
+                </div>
+                <div class="coin-back">
+                    <img src="https://www.hackthebox.com/images/landingv3/dante-icon.webp" alt="Dante" class="coin-logo">
+                </div>
+                </div>
+            </div>
+          <div class="node-label">Dante<br>HTB Pro Labs</div>
         </div>
 
-        <div class="int-node" style="--d:.55s">
-          <div class="node-coin" style="animation-duration:4s;animation-delay:-2s">
-            <span class="node-icon">🦠</span>
-          </div>
-          <div class="node-label">Zypher<br>HTB Pro Labs</div>
+        <div class="int-node side-quest-node" style="--d:.55s">
+          <div class="node-coin" style="animation-duration:4.7s; animation-delay:-1.2s">
+            <div class="coin-inner">
+                <div class="coin-front">
+                <img src="https://www.hackthebox.com/images/landingv3/ic-zephyr.svg" alt="Zephyr Front" class="coin-logo">
+                </div>
+                <div class="coin-back">
+                    <img src="https://www.hackthebox.com/images/landingv3/ic-zephyr.svg" alt="Zephyr" class="coin-logo">
+                </div>
+                </div>
+            </div>
+          <div class="node-label">Zephyr<br>HTB Pro Labs</div>
         </div>
+
       </div>
     </div>
   </section>
 
-  <!-- CTA -->
+
+        <!-- CTA -->
   <section id="cta">
     <div class="container">
       <div class="cta-eyebrow">ACCESS_NODES</div>
@@ -642,10 +835,11 @@ const io = new IntersectionObserver(entries=>{
     if(t.id==='anchorLine') t.classList.add('in');
     if(t.id==='mysteryLines') t.querySelectorAll('li').forEach((li,i)=>setTimeout(()=>li.classList.add('in'),i*140));
     if(t.id==='nodesField') t.querySelectorAll('.int-node').forEach((n,i)=>setTimeout(()=>n.classList.add('in'),i*100));
+    if(t.id==='nodesFieldCerts') t.querySelectorAll('.int-node').forEach((n,i)=>setTimeout(()=>n.classList.add('in'),i*100));
     io.unobserve(t);
   });
 },{threshold:.15});
-['anchorLine','mysteryLines','nodesField'].forEach(id=>{
+['anchorLine','mysteryLines','nodesField','nodesFieldCerts'].forEach(id=>{
   const el=document.getElementById(id); if(el) io.observe(el);
 });
 </script>
