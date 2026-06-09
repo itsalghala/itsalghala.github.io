@@ -265,6 +265,31 @@
     <!-- Each card has id="machinename" so writeups.html#reactor works as a direct URL -->
     <div class="bento-grid" id="wu-grid">
 
+
+      <div id="connected" class="bento-box" tabindex="0"           
+           style="cursor:pointer; padding:0;"           
+           data-difficulty="easy" data-tags="web,privesc,xx jobs, xx injection, FreePBX" data-machine="connected"           
+           onclick="openDrawer(this,'connected')"           
+           onkeydown="if(event.key==='Enter')openDrawer(this,'connected')">
+        <div class="wu-accent easy"></div>
+        <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
+          <div>
+            <img src="https://htb-mp-prod-public-storage.s3.eu-central-1.amazonaws.com/avatars/5f828febf436aa997dff714a184614fe.png"
+                 alt="Connected Icon" style="width:44px;height:44px;border-radius:8px;object-fit:cover;margin-bottom:14px;border:1px solid rgba(168,85,247,0.2);">
+            <div class="box-meta">
+              <span class="tag">FreePBX CVE</span>
+              <span class="tag">xxx Injection</span>
+              <span style="font-size:0.85rem;color:var(--neon-green);">
+                <span class="diff-dot" style="background:var(--neon-green);box-shadow:0 0 6px var(--neon-green);"></span>Easy
+              </span>
+            </div>
+            <div class="box-title">HTB: Connected</div>
+            <div class="box-desc">Unauthenticated FreePBX SQL Injection → Malicious Cron Injection </div>
+          </div>
+          <div class="box-footer"><span>OS // LINUX</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
+        </div>
+      </div>
+
       <!-- CARD: Facts -->
       <div id="facts" class="bento-box wide" tabindex="0"
            style="cursor:pointer; padding:0;"
@@ -420,7 +445,47 @@
   ══════════════════════════════════════════ -->
   <script>
   const WRITEUP_DATA = {
-
+    connected: {
+      title: "HTB: Connected",
+      badge: "Linux // Easy",
+      icon: "https://htb-mp-prod-public-storage.s3.eu-central-1.amazonaws.com/avatars/5f828febf436aa997dff714a184614fe.png",
+      os: "Linux", diff: "Easy", diffColor: "var(--neon-green)",
+      port: "22, 80, 443", time: "⚠️ 4h 26m",
+      vector: "FreePBX SQLi (CVE-xx-xx) → xx xx Manipulation → xx xx xx Script",
+      hasFullWriteup: true,
+      nodes: [
+        {
+          phase: "RECONNAISSANCE", title: "Port Scanning & Service Mapping",
+          body: "Initial scan with Rustscan followed by a deep aggressive Nmap discovery mapped out web infrastructures on ports 80/443 alongside OpenSSH. The target redirected to connected.htb running an Apache webserver hosting a FreePBX instance.",
+        },
+        {
+          phase: "INITIAL ACCESS", title: "Unauthenticated FreePBX SQL Injection",
+          body: "Discovered an xxx in FreePBX's endpoint component module..",
+        },
+        {
+          phase: "FOOTHOLD", title: "XXX Poisoning to Shell",
+          body: "Stacked ...",
+        },
+        {
+          phase: "⚠️ THE RABBIT HOLES", title: "3+ Hour Post-Exploitation Dead Ends",
+        },
+        {
+          phase: "PRIVILEGE ESCALATION", title: "xx",
+        },
+        {
+          phase: "ROOT COMPROMISE", title: "xx",
+          body: "Will be published soon.",
+        },
+        {
+          phase: "LESSONS LEARNED", title: "Key Takeaways",
+          body: "1) Prioritize xx. 2) Error xxx."
+        }
+      ],
+      flags: [
+        { name: "User Flag", value: "0bb" },
+        { name: "Root Flag", value: "110" }
+      ]
+    },
     facts: {
       title: "HTB: Facts",
       badge: "Linux // Easy",
