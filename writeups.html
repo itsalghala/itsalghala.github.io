@@ -298,7 +298,7 @@
               <div class="wu-accent medium"></div>
               <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
                 <div>
-                  <img src="Browsed/Screenshot_1448-05-17_at_6.00.33_PM.png" alt="Browsed writeup screenshot" style="width:44px;height:44px;border-radius:8px;object-fit:cover;margin-bottom:14px;border:1px solid rgba(168,85,247,0.2);">
+                  <img src="https://cdn.services-k8s.prod.aws.htb.systems/content/machines/avatar/a0c75262-73b6-45ba-b27f-5d9f048dc5dd.png" alt="Browsed writeup screenshot" style="width:44px;height:44px;border-radius:8px;object-fit:cover;margin-bottom:14px;border:1px solid rgba(168,85,247,0.2);">
                   <div class="box-meta">
                     <span class="tag">Linux / Browser Extension</span>
                     <span style="font-size:0.85rem;color:var(--neon-cyan);">
@@ -412,7 +412,7 @@
         <div class="wu-accent insane"></div>
         <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
           <div>
-            <img src="APT/1.png" alt="APT writeup screenshot" style="width:44px;height:44px;border-radius:8px;object-fit:cover;margin-bottom:14px;border:1px solid rgba(168,85,247,0.2);">
+            <img src="https://cdn.services-k8s.prod.aws.htb.systems/content/machines/avatar/9e4d90d2-f449-45c2-8e2b-320aacdfe33e.png" alt="APT writeup screenshot" style="width:44px;height:44px;border-radius:8px;object-fit:cover;margin-bottom:14px;border:1px solid rgba(168,85,247,0.2);">
             <div class="box-meta">
               <span class="tag">RPC / Active Directory</span>
               <span style="font-size:0.85rem;color:#ef4444;">
@@ -602,7 +602,7 @@
           {
             phase: "⚠️ THE RABBIT HOLES",
             title: "The Content Script Dead End (1.5 Hours Wasted)",
-            body: "My initial instinct was to build a standard extension content script to read `http://localhost:5000`. Huge mistake—browser CORS policies completely blocked it from interacting with the local DOM or hitting loopback endpoints. \n\n![HIMYM Barney Stinson frustration gif](https://media.giphy.com/media/3oKIPnAiaMCws8nOsE/giphy.gif)\n\nI spun my wheels testing different XSS-style script injections before realizing extensions require a **Background Service Worker** explicitly listed in `host_permissions` to bypass CORS and securely query internal services[cite: 6]."
+            body: "My initial instinct was to build a standard extension content script to read `http://localhost:5000`. Huge mistake—browser CORS policies completely blocked it from interacting with the local DOM or hitting loopback endpoints.<br><br><img src='https://media.giphy.com/media/3oKIPnAiaMCws8nOsE/giphy.gif' alt='Frustration' style='max-width:100%; border-radius:8px; margin:10px 0;'><br><br>I spun my wheels testing different XSS-style script injections before realizing extensions require a **Background Service Worker** explicitly listed in `host_permissions` to bypass CORS and securely query internal services[cite: 6]."
           },
           {
             phase: "FOOTHOLD",
@@ -619,7 +619,7 @@
           {
             phase: "PRIVILEGE ESCALATION",
             title: "Mastering Python Bytecode (.pyc) Cache Poisoning",
-            body: "Ran `sudo -l` and found permission to execute `/opt/extensiontool/extension_tool.py` as root[cite: 6]. Investigating the source revealed it imported functions from `extension_utils.py`, and crucially, the `__pycache__` directory had wide-open permissions[cite: 6]. \n\n*What is a `.pyc` file?* When Python imports a module, it compiles it into bytecode stored inside a `__pycache__` folder. The file begins with a 16-byte header containing a Python version magic number, flags, the source file's original modification timestamp (`mtime`), and file size. Python checks freshness *strictly* by comparing the cached `.pyc` timestamp/size against the real source file. If they match, it blindly executes the cached bytecode without verifying the source text.\n\n![Harry Potter magic wand spell casting gif](https://media.giphy.com/media/8v6Z3YyULB5Q0Skbac/giphy.gif)\n\nShoutout to **HardSoftSecurity** and their incredible write-up on Python Cache Poisoning[cite: 6]. Following their methodology, I compiled a custom malicious script (`cp /bin/bash /tmp/rootbash && chmod +s /tmp/rootbash`) into bytecode, wrote a Python spoofing script to extract the exact `mtime` and size of the real `extension_utils.py`, and rebuilt a valid `.pyc` header containing my malicious code.",
+            body: "Ran `sudo -l` and found permission to execute `/opt/extensiontool/extension_tool.py` as root[cite: 6]. Investigating the source revealed it imported functions from `extension_utils.py`, and crucially, the `__pycache__` directory had wide-open permissions[cite: 6]. \n\n*What is a `.pyc` file?* When Python imports a module, it compiles it into bytecode stored inside a `__pycache__` folder. The file begins with a 16-byte header containing a Python version magic number, flags, the source file's original modification timestamp (`mtime`), and file size. Python checks freshness *strictly* by comparing the cached `.pyc` timestamp/size against the real source file. If they match, it blindly executes the cached bytecode without verifying the source text.\n\nShoutout to **HardSoftSecurity** and their incredible write-up on Python Cache Poisoning[cite: 6]. Following their methodology, I compiled a custom malicious script (`cp /bin/bash /tmp/rootbash && chmod +s /tmp/rootbash`) into bytecode, wrote a Python spoofing script to extract the exact `mtime` and size of the real `extension_utils.py`, and rebuilt a valid `.pyc` header containing my malicious code.",
             code: "# Compiling & Poisoning Flow\npython3 -m py_compile exploit.py\npython3.12 poison3.py"
           },
           {
