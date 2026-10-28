@@ -382,28 +382,52 @@
         </div>
       </div>
 
-      <!-- CARD: CryptoForge (placeholder) -->
-      <div id="cryptoforge" class="bento-box" tabindex="0"
-           style="cursor:pointer; padding:0;"
-           data-difficulty="hard" data-tags="crypto" data-machine="cryptoforge"
-           onclick="openDrawer(this,'cryptoforge')"
-           onkeydown="if(event.key==='Enter')openDrawer(this,'cryptoforge')">
-        <div class="wu-accent hard"></div>
+      <!-- CARD: APT -->
+      <div id="apt" class="bento-box wide" tabindex="0" style="cursor:pointer; padding:0;"
+           data-difficulty="insane" data-tags="ad,privesc,windows,rpc,smb" data-machine="apt"
+           onclick="openDrawer(this,'apt')" onkeydown="if(event.key==='Enter')openDrawer(this,'apt')">
+        <div class="wu-accent insane"></div>
         <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
           <div>
-            <div class="box-meta">
-              <span class="tag">Challenge</span>
-              <span style="font-size:0.85rem;color:#f59e0b;">
-                <span class="diff-dot" style="background:#f59e0b;box-shadow:0 0 6px #f59e0b;"></span>Hard
-              </span>
-            </div>
-            <div class="box-title">CryptoForge Matrix</div>
-            <div class="box-desc">Breaking weak IV reuse models across microservice validation endpoints via CBC bit-flip forgery.</div>
+            <img src="APT/1.png" alt="APT writeup screenshot" style="width:44px;height:44px;border-radius:8px;object-fit:cover;margin-bottom:14px;border:1px solid rgba(168,85,247,0.2);">
+            <div class="box-meta"><span class="tag">RPC / Active Directory</span><span style="font-size:0.85rem;color:#ef4444;"><span class="diff-dot" style="background:#ef4444;box-shadow:0 0 6px #ef4444;"></span>Insane</span></div>
+            <div class="box-title">HTB: APT</div>
+            <div class="box-desc">RPC and SMB enumeration, backup archive analysis, and an Active Directory attack path documented with screenshots.</div>
           </div>
-          <div class="box-footer"><span>CAT // CRYPTO</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
+          <div class="box-footer"><span>OS // WINDOWS</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
         </div>
       </div>
-              <!-- CARD: Forest -->
+      <!-- CARD: TombWatcher -->
+      <div id="tombwatcher" class="bento-box wide" tabindex="0" style="cursor:pointer; padding:0;"
+           data-difficulty="medium" data-tags="ad,privesc,windows,kerberos,bloodhound" data-machine="tombwatcher"
+           onclick="openDrawer(this,'tombwatcher')" onkeydown="if(event.key==='Enter')openDrawer(this,'tombwatcher')">
+        <div class="wu-accent medium"></div>
+        <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
+          <div>
+            <img src="Tombwatcher%20(Assumed%20Breach%20Box)/Screenshot_1448-05-13_at_9.00.26_PM.png" alt="TombWatcher writeup screenshot" style="width:44px;height:44px;border-radius:8px;object-fit:cover;margin-bottom:14px;border:1px solid rgba(168,85,247,0.2);">
+            <div class="box-meta"><span class="tag">Assumed Breach / AD</span><span style="font-size:0.85rem;color:var(--neon-cyan);"><span class="diff-dot" style="background:var(--neon-cyan);box-shadow:0 0 6px var(--neon-cyan);"></span>Medium</span></div>
+            <div class="box-title">HTB: TombWatcher</div>
+            <div class="box-desc">Assumed-breach Active Directory chain featuring targeted Kerberoasting, delegated group membership, gMSA password retrieval, and ownership abuse.</div>
+          </div>
+          <div class="box-footer"><span>OS // WINDOWS</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
+        </div>
+      </div>
+     <!-- CARD: Browsed -->
+      <div id="browsed" class="bento-box wide" tabindex="0" style="cursor:pointer; padding:0;"
+           data-difficulty="medium" data-tags="linux,browser extension,ssrf" data-machine="browsed"
+           onclick="openDrawer(this,'browsed')" onkeydown="if(event.key==='Enter')openDrawer(this,'browsed')">
+        <div class="wu-accent medium"></div>
+        <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
+          <div>
+            <img src="Tombwatcher%20(Assumed%20Breach%20Box)/Screenshot_1448-05-13_at_9.00.26_PM.png" alt="TombWatcher writeup screenshot" style="width:44px;height:44px;border-radius:8px;object-fit:cover;margin-bottom:14px;border:1px solid rgba(168,85,247,0.2);">
+            <div class="box-meta"><span class="tag">Linux / Browser Extension</span><span style="font-size:0.85rem;color:var(--neon-cyan);"><span class="diff-dot" style="background:var(--neon-cyan);box-shadow:0 0 6px var(--neon-cyan);"></span>Medium</span></div>
+            <div class="box-title">HTB: Browsed</div>
+            <div class="box-desc">Browsed is a medium-difficulty Linux machine centred around abusing browser extension functionality to access internal services. By uploading a malicious Chrome extension, we intercept a developer’s browsing activity and uncover an internal Gitea instance hosting a Flask application..</div>
+          </div>
+          <div class="box-footer"><span>OS // LINUX</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
+        </div>
+      </div>
+      <!-- CARD: Forest -->
       <div id="forest" class="bento-box wide" tabindex="0"
            style="cursor:pointer; padding:0;"
            data-difficulty="easy" data-tags="ad,dcsync" data-machine="forest"
