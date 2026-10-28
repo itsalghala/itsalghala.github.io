@@ -634,7 +634,6 @@
             code: "# 1. Compile malicious script\npython3 -m py_compile exploit.py\n\n# 2. Run spoofing and poisoning script\npython3.12 poison3.py"
           },
           {
-          {
             phase: "ROOT COMPROMISE",
             title: "Triggering the Poisoned Module & Flag Capture",
             body: "With the cache successfully poisoned to match the exact size and timestamp of the legitimate module, I executed the permitted sudo tool. Instead of running the original code, Python trusted the poisoned bytecode and executed my payload as root. Checked `/tmp/rootbash`—the SUID bit was successfully set. Dropped into a root shell with `-p` and grabbed both flags.<br><br><div style='text-align:center;'><img src='Browsed/Screenshot_1448-05-17_at_8.18.44_PM.png' alt='Root Shell' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div>",
