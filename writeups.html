@@ -583,7 +583,7 @@
         diff: "Medium",
         diffColor: "var(--neon-cyan)",
         port: "22, 80",
-        time: "⚠️ 3h 15m",
+        time: "⚠️ 2h 15m",
         vector: "RustScan → Nmap → Extension Upload → Gitea API Enum → Flask SSRF → Background Service Worker → Bash Arithmetic Injection → Python Bytecode Cache Poisoning → SUID Root Bash",
         hasFullWriteup: true,
         nodes: [
@@ -601,8 +601,8 @@
           },
           {
             phase: "⚠️ THE RABBIT HOLES",
-            title: "The Content Script Dead End (1.5 Hours Wasted)",
-            body: "My initial instinct was to build a standard extension content script to read `http://localhost:5000`. Huge mistake—browser CORS policies completely blocked it from interacting with the local DOM or hitting loopback endpoints.<br><br><img src='https://media.giphy.com/media/3oKIPnAiaMCws8nOsE/giphy.gif' alt='Frustration' style='max-width:100%; border-radius:8px; margin:10px 0;'><br><br>I spun my wheels testing different XSS-style script injections before realizing extensions require a **Background Service Worker** explicitly listed in `host_permissions` to bypass CORS and securely query internal services[cite: 6]."
+            title: "The Content Script Dead End (20 Minutes Wasted)",
+            body: "My initial instinct was to build a standard extension content script to read `http://localhost:5000`. Huge mistake—browser CORS policies completely blocked it from interacting with the local DOM or hitting loopback endpoints.<br><br><div style='text-align:center;'><img src='https://media.giphy.com/media/3oKIPnAiaMCws8nOsE/giphy.gif' alt='Frustration' style='max-width:100%; height:auto; border-radius:10px; margin:12px 0; border:1px solid rgba(168,85,247,0.2);'></div><br>I spun my wheels testing different XSS-style script injections before realizing extensions require a **Background Service Worker** explicitly listed in `host_permissions` to bypass CORS and securely query internal services[cite: 6]."
           },
           {
             phase: "FOOTHOLD",
